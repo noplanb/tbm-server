@@ -10,8 +10,8 @@ class VideosController < ApplicationController
 
   # POST
   def create
-    video = Video.create!(user_id: params[:video][:user_id], file: params[:video][:file], receiver_id: params[:video][:receiver_id])
-    logger.info("Uploaded file #{params[:video][:file].original_filename}")
+    video = Video.create!(user_id: params[:user_id], file: params[:file], receiver_id: params[:receiver_id])
+    logger.info("Uploaded file #{params[:file].original_filename}")
   end
 
 end
