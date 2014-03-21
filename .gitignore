@@ -17,3 +17,5 @@
 config/s3.yml
 public/system
 config/app_config_local.yml
+.ruby-version
+.rvmrc
