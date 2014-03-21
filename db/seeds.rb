@@ -11,5 +11,5 @@ users = User.create([
   {first_name: 'Farhad', last_name: 'Farzaneh', mobile_number: '4156020256'},
   {first_name: 'Sani', last_name: 'ElFishawy', mobile_number: '6502453537'},
   {first_name: 'Jill', last_name: 'Wernicke', mobile_number: '6502453539'},
-  {first_name: 'Kon', last_name: 'Othmer', mobile_number: ''}
+  {first_name: 'Konstantin', last_name: 'Othmer', mobile_number: '6502484331'}
 ])
