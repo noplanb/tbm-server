@@ -1,4 +1,7 @@
 class VideosController < ApplicationController
+
+  protect_from_forgery :except => [:create]
+
   def new
     render text: "NOT IMPLEMENTED"
   end

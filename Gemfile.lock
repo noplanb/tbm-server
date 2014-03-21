@@ -73,6 +73,9 @@ GEM
     diff-lcs (1.2.5)
     erubis (2.7.0)
     execjs (2.0.2)
+    gcm (0.0.7)
+      httparty
+      json
     hike (1.2.3)
     httparty (0.13.0)
       json (~> 1.8)
@@ -166,7 +169,7 @@ DEPENDENCIES
   console_candy!
   debugger
   enum_handler!
-  httparty
+  gcm
   jbuilder (~> 1.2)
   jquery-rails
   npb_notification!
