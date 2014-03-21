@@ -20,5 +20,9 @@ class Video < ActiveRecord::Base
   # validates_attachment_presence :file
   # do_not_validate_attachment_file_type :file
   validates_attachment_content_type :file, :content_type => /\A(audio|image|video)\/.*\Z/
+  
+  def receiver
+    User.find(receiver_id)
+  end
 
 end

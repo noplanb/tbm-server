@@ -170,6 +170,7 @@ DEPENDENCIES
   debugger
   enum_handler!
   gcm
+  httparty
   jbuilder (~> 1.2)
   jquery-rails
   npb_notification!
