@@ -1,6 +1,14 @@
 ThreebymeServer::Application.routes.draw do
 
-  resources :videos
+  # resources :videos
+  get 'videos/new'
+  post 'videos/create'
+  get 'videos/get'
+  get 'reg/user_list'
+  get 'reg/register/:id' => 'reg#register'
+  get 'reg/echo'
+  post 'reg/echo'
+  post 'reg/push_token'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
