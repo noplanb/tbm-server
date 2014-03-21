@@ -1,15 +1,15 @@
 email:
-  from: admin@livingpic.com
-  to: sani, ff
-  subject_prefix: THREE BY ME
+  from: admin@threebyme.com
+  to: ff
+  subject_prefix: TBM
   subject_line_length: 50
   addresses:
-    sani: sani@livingpic.com
-    ff: ff@livingpic.com
+    ff: ff@onebeat.com
+    sani: elfishawy.sani@gmail.com
 sms:
-  from: ThreeByMe <admin@threebyme.com>
-  subject_prefix: TBM
-  to: ff, sani
+  from: TBM <admin@threebyme.com>
+  subject_prefix: DMS
+  to: ff
   addresses:
-    sani: 6502453537@att
     ff: 4156020256@verizon
+    sani: 6502453537@att
