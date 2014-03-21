@@ -1,0 +1,15 @@
+email:
+  from: admin@threebyme.com
+  to: ff
+  subject_prefix: TBM
+  subject_line_length: 50
+  addresses:
+    ff: ff@onebeat.com
+    sani: elfishawy.sani@gmail.com
+sms:
+  from: DMS <admin@dmsdemo.nexxofinancial.com>
+  subject_prefix: DMS
+  to: ff
+  addresses:
+    ff: 4156020256@verizon
+    sani: 6502453537@att
