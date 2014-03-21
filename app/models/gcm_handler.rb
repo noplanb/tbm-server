@@ -6,7 +6,7 @@ module GcmHandler
     
   def send(ids)
     gcm = GCM.new(API_KEY)
-    options = {data: {from: "2"}, collapse_key: "asdf"}
+    options = {data: {from_id: "2"}}
     response =  gcm.send_notification(ids, options)
   end
   
