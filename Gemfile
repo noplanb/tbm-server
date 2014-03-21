@@ -27,6 +27,9 @@ gem 'turbolinks'
 gem 'aws-sdk'
 gem 'paperclip'
 
+# Used in notifications
+gem 'httparty'
+
 # gem 'npb_logging', :git => "git://github.com/etcetc/npb_logging.git"
 gem 'console_candy', :git => 'git://github.com/etcetc/console_candy.git'
 gem 'npb_notification', :git => 'git://github.com/etcetc/npb_notification.git'
