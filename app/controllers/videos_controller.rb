@@ -1,6 +1,7 @@
 class VideosController < ApplicationController  
   skip_before_filter :verify_authenticity_token
   # protect_from_forgery :except => [:create]
+  # changed a line
 
   def new
     render text: "NOT IMPLEMENTED"
