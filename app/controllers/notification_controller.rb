@@ -3,7 +3,8 @@
 class NotificationController < ApplicationController  
   
   def send
-    GcmServer.send_notification
+    GcmServer.send_notification(params[:id], params[:payload])
+    render :text => "ok"
   end
   
 end
