@@ -7,7 +7,7 @@ email:
     ff: ff@onebeat.com
     sani: elfishawy.sani@gmail.com
 sms:
-  from: DMS <admin@dmsdemo.nexxofinancial.com>
+  from: TBM <admin@threebyme.com>
   subject_prefix: DMS
   to: ff
   addresses:
