@@ -14,9 +14,9 @@ GIT
 
 GIT
   remote: git://github.com/etcetc/npb_notification.git
-  revision: cf009f38bdec22a61c91776baa379395b815ff1d
+  revision: d834980aff68a71b3b1d0c934e7e1f418a445c84
   specs:
-    npb_notification (0.0.3)
+    npb_notification (0.0.4)
 
 GEM
   remote: https://rubygems.org/
@@ -170,6 +170,7 @@ DEPENDENCIES
   debugger
   enum_handler!
   gcm
+  httparty
   jbuilder (~> 1.2)
   jquery-rails
   npb_notification!
