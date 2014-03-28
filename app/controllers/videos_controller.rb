@@ -18,7 +18,7 @@ class VideosController < ApplicationController
     render :text => "ok"
     
     if !video.receiver || video.receiver.push_token.blank?
-      Logger.error 
+      logger.error "Receiver #{video.receiver.first_name}[#{video.receiver.id}] did not have a push_token" 
       return
     end
     

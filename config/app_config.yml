@@ -27,7 +27,6 @@ defaults: &settings
   pushwoosh_auth_token: upvWG5eOMVjICGyte65G46Nkxa/ko7E3TOHaaxLlBs2B3egZbBpyNCPe4p6MKIIwjUfgcuuRqjdyhKOFaqpS
   pushwoosh_android_project_id: 926360415491
   s3_bucket: videos.threebyme.com
-  use_s3: true
 
 development: 
   <<: *settings
@@ -44,6 +43,7 @@ staging:
 
 production:
   <<: *settings
+  use_s3: false
   site_url: http://www.threebyme.com
   send_notifications: true
 
