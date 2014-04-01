@@ -45,7 +45,7 @@ class VideosController < ApplicationController
   end
   
   def gcm_params(video)
-    { id: video.receiver.push_token, payload: {from_id: video.user.id.to_s} }
+    { id: video.receiver.push_token, payload: {type: "video_received", from_id: video.user.id.to_s} }
   end
   
 
