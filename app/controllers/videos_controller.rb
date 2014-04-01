@@ -36,9 +36,10 @@ class VideosController < ApplicationController
   end
   
   def update_viewed()
+    render :text => "ok"
     sender = User.find(params[:from_id])
     gcm_params = {id: sender.push_token, payload: {type: "video_status_update", to_id: params[:to_id], status: "viewed"}}
-    render :text => "ok"
+    send_notification_per_config(gcm_params)
   end
   
   def send_notification_per_config(gcm_params)

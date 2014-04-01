@@ -17,6 +17,8 @@ module GcmServer
   end
     
   def post_to_gcm(payload)
+    logger.info "GcmServer: Attempting to send notification. #{payload.inspect}"
+    
     payload = payload.to_json unless payload.class == String
     
     uri = URI(URI)    
@@ -36,7 +38,7 @@ module GcmServer
       if j["failure"] != 0 || j["canonical_ids"] != 0
         logger.error JSON.pretty_generate j
       else
-        logger.info "GcmServer: succesfully sent notification."
+        logger.info "GcmServer: succesfully sent notification. #{payload.inspect}"
       end
     end
     return res
