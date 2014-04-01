@@ -22,31 +22,40 @@ class VideosController < ApplicationController
       return
     end
     
-    SEND_NOTIFICATIONS_LOCALLY ? send_notification_locally(video) : forward_notification_to_tbm_server(video)
+    gcm_params = { id: video.receiver.push_token, payload: {type: "video_received", from_id: video.user.id.to_s} }
+    send_notification_per_config(gcm_params)
   end
   
   def get
     v = Video.where("receiver_id = ? and user_id = ?", params[:receiver_id], params[:user_id]).order(id: :desc).limit(1).first
     logger.info("Found video_id = #{v.id}")
     send_file( "public" + v.file.url, type: "video/mp4")
+    sender = User.find(:user_id)
+    gcm_params = {id: sender.push_token, payload: {type: "video_status_update", to_id: params[:reciever_id], status: "uploaded"}}
+    send_notification_per_config(gcm_params)
   end
   
-  def send_notification_locally(video)
+  def update_viewed()
+    sender = User.find(params[:from_id])
+    gcm_params = {id: sender.push_token, payload: {type: "video_status_update", to_id: params[:to_id], status: "viewed"}}
+    render :text => "ok"
+  end
+  
+  def send_notification_per_config(gcm_params)
+    SEND_NOTIFICATIONS_LOCALLY ? send_notification_locally(gcm_params) : forward_notification_to_tbm_server(gcm_params)
+  end
+  
+  def send_notification_locally(gcm_params)
     logger.info "send_notification_locally"
     p = gcm_params video
     send_notification(p[:id], p[:payload])
   end
   
-  def forward_notification_to_tbm_server(video)
+  def forward_notification_to_tbm_server(gcm_params)
     logger.info "forward_notification_to_tbm_server"
     uri = URI("http://localhost:3000/notification/send")
-    res = Net::HTTP.post_form(uri, gcm_params(video))
+    res = Net::HTTP.post_form(uri, gcm_params)
     logger.info res.body
   end
   
-  def gcm_params(video)
-    { id: video.receiver.push_token, payload: {type: "video_received", from_id: video.user.id.to_s} }
-  end
-  
-
 end
