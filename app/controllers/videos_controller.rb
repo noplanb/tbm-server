@@ -30,8 +30,8 @@ class VideosController < ApplicationController
     v = Video.where("receiver_id = ? and user_id = ?", params[:receiver_id], params[:user_id]).order(id: :desc).limit(1).first
     logger.info("Found video_id = #{v.id}")
     send_file( "public" + v.file.url, type: "video/mp4")
-    sender = User.find(:user_id)
-    gcm_params = {id: sender.push_token, payload: {type: "video_status_update", to_id: params[:reciever_id], status: "uploaded"}}
+    sender = User.find(params[:user_id])
+    gcm_params = {id: sender.push_token, payload: {type: "video_status_update", to_id: params[:receiver_id], status: "downloaded"}}
     send_notification_per_config(gcm_params)
   end
   
@@ -47,8 +47,7 @@ class VideosController < ApplicationController
   
   def send_notification_locally(gcm_params)
     logger.info "send_notification_locally"
-    p = gcm_params video
-    send_notification(p[:id], p[:payload])
+    send_notification(gcm_params[:id], gcm_params[:payload])
   end
   
   def forward_notification_to_tbm_server(gcm_params)
