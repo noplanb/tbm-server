@@ -16,17 +16,20 @@ class RegController < ApplicationController
     users = { :sani => User.find_by_first_name("Sani"),
               :farhad => User.find_by_first_name("Farhad"),
               :kon => User.find_by_first_name("Konstantin"),
-              :jill => User.find_by_first_name("Jill")}
+              :jill => User.find_by_first_name("Jill"),
+              :moto => User.find_by_first_name("MotoG")}
     
     u = User.find id
     case u.first_name
     when "Sani"
-      return [users[:farhad], users[:kon], users[:jill]]
+      return [users[:farhad], users[:kon], users[:jill], users[:moto]]
     when "Farhad"
       return [users[:kon], users[:sani]]
     when "Konstantin"
       return [users[:farhad], users[:sani]]
     when "Jill"
+      return [users[:sani]]
+    when "MotoG"
       return [users[:sani]]
     end
   end

@@ -4,6 +4,7 @@ ThreebymeServer::Application.routes.draw do
   get 'videos/new'
   post 'videos/create'
   get 'videos/get'
+  get 'videos/update_viewed'
   get 'reg/user_list'
   get 'reg/register/:id' => 'reg#register'
   get 'reg/echo'
