@@ -18,11 +18,14 @@ ActiveRecord::Schema.define(version: 20140311014735) do
     t.string   "last_name"
     t.string   "mobile_number"
     t.string   "push_token"
+    t.string   "device_platform"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "videos", force: true do |t|
+    t.string   "video_id"
+    t.string   "status"
     t.integer  "user_id"
     t.integer  "receiver_id"
     t.string   "file_file_name"

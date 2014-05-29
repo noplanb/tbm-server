@@ -17,12 +17,15 @@ class RegController < ApplicationController
               :farhad => User.find_by_first_name("Farhad"),
               :kon => User.find_by_first_name("Konstantin"),
               :jill => User.find_by_first_name("Jill"),
-              :moto => User.find_by_first_name("MotoG")}
+              :moto => User.find_by_first_name("MotoG"),
+              :iphone5c => User.find_by_first_name("Iphone5c"),
+              :nexus_red => User.find_by_first_name("NexusRed"),
+              :nexus_black => User.find_by_first_name("NexusBlack")}
     
     u = User.find id
     case u.first_name
     when "Sani"
-      return [users[:farhad], users[:kon], users[:jill], users[:moto]]
+      return [users[:farhad], users[:kon], users[:jill], users[:moto], users[:iphone5c], users[:nexus_red], users[:nexus_black]]
     when "Farhad"
       return [users[:kon], users[:sani]]
     when "Konstantin"
@@ -30,7 +33,13 @@ class RegController < ApplicationController
     when "Jill"
       return [users[:sani]]
     when "MotoG"
-      return [users[:sani]]
+      return [users[:sani], users[:iphone5c], users[:nexus_red], users[:nexus_black]]
+    when "Iphone5c"
+      return [users[:sani], users[:moto], users[:nexus_red], users[:nexus_black]]
+    when "NexusRed"
+      return [users[:sani], users[:iphone5c], users[:moto], users[:nexus_black]]
+    when "NexusBlack"
+      return [users[:sani], users[:iphone5c], users[:nexus_red], users[:moto]]
     end
   end
   
@@ -41,7 +50,12 @@ class RegController < ApplicationController
   def push_token
     user = User.find(params[:user_id])
     user.update_attribute(:push_token, params[:push_token])
-    render :text => "ok"
+    
+    if params[:device_platform]
+      user.update_attribute(:device_platform, params[:device_platform])
+    end
+    
+    render :json => {"status" => 200}
   end
   
   def echo

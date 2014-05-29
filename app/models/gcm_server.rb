@@ -2,7 +2,7 @@ module GcmServer
   
   extend self
   require 'json'
-  include NpbNotification
+  include NpbNotification 
   
   URI = "https://android.googleapis.com/gcm/send"
   API_KEY = "AIzaSyDSFYoue4kZiz9Fx1W9DSr03tMO-Pfl54Q"
@@ -17,7 +17,7 @@ module GcmServer
   end
     
   def post_to_gcm(payload)
-    logger.info "GcmServer: Attempting to send notification. #{payload.inspect}"
+    Rails.logger.info "GcmServer: Attempting to send notification. #{payload.inspect}"
     
     payload = payload.to_json unless payload.class == String
     
@@ -32,13 +32,13 @@ module GcmServer
     
     res =  http.request(req)
     if res.code != "200"
-      logger.error res.body.inspect
+      Rails.logger.error res.body.inspect
     else
       j = JSON.parse res.body
       if j["failure"] != 0 || j["canonical_ids"] != 0
-        logger.error JSON.pretty_generate j
+        Rails.logger.error JSON.pretty_generate j
       else
-        logger.info "GcmServer: succesfully sent notification. #{payload.inspect}"
+        Rails.logger.info "GcmServer: succesfully sent notification. #{payload.inspect}"
       end
     end
     return res

@@ -1,0 +1,70 @@
+Architecture
+  - videos_controller sends a notification package to notification_handler
+    - package includes
+      - token
+      - type - ios | android
+      - ios_type - alert | fetch
+      - ios specific: alert, badge, sound
+      - payload - <json>
+  - notification_handler calls appropriate gateway using the appropriate server
+  
+  - Types of TBM notifications
+    - video_received
+      - IOS: 
+        - Always send an alert type notification but use content-available. 
+        - In most cases we will be woken to do the fetch in the background and by the time the user responds to the alert we should be done. And in the cases where we are not woken to the background the user will get the notification and can wake us.
+        - Send badge of 1 app can badge differently if it is woken.
+    _ video_status_updated
+      - IOS: send content-available only no alert. When we get the notification update the status appropriately and silently.
+    
+Todo
+  x Read about apns badging etc.
+  x Implement GenericPushNotification class
+    x Fork apns gem
+    x Fix bug where it sends multiple notifications.
+    x Module GenericPushNotification
+      x sits between the controller and the notification servers.
+      x takes simple generic notification messages.
+      x sends via the appropriate channel ios or android.
+      x Requires
+        x APNS
+        x GCM_Server
+      x Attributes
+        x token
+        x platform - ios | android
+        x ios type: alert | silent
+        x ios specific attrs: 
+          x alert
+          x badge 
+          x sound
+        x payload: hash
+      x Methods
+        x send
+        
+GOAL :: Make android and ios phones interoperate against the same server. Dont change android client for now. 
+  x Wire the controller GPN for both android and ios notifications.
+  x Test android notifications
+    x Destroy all videos
+    x Add users and connections for Sani Iphone in seeds and in reg controller
+    x Drop and add db
+    x Build android pointing to local server
+    x Test between motog and android
+  - Test between ios and android
+    - ios send platform with push token
+    - Point ios at local server
+    
+      
+       
+    
+  
+Apple Push Notification Server
+
+ - Set up provider server
+   - Download certificate from https://developer.apple.com/account/ios/certificate/certificateList.action?type=development
+   - Open in keychain access and export as a p12
+   - Save under Rails_Root/certs
+   - Add apns to gemfile
+   - Follow instructions with the apns gem.
+   - Note the latest apns gem is not in the gem directory. Better to get it straight from github.
+   
+   

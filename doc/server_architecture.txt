@@ -1,0 +1,320 @@
+- Actions and status communication that needs to take place between server and client from a clients point of view.
+  - Upload incoming videos
+  - Download outgoing videos
+  - Get status of outgoing videos
+    - UPLOADED to server
+    - DOWNLOADED by other client
+    - VIEWED
+  - Send status of outgoing videos 
+    - Viewed. 
+    
+- Channels of communication.
+  - Notification
+    - Characteristics
+      - Not guaranteed to arrive even when user has http connectivity.
+      - Perhaps can tell when notification is not working but havent looked into it.
+    - HTTP
+      - Not always available.
+      - Straight forward to know when it is available or not.
+    
+- User Experience goals.
+  - When user turns on the app if there is any form of connectivity the app should reflect the latest available status.
+  - While the app is running, state transitions of outgoing messages should be reflected on the app as they happen. 
+  
+- Architecture goals
+  - Minimum operating cost to achieve the user experience.
+  
+- Ideas, scenarios and questions
+  - Use only push to notify the app of the need to download and status changes. 
+    - Not acceptable as there are times when status will be incorrect even when user has turned on the app and has http connectivity.
+  - Use a combination of push notification and poll (server query).
+    - More promising.
+    
+  - Push plus poll
+    - Possible protocols
+      - The app polls the server for any videos requiring upload and any sent video status changes ONCE when it is brought to life due to a user action and once for each time it receives a notification whether running or not. The server provides info about all the videos still requiring download and the current status at once.
+      - The server provides  info about a single video requiring download at a time. The app polls after download to see if there are more to download.
+      - The app polls periodically while it is running even if it doesn't get a push during that time?
+    - Case 1: video download
+      - PUSH: 
+        - What does the server put in the push payload?
+          - Which uploaded video triggered the push?
+          - The list of all videos currently awaiting download?
+          - Everything the server knows about outgoing video status as well as videos requiring download?
+          - Nothing? Let the app find out when it polls?
+        - What does the app do when it gets the push?
+          - When already running? When not running?
+            - Poll?
+            - Download video(s) indicated and then poll?
+            - Poll, download then poll again?
+      - POLL: 
+        - What does the app provide in the poll?
+          - The user_id and list of friend_ids?
+        - What does the server put in the poll? 
+          - Everything it knows currently about outgoing status as well as videos requiring download?
+          - One thing at a time and expect the app to poll again each time it transacts?
+      - Example scenario:
+        - Lets say the app polls gets info about a video requiring download. It queues the download then gets notification for another video requiring download. It polls again and sees that two videos require download. How does it know that the first one is one that it already queued for download? Does it get a unique id for each video requiring download and manage those somehow?
+      
+    - Case2: outgoing video status
+      - App gets this info by push.
+      - App gets this info as well when it polls for videos requiring download above?
+      
+- Server architecture
+  - What is the cheapest way of maintaining and providing outgoing video status?
+    - One idea - single boolean to indicate downloaded by recipient. Video deleted from the server when it is viewed.
+      - UPLOADED - sender knows.
+      - DOWNLOADED - server recalls via boolean associated with video.
+      - VIEWED - server recalls due to non existence of video. 
+      - Corner case - very first time before first video is ever sent server would report VIEWED client could know it has never sent a video though.  
+      - Corner case - new upload before old one viewed. Not a problem to reset state to not Downloaded as this is the intended user experience.
+      
+  Final server architecture we probably dont need this for the first alpha client release but client will have to be changed to accommodate for first public release.  
+  - How is communication broken down between db server and video storage server? Need to finish cost analysis for this. 
+    - download
+    - upload
+  - Does the server need the relationships between users for any of the above activity or only for our own statistics info? 
+          
+
+
+FARHAD THOUGHTS...
+TBM Architecture Thoughts
+--------------------------
+
+** Video File Upload/Download **
+As you once incidated, it's probably cheapest to write directly to S3 from the mobile, rather go to a server and have that upload to S3.  This means the mobile has to make at least 2 calls: 
+1) push the file to s3 (presumably bucket name, etc. are somehow provided to app one-time or every so often (e.g. startup), and filename is generated using some concatenation of unique client number and timestamp or random number or something)
+2) tell the server that the push was done, indicating filename that was saved, unique video ID (perhaps == filename), the sender ID, and the recipient ID (or other recipient info if we allow sending to a non-registered server)
+
+Note that we may have a 3rd call, occurring first in sequence, indicating the intent to upload, and getting an info pack regarding the bucket/filepath, etc.  but I don't see a real advantage to this except that it allows us to maintain more intelligence on the server, so we perhaps can swtich video stores if need be at any time.
+
+** Notifications ** 
+If I understand this, the fundamental problem vis-a-vis notification is that it's not guaranteed, so you're planning to use polling as a backup.  I don't know about what payload restrictions are on notifications, but if they are not substantial, I would have the payloads for pull and push be exactly the same to minimize code branches & complexity.  Because we want to maximize redundancy, I would put all the info on all items of interest in every payload.  
+
+That is, I imagine the phone tracks the state of in-transit videos and expects info regarding their states in any notification or poll response.  In-transit videos are those with states of interest: uploaded, notified, downloaded. Once a video has been viewed, it is considered to be "complete" or no longer in-transit.
+
+A poll is a very simple message that queries the state for the client ID.  The response is an Info packet (the same one that arrives in a notification)
+The info packet will include two sets of info:
+1) states for videos that the client uploaded and are in-transit (presumably if a video is not in this list, it's no longer in-transit - e.g. the server notified the client of this state change via notification and then stopped tracking it, but client didn't get notification, so subsequent info packets will not refer to this video).
+2) videos that need to be downloaded - incuding sender ID, URL from which to download, and unique video ID.
+
+The receiving client will ping the server when state changes - video is downloading (i.e. notified), it has been downloaded and viewed.  Not sure how that is done now - I imagine it as a very simple http call.  If any of these light state change messages fail, the client needs to know that it's not done with this video yet.  
+
+So what is any client tracking?
+- 2 groups:
+  - uploaded videos that are in in-transit state (calls this the Uploaded in-Transit videos or UT list  )
+  - downloaded vidoes that server thinks are in-transit (that is, where the server has NOT been successfully notified that they have been viewed).  These are Downloaded inTransit or DT videos
+
+So what is the server tracking for each client?
+- 2 groups:
+  - videos that the client has an interest in, i.e. were uploaded and are in-transit state
+  - videos that the client should download
+
+Server also tracks inTransit videos - period, but this is an implementation issue.  That is, it can get a state change message regarding a video, look it up via its video ID, and immediately know the sender so it can change its state table.
+
+NOTE: We can, but I don't think we need to track the state of downloaded videos for clients.  This makes the table smaller and easier to cache, etc.
+
+Client state changes based upon info packet that could come as a result of a poll or notification. Info packet matches what the server is tracking above.  Again, this is simply:
+- 2 groups:
+  - videos that should be downloaded: 
+  - video states for those videos that are in in-transit state.  If the state of a video is viewed, or if the video is missing, then the video is considered to have been viewed (I'm a little uncomfortable w/ this but it does eliminate some more handshaking)
+
+Server state changes based upon http message from client:
+  - video uploaded: It starts tracking the video and sends appropriate notifications
+  - video state change:  If the video state is viewed it fires off a notification to sender client and removes the video from watch list, else it just fires a notification to sender and keeps a watch until its viewed
+
+What happens when there are mismatches in info packet vs client state?
+- Video was uploaded but the next info packet contains no mention of it - it's assumed to have been viewed already
+- Download video list contains a video that was already downloaded: fire off a message that indicates the video state on the client.
+
+Assuming we do video uploads directly to S3 as you suggested, these should be fairly light information packets and can be kept in memcache for a pretty large number of in-transit videos.
+
+On the server side, we could put use a noSQL database or memcache to track
+- in-transit videos, pointing to sender and receiver client IDs
+- client state packets so we don't have to calculate them on the fly - when we send a notification or we receive a poll, we just package this up and fire it off.
+
+This should be pretty cheap.
+
+** When to use poll **
+- Poll when the client first connects, whether it's on startup or if it was not previously connected
+- If the app is alive
+  - set a timer to poll some interval after last notification received if there are tracked videos
+  - set a timer to poll some interval greater after last notification if there are no tracked videos
+- If the app is in background and connected, same as alive but with longer timeouts?
+
+** Failure Modes **
+- Video uploaded message fails:  the video is on S3 but the server doesn't know about it - need to keep retrying it.  We could, as a backup, encode the video name with the sender ID, receiver ID, and timestamp and occasionally sweep S3 to make sure there aren't any stranded videos, just to be sure.  The video is still pending for the client... it has not been completely uploaded.
+- Video state change message fails: the receiver changed video state and wants to tell the server, but his message doesn't go through (no 200 response).  Put it in retry queue and keep video in DT list.  
+
+- Video state change fails and retry queue is lost: The server now never knows that the video state changed so it gets locked as in-transit forever. We have two options here: 1) keep track of client state, and a flag that indicates if the server has been notified.  So if the "viewed" state message failed, the client app knows that user viewed the video, but communication w/ server failed.  So it keeps the Video in the DT list and fires off a state change message upon startup or something.
+
+We could do a general state notification on startup for the client just to make sure that the server is in sync w/ the client, but this is a more complex package and includes more complex sync logic.  Might be nice for debugging though.
+
+- Server gets a message for a state change on a video its not tracking:  log it and drop it
+- Server gets an upload message fora video it is already tracking: log it and drop it
+
+
+
+Farhad plus Sani comments
+=========================
+** Video File Upload/Download **
+As you once incidated, it's probably cheapest to write directly to S3 from the mobile, rather go to a server and have that upload to S3. I was just guessing about this. Would be nice to know for sure. 
+
+ This means the mobile has to make at least 2 calls: 
+1) push the file to s3 (presumably bucket name, etc. are somehow provided to app one-time or every so often (e.g. startup), and filename is generated using some concatenation of unique client number and timestamp or random number or something)
+2) tell the server that the push was done, indicating filename that was saved, unique video ID (perhaps == filename), the sender ID, and the recipient ID (or other recipient info if we allow sending to a non-registered server)
+
+I wonder if for authentication purposes the upload will have to be mediated realtime by our server? Otherwise will each client have to have the authentication credentials for all of our storage which seems like a big security risk? I have come across briefly a protocol where the client starts the transaction to the server and completes the upload portion directly to s3. I guess this would save the extra call to let our server know what the client has done. But I wonder if it buys us anything pricewise as it seems the server will be tied up for the entire period of the upload. 
+
+Note that we may have a 3rd call, occurring first in sequence, indicating the intent to upload, and getting an info pack regarding the bucket/filepath, etc.  but I don't see a real advantage to this except that it allows us to maintain more intelligence on the server, so we perhaps can swtich video stores if need be at any time.
+
+** Notifications ** 
+If I understand this, the fundamental problem vis-a-vis notification is that it's not guaranteed, so you're planning to use polling as a backup.  I don't know about what payload restrictions are on notifications, but if they are not substantial, I would have the payloads for pull and push be exactly the same to minimize code branches & complexity.  Because we want to maximize redundancy, I would put all the info on all items of interest in every payload.  
+
+That is my hunch as well especially if we can make the db call to get all in transit video status relevant to the client very cheap.
+
+However does putting all the info relevant to a client in each notification imply that server needs to know the friends for each user? Currently that is not the case and is not built into the server. Should we add this piece to the server for alpha? and build the notifications as we expect them to be for final?
+
+Or now that I read what you have written again I think I see how it works. There is no concept of friends at all only video ids that the client knows about and that the server tracks for it. Video ids that were uploaded by the client but are missing in any notification / poll info packet are assumed to be viewed. 
+
+Isn't there a race condition where an upload completed and received an id. Then a notification arrives shortly thereafter but did not contain the id because the servers internal state had not been updated at the time the notification was sent. So the client marks it as viewed even though it wasn't. 
+
+Do we want to clear the existing outgoing video on the server only after a new one is uploaded to replace it rather than when it was viewed? And leave it existing and marked in the viewed state until then? I think this may be cleaner. As follows:
+
+ - Client uploads and gets (or generates) a video id.
+ - Client stops tracking state for whatever video was previously sent to that recipient regardless of its current state.
+ - Server stops tracking whatever video was being tracked from that sender to that recipient and starts tracking this one. (Also deletes the old video for space but this is an implementation detail).
+ - Client continues to receive info packets for this new video id until it does another upload. 
+ - If because of a race condition the client receives info packets for a video id it does not recognize as one of the ones it was tracking it safely ignores the data. 
+
+That is, I imagine the phone tracks the state of in-transit videos and expects info regarding their states in any notification or poll response.  In-transit videos are those with states of interest: uploaded, notified, downloaded. Once a video has been viewed, it is considered to be "complete" or no longer in-transit.
+
+A poll is a very simple message that queries the state for the client ID.  The response is an Info packet (the same one that arrives in a notification)
+The info packet will include two sets of info:
+1) states for videos that the client uploaded and are in-transit (presumably if a video is not in this list, it's no longer in-transit - e.g. the server notified the client of this state change via notification and then stopped tracking it, but client didn't get notification, so subsequent info packets will not refer to this video).  Got it. Makes sense.
+2) videos that need to be downloaded - incuding sender ID, URL from which to download, and unique video ID.
+
+The receiving client will ping the server when state changes - video is downloading (i.e. notified), it has been downloaded and viewed.  Not sure how that is done now - I imagine it as a very simple http call.  If any of these light state change messages fail, the client needs to know that it's not done with this video yet.  
+
+So you want to distinguish between notification sent (which the server knows) and notification received which would be before the start of downloading? Or should we collapse that into one state just notification sent? Right now the client lets the server know explicitly only about viewed. Current design:
+ - Recipient notified - server knows implicitly.
+ - Recipient received notification - not tracked.
+ - Recipient uploaded - server knows implicitly although that would change when we pull direct from storage. 
+ - Recipient viewed - explicit http msg from recipient to the server.
+
+Regarding the viewed or downloaded status being lost due to a failure either in the recipient sending the status change or the sender receiving the status change:
+ - This is a bit of a bummer as it makes recipient uncomfortable about following on with another message if he wants to. I have felt this often. 
+ - However it does clear itself in the senders UI in the case the recipient replies to the sender. Or in case the sender ignores the fact his first message wasnt viewed and follows on anyway.
+ - So if the incidence of this failure is low which it hopefully will be with Push plus Pull we can hopefully ignore it.
+
+So what is any client tracking?
+- 2 groups:
+  - uploaded videos that are in in-transit state (calls this the Uploaded in-Transit videos or UT list  )
+  - downloaded vidoes that server thinks are in-transit (that is, where the server has NOT been successfully notified that they have been viewed).  These are Downloaded inTransit or DT videos
+
+- Great. 
+
+So what is the server tracking for each client?
+- 2 groups:
+  - videos that the client has an interest in, i.e. were uploaded and are in-transit state
+  - videos that the client should download
+
+Server also tracks inTransit videos - period, but this is an implementation issue.  That is, it can get a state change message regarding a video, look it up via its video ID, and immediately know the sender so it can change its state table.
+
+I guess from the point of view of the server all videos are the same. They have a sender and receiver and a current state for each stop along the way from pre-download to viewed. I think that is what you are saying above? So do we query a big table for the two groups that are relevant for each client?
+
+
+NOTE: We can, but I don't think we need to track the state of downloaded videos for clients.  This makes the table smaller and easier to cache, etc.
+
+Client state changes based upon info packet that could come as a result of a poll or notification. Info packet matches what the server is tracking above.  Again, this is simply:
+- 2 groups:
+  - videos that should be downloaded: 
+  - video states for those videos that are in in-transit state.  If the state of a video is viewed, or if the video is missing, then the video is considered to have been viewed (I'm a little uncomfortable w/ this but it does eliminate some more handshaking).
+
+See my comment above that we should probably eliminate the video id at the server when it is overwritten by another upload not when it is viewed. 
+
+Server state changes based upon http message from client:
+  - video uploaded: It starts tracking the video and sends appropriate notifications
+  - video state change:  If the video state is viewed it fires off a notification to sender client and removes the video from watch list, else it just fires a notification to sender and keeps a watch until its viewed
+
+What happens when there are mismatches in info packet vs client state?
+- Video was uploaded but the next info packet contains no mention of it - it's assumed to have been viewed already
+- Download video list contains a video that was already downloaded: fire off a message that indicates the video state on the client.
+
+Assuming we do video uploads directly to S3 as you suggested, these should be fairly light information packets and can be kept in memcache for a pretty large number of in-transit videos.
+
+
+On the server side, we could put use a noSQL database or memcache to track
+- in-transit videos, pointing to sender and receiver client IDs
+- client state packets so we don't have to calculate them on the fly - when we send a notification or we receive a poll, we just package this up and fire it off.
+
+This should be pretty cheap.
+
+Not sure I understand what you mean here. I guess we should really try to understand cost. I think we are talking about a single table with a maximum of 8 entries per user perhaps with an average of 4. Is the question is what is the least expensive way to handle at scale?
+
+** When to use poll **
+- Poll when the client first connects, whether it's on startup or if it was not previously connected
+I like this. I forgot about the possibility that the client starts up and is not connected. 
+ 
+- If the app is alive
+  - set a timer to poll some interval after last notification received if there are tracked videos
+  - set a timer to poll some interval greater after last notification if there are no tracked videos
+Save for a future release as I believe the user typically shuts down the app and comes back later if he is curious rather than watching for any extended period of time.
+
+- If the app is in background and connected, same as alive but with longer timeouts?
+I like this as on android it eliminates the case where notifications are dead for an extended period as when you are connected to a wifi that doesnt allow the port at work. But this is really just an android bug that they should eventually fix. And I think that with polling on startup of the app we should be most of the way there. In the case of IOS what we are allowed to do in the background is fairly limited and I dont think they have the same notification channel bug as android as they switch to cellular in case the port is inoperable. So maybe keep to a future release.
+
+
+
+** Failure Modes **
+- Video uploaded message fails:  the video is on S3 but the server doesn't know about it - need to keep retrying it.  We could, as a backup, encode the video name with the sender ID, receiver ID, and timestamp and occasionally sweep S3 to make sure there aren't any stranded videos, just to be sure.  The video is still pending for the client... it has not been completely uploaded.
+Perhaps this is eliminated if the server has to handhold the auth portion of the transaction with Storage? We need to do more research here.
+
+- Video state change message fails: the receiver changed video state and wants to tell the server, but his message doesn't go through (no 200 response).  Put it in retry queue and keep video in DT list. 
+Not sure I have implemented retries for non file transactions. Should probably do for post alpha release.
+
+- Video state change fails and retry queue is lost: The server now never knows that the video state changed so it gets locked as in-transit forever. We have two options here: 1) keep track of client state, and a flag that indicates if the server has been notified.  So if the "viewed" state message failed, the client app knows that user viewed the video, but communication w/ server failed.  So it keeps the Video in the DT list and fires off a state change message upon startup or something.
+I dont understand this one.
+ 
+We could do a general state notification on startup for the client just to make sure that the server is in sync w/ the client, but this is a more complex package and includes more complex sync logic.  Might be nice for debugging though.
+
+- Server gets a message for a state change on a video its not tracking:  log it and drop it
+- Server gets an upload message fora video it is already tracking: log it and drop it
+
+
+SANI Thoughts.
+==============
+Ok now that I think about it some more your architecture makes much more sense than my attempted simplification of eliminating the unique id for video and video status.
+ 
+And I now understand better the corner cases you were thinking about handling at the bottom of the doc. It really takes me a lot longer than you get get this architecture stuff.
+
+One reason it makes more sense to have a unique id for video and video status is that (and I think you said this) it handles the following case explicitly and elegantly.
+
+Sender sends vid1
+Receiver  uploads vid1
+Before reciever views vid1 sender sends vid2
+Receiver views vid1
+We dont want to update the status of vid2 as viewed. 
+
+So I think you are right on. 
+
+Sender creates a unique id for his video that is used to access the file as well as status info. It can also be long and obscure for security.
+Sender queries for status on this id for as long as he cares about it. 
+Receiver updates the status for this id as long as it is available.
+
+The question is who cleans up and when?
+
+One idea - sender deletes previous video and video status kv pair when he uploads.
+  - If receiver attempts to retrieve a deleted video he learns it is no longer there and handles appropriately.
+  - Attempts to update a deleted status kv pair on behalf of a receiver are dropped or ignored. 
+  - Sender always just queries the status of ids he considers to be relevant so he never has an issue with querying status of dropped videos
+
+Failure mode for status:
+  - Status query is always done on behalf of or by sender. DynamoDb is guaranteed to be eventually consistent but not immediately consistent. But I dont think this a problem for us. 1) we never have concurrent writes. 2) if dynamo is not consistent at the time of query it returns the set of different values it sees at all replicas. It is very easy for the client or server to know which is correct. It is of course the status farthest along in the video transmission sequence. VIEWED has priority over DOWNLOADED etc. See here: http://the-paper-trail.org/blog/consistency-and-availability-in-amazons-dynamo/ and here  http://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf
+
+Failure mode for video download
+  - Receiver is downloading a video from AWS at the same time the sender is deleting it. I believe this is not a problem if the receiver can properly discern the reason his download failed. The download will either succeed or fail and if it fails and the receiver is able to tell that it failed because the video is not there he can handle appropriately and we are fine.
+
+Another idea - receiver deletes when he views. 
+- But he may never view so maybe above method of sender deleting when he uploads again is better. 
+

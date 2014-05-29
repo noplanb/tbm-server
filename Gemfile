@@ -56,4 +56,6 @@ gem 'jbuilder', '~> 1.2'
 # Use debugger
 gem 'debugger', group: [:development, :test]
 
+# Push Notification servers
 gem 'gcm'
+gem 'apns', :git => 'git://github.com/noplanb/APNS.git'
