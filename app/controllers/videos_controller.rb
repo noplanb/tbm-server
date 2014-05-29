@@ -51,7 +51,6 @@ class VideosController < ApplicationController
                    video_id: video.video_id,
                    videosRequiringDownload: [video.video_id]},
       :alert => "New message from #{video.user.first_name.capitalize_words}", 
-      :badge => 1, 
       :sound => "default", 
       :content_available  => true
     })
