@@ -5,6 +5,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :last_name
       t.string :mobile_number
       t.string :push_token
+      t.string :device_platform
       t.timestamps
     end
   end

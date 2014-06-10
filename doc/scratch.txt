@@ -1,0 +1,10 @@
+ gpn = GenericPushNotification.new({
+    :platform  => :ios, 
+    :token => "de220d693748b309fa8a3bec2237d2ace53a0649f730c2a7f9c353cc672a3ea1", 
+    :type => :alert, 
+    :payload => {:my_payload => "payload"},
+    :alert => "Alert to ios with badge=3 and sound=default", 
+    :badge => 3, 
+    :sound => "default", 
+    :content_available  => true
+  })
