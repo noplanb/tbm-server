@@ -1,4 +1,4 @@
-require "APNS"
+require "apns"
 require "gcm_server"
 
 class GenericPushNotification

@@ -6,6 +6,9 @@ class Video < ActiveRecord::Base
   include EnumHandler
   define_enum :status, [:uploaded, :downloaded, :viewed], :primary => true
 
+  scope :sent_by, lambda { |user_id| where(user_id: user_id) }
+  scope :sent_to, lambda { |user_id| where(receiver_id: user_id) }
+  
   include Paperclip::Glue
   
   paperclip_options = {
@@ -30,9 +33,13 @@ class Video < ActiveRecord::Base
   def self.find_last_with_user_id_and_receiver_id(user_id, receiver_id)
     where("receiver_id = ? and user_id = ?", receiver_id, user_id).order(id: :desc).limit(1).first
   end
+  class << self
+    alias_method :fromto, :find_last_with_user_id_and_receiver_id
+  end
   
   def self.destroy_all_but_last_with_user_id_and_receiver_id(user_id, receiver_id)
     all = where("receiver_id = ? and user_id = ?", receiver_id, user_id).order(id: :desc)
+    # all[1..-1] rather than (all - [all.first])??
     count = (all - [all.first]).each{|v| v.destroy!}.count
     logger.info "Video.destroy_all_but_last_with_user_id_and_receiver_id destroyed #{count} videos"
   end
@@ -45,6 +52,23 @@ class Video < ActiveRecord::Base
     User.find(receiver_id)
   end
   
+  # Used to renotify of the availability of a video
+  def notify
+    gpn = GenericPushNotification.new({
+      :platform  => self.receiver.device_platform, 
+      :token => self.receiver.push_token, 
+      :type => :alert, 
+      :payload => {type: "video_received", 
+                   from_id: self.user.id.to_s, 
+                   video_id: self.video_id,
+                   videosRequiringDownload: [self.video_id]},
+      :alert => "New message from #{self.user.first_name.capitalize_words}", 
+      :sound => "default", 
+      :content_available  => true
+    })
+    gpn.send  
+  end
+
   private
   
   def self.user_receiver_from_video_id(video_id)

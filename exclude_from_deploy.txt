@@ -13,3 +13,4 @@ aws-micro.pem
 bin/deploy.sh
 *.zip
 db/*.sqlite3
+benchmark
