@@ -27,19 +27,19 @@ class RegController < ApplicationController
     when "Sani"
       return [users[:farhad], users[:kon], users[:jill], users[:moto], users[:iphone5c], users[:nexus_red], users[:nexus_black]]
     when "Farhad"
-      return [users[:kon], users[:sani]]
+      return [users[:kon], users[:sani], users[:moto], users[:iphone5c], users[:nexus_red], users[:nexus_black]]
     when "Konstantin"
-      return [users[:farhad], users[:sani]]
+      return [users[:farhad], users[:sani], users[:moto], users[:iphone5c], users[:nexus_red], users[:nexus_black]]
     when "Jill"
       return [users[:sani]]
     when "MotoG"
-      return [users[:sani], users[:iphone5c], users[:nexus_red], users[:nexus_black]]
+      return [users[:sani], users[:iphone5c], users[:nexus_red], users[:nexus_black], users[:farhad], users[:kon]]
     when "Iphone5c"
-      return [users[:sani], users[:moto], users[:nexus_red], users[:nexus_black]]
+      return [users[:sani], users[:moto], users[:nexus_red], users[:nexus_black], users[:farhad], users[:kon]]
     when "NexusRed"
-      return [users[:sani], users[:iphone5c], users[:moto], users[:nexus_black]]
+      return [users[:sani], users[:iphone5c], users[:moto], users[:nexus_black], users[:farhad], users[:kon]]
     when "NexusBlack"
-      return [users[:sani], users[:iphone5c], users[:nexus_red], users[:moto]]
+      return [users[:sani], users[:iphone5c], users[:nexus_red], users[:moto], users[:farhad], users[:kon]]
     end
   end
   
