@@ -16,4 +16,5 @@ users = User.create([
   {first_name: 'Iphone5c', last_name: 'Test', mobile_number: '0000000002'},
   {first_name: 'NexusRed', last_name: 'Test', mobile_number: '0000000003'},
   {first_name: 'NexusBlack', last_name: 'Test', mobile_number: '0000000004'},
+  {first_name: 'Burns', last_name: 'Israelson', mobile_number: '0000000005'},
 ])
