@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mkey: MyString
+  push_token: MyString
+  platform: MyString
+
+two:
+  mkey: MyString
+  push_token: MyString
+  platform: MyString

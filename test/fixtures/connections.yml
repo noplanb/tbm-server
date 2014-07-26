@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  creator_id_id: 1
+  target_id: 1
+  status: MyString
+
+two:
+  creator_id_id: 1
+  target_id: 1
+  status: MyString

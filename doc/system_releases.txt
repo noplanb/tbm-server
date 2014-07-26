@@ -1,0 +1,14 @@
+System Releases
+
+1) Add Eva, Mike, Deborah
+  - Fix iphone (messages being dropped), camera disappears
+  - Update server to work with connections but existing clients.
+  - Reseed db
+	  - To add eva, mike, deborah
+
+2) Web simulation of invitations
+
+3) Registration on clients
+  - ios 
+  - android
+  - with loopback

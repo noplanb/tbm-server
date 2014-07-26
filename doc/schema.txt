@@ -1,0 +1,17 @@
+User
+  id
+  t.string :first_name 
+  t.string :last_name
+  t.string :mobile_number
+  t.string :push_token
+  t.string :device_platform
+  t.string :auth
+  t.string :mkey
+  t.string :status
+  
+Connections
+ t.integer :creator_id_id
+ t.integer :target_id
+ t.string :status
+ 
+ 

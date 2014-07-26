@@ -1,0 +1,93 @@
+System v1.1 Release 
+  
+IMPACT
+- affects server and both clients.
+
+BACKGROUND
+- When android was updated to use the scheme where the sender creates a random id for the video it uncovered the following bug: 
+  - Send a video from android to ios
+  - Before ios downloads send another video
+  - Server deletes all but the last
+  - Ios tries to download first non existent video
+  - Hangs trying to download because it doesnt exist.
+  - This does not happen on android because client observes 404 in this case and skips the download.
+
+- Rather than trying to fix this in IOS under the current architecture. Let us use this as an opportunity to migrate the entire system to the new HighBandwidth server scheme that uses MailboxKeys and KVs for status. 
+
+EXPECTED STATUS OF SYSTEM AFTER RELEASE FOR THE USER
+- Both IOS and Android should work well.
+- Bugs relating to download errors, messages from android to ios etc should disappear. 
+- We should be in a position to add IOS users with confidence.
+
+TECHNICAL STATE OF THE SYSTEM AND CLIENTS AFTER THE RELEASE
+- Server
+  - Emulate the direct to Dynamo and S3 closely in our rails server for this release. But do not go directly to S3 and Dynamo yet as it will make debugging easier to have a step where we are going to our server with the new protocol.
+  - Incorporate the new schema for the UserConnections database. This is not related to the HighBandwidth messaging database protocol changes but it will be incorporated in this release as I have already done most of the work here prior to going on vacation.
+  
+- IOS
+  - Factor current file transfer code to use Farhads new FileTransfer (NetworkHandler) engine. This is a good time to do this rather than patch the new protocol onto the existing FileTransfer which is badly in need of factoring.
+  - Review IOS architecture and do any additional factoring that makes sense since this will be an opportune time.
+  - Incorporate the new HighBandwidth Db protocol. 
+  - Registration: User enters phone number which is compared to existing db rather than pick from list
+
+- Android
+  - Incorporate the new HighBandwidth db protocol.
+  - Registration: User enters phone number which is compared to existing db rather than pick from list
+
+DETAIL OF CHANGES:
+Connections
+  x Add connections table
+  x Add admin ui to 
+    x list users and their connections
+	x add users and connections
+
+Notification Server
+  x Add a separate table for notification
+    x Fields
+      x MailboxKey (mkey)
+	  x Platform 
+	  x PushToken
+	x NotificationController
+	  x Add a notification_controller to handle requests for notifications to be sent.
+	  x Payload
+	    x video_received
+		  x type: VideoReceived
+		  x from_mkey: mkey
+		  x video_id: video_id
+		x video_status_update
+		  x type: video_status_update
+		  x to_mkey: mkey
+		  x video_id: video_id
+
+KvStore
+  x Add a table for kvstore
+  x Fields
+    x Key
+	x Value
+	
+Video Table
+  x Change to accomodate v1.1 system architecture
+  x Fields
+    x video_id
+	x file
+	x length
+  x VideosController
+    x Change
+	  x create
+	  x get
+  
+User Table
+  x Automatically generate keys on_after_create
+    x mkey first_last_id_mkey
+	x auth: first_last_id_auth
+  
+Version Compatibility Checking
+  - Client passes its platform and version to the server
+  - Server responds 
+    - Current
+    - UpdateOptional
+    - UpdateRequired
+    - UpdateSchemaRequired - i.e. client db schema has changed. App and schema must be updated.
+  - Client alerts the user as appropriate.
+	
+

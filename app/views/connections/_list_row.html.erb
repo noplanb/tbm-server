@@ -1,0 +1,8 @@
+<tr>
+  <td><%= connection.creator.info %></td>
+  <td><%= connection.target.info %></td>
+  <td><%= connection.status %></td>
+  <td><%= link_to 'Show', connection %></td>
+  <td><%= link_to 'Edit', edit_connection_path(connection) %></td>
+  <td><%= link_to 'Destroy', connection, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+</tr>

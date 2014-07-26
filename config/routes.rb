@@ -1,16 +1,25 @@
 ThreebymeServer::Application.routes.draw do
 
-  # resources :videos
-  get 'videos/new'
+  resources :connections
+  
+  resources :users
+  get 'users/new_connection/:id' => 'users#new_connection'
+  get 'users/establish_connection/:id' => 'users#establish_connection'
+
   post 'videos/create'
   get 'videos/get'
-  get 'videos/test_get'
-  get 'videos/update_viewed'
-  get 'reg/user_list'
-  get 'reg/register/:id' => 'reg#register'
-  get 'reg/echo'
-  post 'reg/echo'
-  post 'reg/push_token'
+  
+  get 'reg/get_user'
+  get 'reg/get_friends'
+
+  post 'notification/set_push_token'
+  post 'notification/send_video_received'
+  post 'notification/send_video_status_update'
+  
+  post 'kvstore/set'
+  get 'kvstore/get'
+
+  get 'version/check_compatibility'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
