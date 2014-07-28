@@ -1,11 +1,11 @@
 class VersionController < ApplicationController
     
-  def checkCheckCompatibility
+  def check_compatibility
     v = params[:version].to_i
     r = "error"
-    
+      
     if is_android?
-      if v < 26
+      if v < 25
         r = "update_schema_required"
       elsif false
         r = "update_required"
