@@ -22,13 +22,14 @@ ActiveRecord::Schema.define(version: 20140723224335) do
   end
 
   create_table "kvstores", force: true do |t|
-    t.string   "key"
+    t.string   "key1"
+    t.string   "key2"
     t.string   "value"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "kvstores", ["key"], name: "index_kvstores_on_key"
+  add_index "kvstores", ["key1"], name: "index_kvstores_on_key1"
 
   create_table "push_users", force: true do |t|
     t.string   "mkey"

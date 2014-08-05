@@ -8,6 +8,7 @@ ThreebymeServer::Application.routes.draw do
 
   post 'videos/create'
   get 'videos/get'
+  get 'videos/delete'
   
   get 'reg/get_user'
   get 'reg/get_friends'
@@ -18,6 +19,7 @@ ThreebymeServer::Application.routes.draw do
   
   post 'kvstore/set'
   get 'kvstore/get'
+  get 'kvstore/delete'
 
   get 'version/check_compatibility'
   

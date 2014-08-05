@@ -24,7 +24,7 @@ VideoId: A unique ID for a video instance.  We could use any unique ID for this,
 PushToken: In the mobile OS notification model, each program instance in a device has a PushToken which is then used to as a target when sending notifications to the program on that device.
 
 
-MESSAGING DATABASE high bandwidth.
+MESSAGING DATABASE high bandwidth. (Deprecated becuause it doesnt handle multiple videos sent. See next section)
 =================================
  - Each user gets a MailboxKey for themselves as well as the MailboxKey for each of their friends.
  - They put their MailboxKey and their friends MailboxKey through scramble algorithm to get a ConnectionKey one for each direction for each friend.
@@ -106,6 +106,110 @@ MESSAGING DATABASE high bandwidth.
    - Things to check by experiment or research:
      - What happens on S3 if a filename is downloaded while in the middle of an upload. 
 	 - What happens on S3 if an upload is aborted is the file corrupted?
+
+
+MESSAGING DATABASE high bandwidth with send multiple videos
+===========================================================
+(same) means an aspect of the implementation is the same as messaging protocol above without multiple video capablility.
+  
+Entities
+--------
+  - VideoIdsKV
+    - Contains an array of videos sent by the sender
+	- Sender appends the id of the latest video that was sent. 
+	- Receiver reads it and deletes the video id of the video he just uploaded.
+  - VideoFilenameKV
+    - Unique for each video. Created by using sender and receiver mailbox key as well as videoId
+  - VideoStatusKV (same)
+    - Written only by the reciever
+	- Contains
+	  - VideoId
+	  - VideoStatus: [:Downloaded, :Viewed]
+	- Only refers to the very last video that was downloaded or viewed by the receiver. NOT an array as with VideoIds.
+	
+	
+DynamoDb implementation of Entities
+-----------------------------------
+- Dynamo has the concept of:
+  - Tables with a Hash primary key - flat only can query with single hash which always returns 1 item.
+  - Tables with a Hash and Range primary key - relational can query with hash as well as range to return a list of matching items.
+    - Hash and Range should work great for VideoIdsKV!
+	  - Hash is VidoeIdsKVKey created using mboxKeys as before.
+	  - Range is VidoeId
+	  - Queries can be done to retrieve all VideoIds for a particular VideoIdsKV
+	  - Deletions can be done of a single VideoId without having to do a read of all beforehand.
+	  - Additions of a VideoId can be done without having to do a read of all beforehand.a
+	  - CONCLUSION: There should not be a problem with both receivers and senders reading and writing to the list of videoIds for a particular VideoIdKV!
+
+
+Change in datascructures on the client
+--------------------------------------
+- Current
+  - Incoming_video_id
+  - Incoming_video_status
+  - Downloading_video_id
+  - Download_retry_count
+- Change to
+  - Active model for Video relational to Friend via friendId
+    - Attributes - FriendId, Status, DownloadRetryCount
+
+
+Sequence of Events
+------------------
+x Creating a message
+  x Sender uploads file directly to S3 using VideoFilename created by mkeys and VideoId
+  x Sender adds videoId to VideoIdsKV
+  x Sender calls notification server (same)
+  x Sender maintains record of last videoId (same)
+  
+x Receiver gets notification of videoReceived
+  x Receiver compares videoId with video ids in IncomingVideos
+    x If it is older than the oldest videoId ignore the notification.
+	    - POTENTIAL PROBLEM: 
+		  This assumes notifications of videos received will always arrive in the order they were sent. 
+		  If this is not the case then videos could be dropped.
+	x If it is the same as any videoId ignore the notifcation.
+
+	- Otherwise proceed...
+	
+  x Receiver adds video Incoming_Videos
+  x Receiver downloads the video directly from S3 (same)
+  x Receiver deletes the video from S3
+    - POTENTIAL PROBLEM: If this delete fails we will have hanging videos which may never be found and deleted. 
+	- POSSIBLE SOLUTION: the notification server should have a list or be able to construct a list (though not foolproof) of all 
+	  videoFilenames. We may in the future have a service which goes through and attemts to delete using that list after some time.
+  x Receiver deletes from remoteDb where Hash=VideoIdsKVKey and Range=VideoId 
+    o if delete from S3 is successful otherwise leave it so we get another attempt to do the delete from S3 with the next poll.
+  x After download complete
+    x Receiver calls notification server for videoStatus downloaded (same)
+  x Receiver updates VideoStatusKV (same)
+	
+- UI processing of multiple messages on client
+  - See tbm(android)/doc/receive multiple.txt
+  
+- Receiver views a video (same)
+  - Only on the transition from NotViewed to Viewed
+    - Update VideoStatusKV: [VideoId, Status(viewed)]
+    - Send notificication for VideoStatusUpdate
+ 
+- Receiver polls for new videos
+ - Receiver reads VideoIdsKV
+     - Process VideoIds from oldest to newest.
+       - If it is older than the earliest videoId in Incoming_Videos then skip.
+   	   - If it is the same as any videoId  in Incoming_Videos then skip
+       - Otherwise proceed as for notification above.
+
+- Sender gets notification of VideoStatus (same)
+ - Check VideoId in notification.
+   - If same as VideoId for last video sent:
+     - Update UI with new video status.
+   - Otherwise ignore 
+
+- Sender polls for latest video status. (same)
+ - Read VideoStatusKV
+ - Follow same steps as for notification of VideoStatus above. 
+	
+
 
 NOTIFICATION SERVER high bandwidth
 =================================

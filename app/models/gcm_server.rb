@@ -6,11 +6,6 @@ module GcmServer
   
   URI = "https://android.googleapis.com/gcm/send"
   API_KEY = "AIzaSyDSFYoue4kZiz9Fx1W9DSr03tMO-Pfl54Q"
-  SANI_HTC_TOKEN = "APA91bGHhfj80F-guuyyGchNWSDvQtMbjt1QYKe7KyTy-QKbDzNZA_ILBBrq4yJn_k_Ayx8-dyVlPf6yyuzDpiW207LudcCwn-KRd0NPLJUuSTjQK6RbNJFMZpMnviQf_mawfCbqD3LSavGNR-HRiOdhNeaTVmgdoQ"
-    
-  def test
-    send_notification(SANI_HTC_TOKEN, {from_id: "2"})
-  end
   
   def send_notification(ids, data)
     post_to_gcm( make_payload(ids, data) )

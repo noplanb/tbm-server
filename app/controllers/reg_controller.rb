@@ -1,11 +1,6 @@
 class RegController < ApplicationController
   skip_before_filter :verify_authenticity_token
   
-  def user_list
-    all = User.all
-    all.shift
-    render :json => only_app_attrs(all)
-  end
   
   def get_friends
     if user = params[:mkey] && User.find_by_mkey(params[:mkey])
@@ -26,6 +21,13 @@ class RegController < ApplicationController
   def echo
     render :text => params.inspect
   end
+  
+  # deprecated
+  # def user_list
+  #   all = User.all
+  #   all.shift
+  #   render :json => only_app_attrs(all)
+  # end
   
   private
   

@@ -86,11 +86,11 @@ Version Compatibility Checking
   - Server responds 
     - Current
     - UpdateOptional
-	  - Your ThreeByMe app is out of date. Please update. Later | Update
+	  - Your ThreeByMe app is out of date. Please update. Later | Update.
     - UpdateRequired
-	  - Your ThreeByMe app is obsolete. Please update. Update
+	  - Your ThreeByMe app is obsolete. Please update. Update.
     - UpdateSchemaRequired - i.e. client db schema has changed. App and schema must be updated.
-	  - Your ThreeByMe app is obsolete. Please update. Update
+	  - Your ThreeByMe app is obsolete. Please update. Update.
   - Client alerts the user as appropriate.
 	
 
