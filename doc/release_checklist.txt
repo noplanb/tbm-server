@@ -1,0 +1,4 @@
+- update version_controller as appropriate
+- create a vx.x.txt file
+- push to git and tag
+- deploy

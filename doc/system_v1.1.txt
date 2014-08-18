@@ -1,0 +1,45 @@
+Android Client - v2.0
+IOS client - v1.1
+Server - v1.1
+
+RELEASE PUNCHLIST
+-----------------
+- Phone setup
+  - Connections
+	  x rename nexus red to sani and sani to htc
+	  x Clean up seeds
+	  x Rebuild db
+  - Put the client on all phones.
+    x HTC
+    x I4
+    x IC
+    x NB
+    x Moto
+
+x Test
+  x Rapid fire to all phones
+  
+- Rollout
+  x Release android client
+    x WriteUp release notes
+    x Server point to TBM
+	x Add versionManagement to the release protocol
+	x Follow release protocol.
+	- Put in store.
+  - Release ios client
+    - WriteUp release notes
+    - Server pointing to tbm
+    - Push to github
+	- Tag with release
+  - Release server
+    - Add android and ios client version to the server
+	- 
+  - Email: taking the server down.
+  - Push server release to github
+  - Push server release to EC2
+  
+
+    
+  
+
+	  

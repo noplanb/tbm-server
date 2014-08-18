@@ -19,7 +19,7 @@ VideoStatusKV: This is a key value store which holds the VideoID as well as the 
 
 VideoStatusKVKey: This is the key used to access the VideoStatusKV for a particular sender->receiver. It is created fromt the ConnectionKey
 
-VideoId: A unique ID for a video instance.  We could use any unique ID for this, such as a timestamp.  The benefit of using a timestamp is that it naturally includes information about the file age, so we could display in the UI, if we wanted to, that the video was sent x minutes/days ago, and it's sequential.  We use this videoId to make sure meta-data, such as video status, is tied to the correct video instance.
+VideoId: A unique ID for a video instance.  We could use any unique ID for this, such as a timestamp.  The benefit of using a timestamp is that it naturally includes information about the file age, so we could display in the UI, if we wanted to, that the video was sent - minutes/days ago, and it's sequential.  We use this videoId to make sure meta-data, such as video status, is tied to the correct video instance.
 
 PushToken: In the mobile OS notification model, each program instance in a device has a PushToken which is then used to as a target when sending notifications to the program on that device.
 
@@ -54,25 +54,25 @@ MESSAGING DATABASE high bandwidth. (Deprecated becuause it doesnt handle multipl
 	   - Type: VideoReceived [VideoId]
 	 - Sender client maintains record of VideoId of last video sent.
 	 
-   x Reciever gets notification of NewVideo
-     x Notification contains 
-	   x MailboxKey of sender.
-	   x VideoId.
-	   x Type: VideoReceived.
-	 x Receiver compares VideoId with VideoId of last video received from sender.
-	   x If older then ignore notification.
-	   x If newer: 
-		   x !! Receiver does not rely on VideoId in notification as definitive as it may be stale.
-		   x Read LatestVideoIdKV 
-		   x Associate and save that VideoId with the video that will be downloaded.
-		   x Download video directly from S3 using VideoFilename
-		   x After download complete
-			   x Update VideoStatusKV: [VideoId, Status(downloaded)]
-			   x Receiver calls notification server:
-			     x MailboxKey of receiver
-			     x MailboxKey of sender
-				 x VideoId
-				 x Type: VideoStatusUpdate [downloaded]
+   - Reciever gets notification of NewVideo
+     - Notification contains 
+	   - MailboxKey of sender.
+	   - VideoId.
+	   - Type: VideoReceived.
+	 - Receiver compares VideoId with VideoId of last video received from sender.
+	   - If older then ignore notification.
+	   - If newer: 
+		   - !! Receiver does not rely on VideoId in notification as definitive as it may be stale.
+		   - Read LatestVideoIdKV 
+		   - Associate and save that VideoId with the video that will be downloaded.
+		   - Download video directly from S3 using VideoFilename
+		   - After download complete
+			   - Update VideoStatusKV: [VideoId, Status(downloaded)]
+			   - Receiver calls notification server:
+			     - MailboxKey of receiver
+			     - MailboxKey of sender
+				 - VideoId
+				 - Type: VideoStatusUpdate [downloaded]
        - POSSIBLE RACE CONDITION: (Unlikely) due to fileUpload and VideoIdKV update not being an atomic transaction.
 	     - Sender uploads new video.
 		 - Before sender can update  LatestVideoIdKV 
@@ -156,33 +156,33 @@ Change in datascructures on the client
 
 Sequence of Events
 ------------------
-x Creating a message
-  x Sender uploads file directly to S3 using VideoFilename created by mkeys and VideoId
-  x Sender adds videoId to VideoIdsKV
-  x Sender calls notification server (same)
-  x Sender maintains record of last videoId (same)
+- Creating a message
+  - Sender uploads file directly to S3 using VideoFilename created by mkeys and VideoId
+  - Sender adds videoId to VideoIdsKV
+  - Sender calls notification server (same)
+  - Sender maintains record of last videoId (same)
   
-x Receiver gets notification of videoReceived
-  x Receiver compares videoId with video ids in IncomingVideos
-    x If it is older than the oldest videoId ignore the notification.
+- Receiver gets notification of videoReceived
+  - Receiver compares videoId with video ids in IncomingVideos
+    - If it is older than the oldest videoId ignore the notification.
 	    - POTENTIAL PROBLEM: 
 		  This assumes notifications of videos received will always arrive in the order they were sent. 
 		  If this is not the case then videos could be dropped.
-	x If it is the same as any videoId ignore the notifcation.
+	- If it is the same as any videoId ignore the notifcation.
 
 	- Otherwise proceed...
 	
-  x Receiver adds video Incoming_Videos
-  x Receiver downloads the video directly from S3 (same)
-  x Receiver deletes the video from S3
+  - Receiver adds video Incoming_Videos
+  - Receiver downloads the video directly from S3 (same)
+  - Receiver deletes the video from S3
     - POTENTIAL PROBLEM: If this delete fails we will have hanging videos which may never be found and deleted. 
 	- POSSIBLE SOLUTION: the notification server should have a list or be able to construct a list (though not foolproof) of all 
 	  videoFilenames. We may in the future have a service which goes through and attemts to delete using that list after some time.
-  x Receiver deletes from remoteDb where Hash=VideoIdsKVKey and Range=VideoId 
+  - Receiver deletes from remoteDb where Hash=VideoIdsKVKey and Range=VideoId 
     o if delete from S3 is successful otherwise leave it so we get another attempt to do the delete from S3 with the next poll.
-  x After download complete
-    x Receiver calls notification server for videoStatus downloaded (same)
-  x Receiver updates VideoStatusKV (same)
+  - After download complete
+    - Receiver calls notification server for videoStatus downloaded (same)
+  - Receiver updates VideoStatusKV (same)
 	
 - UI processing of multiple messages on client
   - See tbm(android)/doc/receive multiple.txt

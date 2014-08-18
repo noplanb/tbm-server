@@ -5,7 +5,8 @@ class GenericPushNotification
   
   @@APNS_SETTINGS = {
     :host => APP_CONFIG[:apns_host] || "gateway.sandbox.push.apple.com",
-    :pem  => APP_CONFIG[:apns_pem_path] || "#{Rails.root}/certs/tbm_apns_dev.pem",
+    # :host => APP_CONFIG[:apns_host] || "gateway.push.apple.com",
+    :pem  => APP_CONFIG[:apns_pem_path] || "#{Rails.root}/certs/tbm_aps_dev.pem",
     :port => APP_CONFIG[:apns_port] || 2195
   }
   
@@ -25,7 +26,7 @@ class GenericPushNotification
   def initialize(attrs = {})
     
     @token = attrs[:token] or raise "#{self.class.name}: token required."
-    @platform = attrs[:platform] || :android
+    @platform = attrs[:platform].to_sym || :android
     @type = attrs[:type] || :silent
     @alert = attrs[:alert] unless @type == :silent
     @badge = attrs[:badge] unless @type == :silent

@@ -14,35 +14,35 @@ User.create([
   {first_name: 'Konstantin', last_name: 'Othmer', mobile_number: '16502484331'},
   {first_name: 'MotoG', last_name: 'Test', mobile_number: 'mg'},
   {first_name: 'Iphone5c', last_name: 'Test', mobile_number: 'ic'},
-  {first_name: 'NexusRed', last_name: 'Test', mobile_number: 'nr'},
+  {first_name: 'Iphone4', last_name: 'Test', mobile_number: 'i4'},
+  {first_name: 'HTC', last_name: 'Test', mobile_number: 'htc'},
   {first_name: 'NexusBlack', last_name: 'Test', mobile_number: 'nb'},
-  {first_name: 'Burns', last_name: 'Israelson', mobile_number: '0000000005'},
-  {first_name: 'Mike', last_name: 'Ruf', mobile_number: '0000000006'},
-  {first_name: 'Eva', last_name: 'Elfishawy', mobile_number: '0000000007'},
-  {first_name: 'Deborah', last_name: 'Thornton', mobile_number: '0000000008'},
+  {first_name: 'Mike', last_name: 'Ruf', mobile_number: '9544613927'},
+  {first_name: 'Eva', last_name: 'Elfishawy', mobile_number: '6507015020'},
+  {first_name: 'Deborah', last_name: 'Thornton', mobile_number: '4084060323'},
 ])
 
 
 def connected_ids(first_name)
   connected_names = case first_name
     when 'Farhad'
-      %w{Sani Konstantin NexusRed NexusBlack Iphone5c MotoG}
+      %w{Sani Konstantin HTC NexusBlack Iphone5c MotoG Iphone4}
     when 'Sani'
-      %w{Jill Eva Konstantin Farhad Burns Mike NexusBlack Iphone5c}
+      %w{Jill Eva Konstantin Farhad Mike NexusBlack Iphone5c Iphone4}
     when 'Jill'
       %w{Sani Eva}
     when 'Konstantin'
-      %w{Sani Deborah Mike NexusRed NexusBlack MotoG Iphone5c Konstantin}
+      %w{Sani Deborah Mike Farhad Iphone4 NexusBlack Iphone5c Konstantin}
     when 'MotoG'
-      %w{Konstantin NexusRed NexusBlack Iphone5c MotoG}
+      %w{Konstantin Farhad HTC NexusBlack Iphone5c MotoG Iphone4}
     when 'Iphone5c'
-      %w{Sani Konstantin NexusRed NexusBlack MotoG Iphone5c}
-    when 'NexusRed'
-      %w{Sani Konstantin Iphone5c NexusBlack MotoG NexusRed}
+      %w{Sani Konstantin Farhad HTC NexusBlack MotoG Iphone5c Iphone4}
+    when 'HTC'
+      %w{Farhad Iphone5c NexusBlack MotoG HTC Iphone4}
     when 'NexusBlack'
-      %w{Sani Konstantin Iphone5c NexusRed MotoG NexusBlack}
-    when 'Burns'
-      %w{Sani}
+      %w{Sani Konstantin Farhad Iphone5c HTC MotoG NexusBlack Iphone4}
+    when 'Iphone4'
+      %w{Farhad Sani Konstantin MotoG Iphone5c HTC}
     when 'Mike'
       %w{Konstantin Sani}
     when 'Eva'

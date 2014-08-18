@@ -3,12 +3,12 @@ class NotificationController < ApplicationController
   
   def set_push_token
     PushUser.create_or_update(push_user_params)
-    render :text => "ok"
+    render :json => {status: "200"}
   end
   
   def send_video_received
     target_push_user = get_target_push_user
-    render :text => "fail" and return if !target_push_user
+    render :json => {status: "404"} and return if !target_push_user
     
     gpn = GenericPushNotification.new({
       :platform  => target_push_user.device_platform, 
@@ -23,12 +23,12 @@ class NotificationController < ApplicationController
     })
     gpn.send
     
-    render :text => "ok"
+    render :json => {status: "200"}
   end
   
   def send_video_status_update
     target_push_user = get_target_push_user
-    render :text => "fail" and return if !target_push_user
+    render :json => {status: "404"} and return if !target_push_user
     
     gpn = GenericPushNotification.new({
       :platform  => target_push_user.device_platform, 
@@ -42,7 +42,7 @@ class NotificationController < ApplicationController
     })
     gpn.send
     
-    render :text => "ok"
+    render :json => {status: "200"}
   end
   
   private 

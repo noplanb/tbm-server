@@ -3,7 +3,7 @@ class KvstoreController < ApplicationController
   
   def set
     Kvstore.create_or_update(kvstore_params)
-    render :text => "ok"
+    render :json => {status: "200"}
   end
   
   def get
@@ -18,7 +18,7 @@ class KvstoreController < ApplicationController
     kvs = get_kvs
     logger.info "deleting #{kvs.length} kvs"
     kvs.each{|kv| kv.destroy}
-    render :text => "ok"
+    render :json => {status: "200"}
   end
   
   private

@@ -1,7 +1,40 @@
 System v1.1 Release 
+
+RELEASE NOTES:
+==============
+
+FEATURES  
+--------
+- User + Connections 
+  - Connection table
+  - Admin ui to view add and delete users and connections
   
+- v1.1 Highbandwidth infinitely scalable messaging architecture
+  - Server super dumb and simple S3 and DynamoDb
+  - Emulate direct to S3 and DynamoDb 
+    - KVstore table
+    - Store and retrieve videos by filename.
+    - Mkeys
+
+- Notification server
+  - Highbandwidth db architecture
+  - Separate simple table PushUser
+    - mkey
+    - push_token
+    - device_platform
+
+FUTURE RELEASES 
+---------------
+- Invitations
+- Upgrade notification server to handle errors
+- Switch from emulated to actual use DynamoDb and S3
 IMPACT
 - affects server and both clients.
+
+
+
+RELEASE DETAILS
+===============
 
 BACKGROUND
 - When android was updated to use the scheme where the sender creates a random id for the video it uncovered the following bug: 

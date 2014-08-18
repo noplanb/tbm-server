@@ -5,7 +5,7 @@ class VersionController < ApplicationController
     r = "error"
       
     if is_android?
-      if v < 25
+      if v < 26
         r = "update_schema_required"
       elsif false
         r = "update_required"
@@ -15,7 +15,7 @@ class VersionController < ApplicationController
         r = "current"
       end
     else #ios
-      if v < false
+      if v < 1.1
         r = "update_schema_required"
       elsif false
         r = "update_required"
