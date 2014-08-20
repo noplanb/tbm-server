@@ -1,0 +1,10 @@
+v1.01 Aug 19 2014
+
+FEATURE: Admin screens: User show gets link to destroy next to each connection.
+FEATURE: Admin screens: User show does not allow you to add more than 8 connections.
+
+FUTURE RELEASES 
+---------------
+- Invitations
+- Upgrade notification server to handle errors
+- Switch from emulated to actual use DynamoDb and S3

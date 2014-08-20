@@ -9,7 +9,7 @@ class VersionController < ApplicationController
         r = "update_schema_required"
       elsif false
         r = "update_required"
-      elsif false
+      elsif v < 27
         r = "update_optional"
       else
         r = "current"

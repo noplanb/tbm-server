@@ -28,6 +28,8 @@ FUTURE RELEASES
 - Invitations
 - Upgrade notification server to handle errors
 - Switch from emulated to actual use DynamoDb and S3
+
+
 IMPACT
 - affects server and both clients.
 

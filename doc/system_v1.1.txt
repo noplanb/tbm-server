@@ -26,17 +26,33 @@ x Test
 	x Add versionManagement to the release protocol
 	x Follow release protocol.
 	- Put in store.
-  - Release ios client
-    - WriteUp release notes
-    - Server pointing to tbm
-    - Push to github
-	- Tag with release
-  - Release server
-    - Add android and ios client version to the server
-	- 
-  - Email: taking the server down.
-  - Push server release to github
-  - Push server release to EC2
+  x Release ios client
+    x WriteUp release notes
+    x Server pointing to tbm
+    x Push to github
+	x Tag with release
+  x Release server
+    x Add android and ios client version to the server
+    x Email: taking the server down.
+    x Push server release to github
+    - Push server release to EC2
+	- migrate and seed
+	- remove video files.
+  
+- Update clients
+  - Android
+    - Sani
+	- NB
+	- HTC
+	- MG
+  - IOS
+	- I4
+	- IC
+
+- Put android version in the store.
+
+- Test
+- Let farhad know
   
 
     

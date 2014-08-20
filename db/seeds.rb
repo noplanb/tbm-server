@@ -8,10 +8,10 @@
 
 User.create([
   {first_name: 'Admin', last_name: 'User' },
-  {first_name: 'Farhad', last_name: 'Farzaneh', mobile_number: '14156020256'},
-  {first_name: 'Sani', last_name: 'ElFishawy', mobile_number: '16502453537'},
-  {first_name: 'Jill', last_name: 'Wernicke', mobile_number: '16502453539'},
-  {first_name: 'Konstantin', last_name: 'Othmer', mobile_number: '16502484331'},
+  {first_name: 'Farhad', last_name: 'Farzaneh', mobile_number: '4156020256'},
+  {first_name: 'Sani', last_name: 'ElFishawy', mobile_number: '6502453537'},
+  {first_name: 'Jill', last_name: 'Wernicke', mobile_number: '6502453559'},
+  {first_name: 'Konstantin', last_name: 'Othmer', mobile_number: '6502484331'},
   {first_name: 'MotoG', last_name: 'Test', mobile_number: 'mg'},
   {first_name: 'Iphone5c', last_name: 'Test', mobile_number: 'ic'},
   {first_name: 'Iphone4', last_name: 'Test', mobile_number: 'i4'},
@@ -26,7 +26,7 @@ User.create([
 def connected_ids(first_name)
   connected_names = case first_name
     when 'Farhad'
-      %w{Sani Konstantin HTC NexusBlack Iphone5c MotoG Iphone4}
+      %w{Sani Konstantin HTC NexusBlack Iphone5c MotoG Iphone4 Farhad}
     when 'Sani'
       %w{Jill Eva Konstantin Farhad Mike NexusBlack Iphone5c Iphone4}
     when 'Jill'
@@ -34,7 +34,7 @@ def connected_ids(first_name)
     when 'Konstantin'
       %w{Sani Deborah Mike Farhad Iphone4 NexusBlack Iphone5c Konstantin}
     when 'MotoG'
-      %w{Konstantin Farhad HTC NexusBlack Iphone5c MotoG Iphone4}
+      %w{Farhad HTC NexusBlack Iphone5c MotoG Iphone4}
     when 'Iphone5c'
       %w{Sani Konstantin Farhad HTC NexusBlack MotoG Iphone5c Iphone4}
     when 'HTC'

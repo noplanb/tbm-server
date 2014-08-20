@@ -27,6 +27,10 @@ class User < ActiveRecord::Base
     User.where ["id IN ?", connected_user_ids]
   end
   
+  def live_connection_count
+    Connection.for_user_id(id).live.count
+  end
+  
   def set_keys
     update_attribute(:auth, gen_key("auth"))
     update_attribute(:mkey, gen_key("mkey"))
