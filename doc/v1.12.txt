@@ -1,0 +1,5 @@
+RELEASE NOTES
+=============
+v1.12 Aug 22 2014
+
+API UPDATE: Changed version controller to return a JSON to make it compatible with VersionHandler implemented in ios v1.20. This requires a change in android make it compatible. Android v2.02 implements the fix.

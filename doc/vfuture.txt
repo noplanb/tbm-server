@@ -1,4 +1,5 @@
-- Admin screen add delete connection next to list of connections for a user.
+- Some indication that the file get or create will fail permanently Upload and download.
+
 - Invitations
 - Upgrade notification server to handle errors
 - Switch from emulated to actual use DynamoDb and S3

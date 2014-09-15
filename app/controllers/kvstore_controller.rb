@@ -11,6 +11,8 @@ class KvstoreController < ApplicationController
   end
   
   def get_all
+    kvs = get_kvs
+    logger.info "#{params[:key1]} count = #{kvs.length}"
     render :json => get_kvs
   end
   
@@ -24,7 +26,7 @@ class KvstoreController < ApplicationController
   private
   
   def get_kvs
-      return Kvstore.where("key1 = ? and key2 is null", params[:key1]) if params[:key2].blank?
+      return Kvstore.where("key1 = ?", params[:key1]) if params[:key2].blank?
       Kvstore.where("key1 = ? and key2 = ?", params[:key1], params[:key2])
   end
   

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140723224335) do
+ActiveRecord::Schema.define(version: 20140915194544) do
 
   create_table "connections", force: true do |t|
     t.integer  "creator_id"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20140723224335) do
     t.string   "device_platform"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "device_build"
   end
 
   add_index "push_users", ["mkey"], name: "index_push_users_on_mkey"

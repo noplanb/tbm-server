@@ -37,6 +37,6 @@ class User < ActiveRecord::Base
   end
   
   def gen_key(type)
-    "#{first_name}_#{last_name}_#{id}_#{type}"
+    "#{first_name.gsub(" ", "")}_#{last_name}_#{id}_#{type}"
   end
 end

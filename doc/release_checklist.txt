@@ -1,4 +1,7 @@
-x update version_controller as appropriate
-x create a vx.x.txt file
-x push to git and tag
-x deploy
+- update version_controller as appropriate
+- create a vx.x.txt file
+- push to git and tag
+- ./bin/deploy.sh
+- rake db:migrate if necessary
+- rake assets:precompile
+- touch tmp/restart.txt

@@ -12,6 +12,7 @@ class NotificationController < ApplicationController
     
     gpn = GenericPushNotification.new({
       :platform  => target_push_user.device_platform, 
+      :build => target_push_user.device_build,
       :token => target_push_user.push_token, 
       :type => :alert, 
       :payload => {type: "video_received", 
@@ -20,7 +21,7 @@ class NotificationController < ApplicationController
       :alert => "New message from #{params[:sender_name]}", 
       :sound => "default", 
       :content_available  => true
-    })
+    })    
     gpn.send
     
     render :json => {status: "200"}
@@ -32,6 +33,7 @@ class NotificationController < ApplicationController
     
     gpn = GenericPushNotification.new({
       :platform  => target_push_user.device_platform, 
+      :build => target_push_user.device_build,
       :token => target_push_user.push_token, 
       :type => :silent, 
       :payload => {type: "video_status_update", 
@@ -54,7 +56,7 @@ class NotificationController < ApplicationController
   end
   
   def push_user_params
-    params.permit(:mkey, :push_token, :device_platform)
+    params.permit(:mkey, :push_token, :device_platform, :device_build)
   end
   
 end

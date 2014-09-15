@@ -12,7 +12,6 @@ class VideosController < ApplicationController
   def get
     v = params[:filename] && Video.find_by_filename(params[:filename])
     v || not_found
-        
     logger.info("Found video = #{v.filename}")
     send_file( "public" + v.file.url, type: "video/mp4")
   end
@@ -22,7 +21,7 @@ class VideosController < ApplicationController
     if v
       v.destroy
     else
-      logger.error("Delete: no video found with filename #{v.filename}") if !v
+      logger.error("Delete: no video found with filename #{params[:filename]}") if !v
     end
     render :json => {"status" => 200}
   end

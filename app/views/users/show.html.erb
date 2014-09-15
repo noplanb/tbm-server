@@ -45,10 +45,10 @@
 <p>
 	<table border="0" cellspacing="5" cellpadding="5">
 	<% @user.connected_users.each do |u| %>
-	    <% connection = Connection.live_between(@user.id, u.id) %>
+	    <% connection = Connection.live_between(@user.id, u.id).first %>
 		<tr>
 			<td><%= u.info %></td>
-			<td><%= link_to 'Destroy', connection, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+			<td><%= link_to 'Destroy', connection, {method: :delete, data: { confirm: 'Are you sure?' }} %></td>
 	    </tr>
 	<% end %>
 	</table>

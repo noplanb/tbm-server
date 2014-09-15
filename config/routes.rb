@@ -1,8 +1,8 @@
 ThreebymeServer::Application.routes.draw do
 
   resources :connections
-  
   resources :users
+  
   get 'users/new_connection/:id' => 'users#new_connection'
   get 'users/establish_connection/:id' => 'users#establish_connection'
 
@@ -19,6 +19,7 @@ ThreebymeServer::Application.routes.draw do
   
   post 'kvstore/set'
   get 'kvstore/get'
+  get 'kvstore/get_all'
   get 'kvstore/delete'
 
   get 'version/check_compatibility'

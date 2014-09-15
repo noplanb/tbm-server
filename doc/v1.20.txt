@@ -1,0 +1,12 @@
+RELEASE NOTES
+=============
+
+v1.20  9/15/2014
+
+Updated such that both push notification to both ios dev devices as well as ios production devices work simultaneously.
+
+ - Added a field :device_build = :prod, :dev to PushUser
+ - Updated NotificationController, PushUser, GenericPushNotification to accommodate hitting apples dev/prod server with a dev/prod pem on the fly.
+ 
+ 
+

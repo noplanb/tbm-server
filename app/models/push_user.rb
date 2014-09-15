@@ -1,9 +1,15 @@
 class PushUser < ActiveRecord::Base
+  include EnumHandler
+  
+  define_enum :device_platform, [:ios,:android], :primary => true
+  define_enum :device_build, [:dev,:prod]
   
   def self.create_or_update(params)
     if push_user = PushUser.find_by_mkey(params[:mkey])
-      push_user.update_attribute(:push_token, params[:push_token])
-      push_user.update_attribute(:device_platform, params[:device_platform])
+      [:push_token, :device_platform, :device_build].each do |key|
+        push_user.send("#{key}=".to_sym, params[key])
+      end
+      push_user.save
     else
       PushUser.create(params)
     end

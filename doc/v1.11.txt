@@ -1,4 +1,4 @@
-v1.01 Aug 19 2014
+v1.11 Aug 19 2014
 
 FEATURE: Admin screens: User show gets link to destroy next to each connection.
 FEATURE: Admin screens: User show does not allow you to add more than 8 connections.

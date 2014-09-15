@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  http_basic_authenticate_with :name => "admin", :password => "Statorama1"
+  
   before_action :set_user, only: [:show, :edit, :update, :destroy, :new_connection, :establish_connection]
 
   # GET /users

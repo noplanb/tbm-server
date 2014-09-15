@@ -1,4 +1,6 @@
 class ConnectionsController < ApplicationController
+  http_basic_authenticate_with :name => "admin", :password => "Statorama1"
+  
   before_action :set_connection, only: [:show, :edit, :update, :destroy]
 
   # GET /connections
@@ -56,7 +58,7 @@ class ConnectionsController < ApplicationController
   def destroy
     @connection.destroy
     respond_to do |format|
-      format.html { redirect_to connections_url }
+      format.html { redirect_to users_url }
       format.json { head :no_content }
     end
   end

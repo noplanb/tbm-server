@@ -19,7 +19,13 @@
         <td><%= user.first_name %></td>
         <td><%= user.last_name %></td>
         <td><%= user.mobile_number %></td>
-        <td><%= link_to 'Pick', "/users/establish_connection/#{@user.id}?target_id=#{user.id}" %></td>
+        <td>
+			<%= user.live_connection_count < 8 ?
+				  	(link_to 'Pick', "/users/establish_connection/#{@user.id}?target_id=#{user.id}") :
+					"Maxed out"
+			%> | 
+			<%= link_to 'Show', user %>
+		</td>
       </tr>
     <% end %>
   </tbody>

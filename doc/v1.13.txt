@@ -1,0 +1,9 @@
+RELEASE NOTES
+=============
+v1.13 Aug 22 2014
+
+
+FEATURE: When listing users to pick from when adding a connection indicate whether the target user is maxed out.
+
+FEATURE: Password protection to admin pages on the server.
+
