@@ -12,6 +12,7 @@ ThreebymeServer::Application.routes.draw do
   
   get 'reg/get_user'
   get 'reg/get_friends'
+  get 'reg/reg'
 
   post 'notification/set_push_token'
   post 'notification/send_video_received'
@@ -23,6 +24,11 @@ ThreebymeServer::Application.routes.draw do
   get 'kvstore/delete'
 
   get 'version/check_compatibility'
+  
+  get 'invite_mockup' => 'invite_mockup#index'
+  get 'invite_mockup/user/:id' => 'invite_mockup#user'
+  
+  get 'invitation/invite'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

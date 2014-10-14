@@ -227,10 +227,129 @@ NOTIFICATION SERVER high bandwidth
    - Platform
 
 
-USER CONNECTIONS DATABASE low bandwidth
+
+USER CONNECTIONS DATABASE low bandwidth (with bench)
+=======================================
+Since we are adding the bench connections can be simplified or even eliminated.
+ - Bench shows 
+   - List of people you have zazo'd who are not on the front screen because zazo is full.
+   - List of ~10 people you text the most who are not on the above list. 
+   - Link to all other contacts
+ - Getting to the bench
+   - Tapping plus sign on app square takes you to bench.
+   - Tapping an icon in the header takes you to bench (for when all squares are full).
+ - Tapping someone on the bench
+   - If he is already connected to you
+     - Puts the user on your grid with last thumbnail highlights him and you can start messaging.
+     - Subs out least zazo'd person on your grid.
+   - If he is not in your connected list
+     - Sends Name Phone number of invitee to server:
+     - Server adds user if doesnt exist
+     - Server makes connection
+     - Server responds with record of friend.
+     - Device_platform indicates whether friend has the app or not.
+   
+   - Invitee doesn't have app
+     - Inviter sends an sms directly to invitee.
+     - Sms has a weblink to a site of ours which has a link to the store.
+     - Invitee downloads
+       - Goes through unknown reg
+     - Server recognizes connection
+     - Inviter app ui post sending sms...
+       - Suggestion to send a welcome message. 
+       - Invitee in grid with placeholder for thumbnail.
+       - Ability to record and tickle (send another sms or call) from the square.
+     - Invitee app ui
+       - Square filled with connected inviter and hopefully thumbnail and first message.
+
+   - InviteeHasApp
+     - Inviter app ui
+       - Back to the home screen with square of person clicked from the bench highlighted 
+       - Same as connected user just send a message.
+     - Invitee app ui
+       - Square filled with connected inviter and welcome message.
+       
+- Registration unknown user
+  - First | Last | Phone
+  - Verify phone via sms
+  - On verification create 
+  - Record has 
+     - First, last, phone, userId, authtoken, mailboxkey.
+  
+- Ways a user record gets in our system
+  - Invite
+    - Inviter sends sms to a contact in his phonebook.
+    - We send the phone, first, last that he sent the sms to back to the server
+    - We add missing country code and area code info.
+    - We make an invite connection
+    - Create the invited user user record in a pending state. 
+  - Registration
+    - We find or create the user record based on phone number in a pending state
+    - We send a loopback sms
+    - We compare the code we receive.
+    - Make record verified state.
+    - Generate an auth token
+    - Send it back to the phone.
+
+- If phone looses auth token user has to go through sms loopback verification again.
+
+Entities
+  - Users
+  - Connections 
+    - Invite as state on connections.
+  
+Scaling this Users|Connections database
+  - Will change many orders of magnitude less often than the messaging side
+  - We can set a bit in the messaging side which is subject to notification and high frequency polling telling the client to check for changes in the state of connections.
+
+Corner case implications for client:
+- Notification comes in for person you are not connected to. Prompts app to query the server to get latest connections.
+
+HANDLING MORE THAN 8 CONNECTIONS
+================================
+
+Bench concept
+-------------
+- Fewer than 8 users
+  - Initiate invite
+    - From empty box
+    - From link in menu
+  - Status of invite
+    - In square you initiated from
+    - In pending invite list
+  - Messaging
+    - Always from your field
+
+- More than 8 users
+  - Initiate invite
+    - From link in menu
+    - Substitutes for least used.
+  - Status of invite
+    - Square that was subbed to
+    - From link in menu
+  - Messaging
+    - Incoming from someone on the bench
+      - Replaces least used person on your home screen
+    - To someone on your bench
+      - Tap the person on your bench 
+      - takes you to the home screen with him highlighted
+      - Replaces least used person on your home screen
+
+- Rules for ranking and subbing bench
+  - 
+      
+
+DEPRECATED!!!! 
+USER CONNECTIONS DATABASE low bandwidth Deprecated...
 =======================================
 Sequence of events:
 Invite from inviter to invitee
+ - Inviter sends Name Phone number of invitee to server:
+   - Server adds user if not there
+   - Server makes connection
+   - Server responds with record of friend.
+   - Device_platform indicates whether friend has the app or not.
+   - Connection status indicates state of connection.
  - Invitee doesn't have app
    - Inviter sends an sms directly to invitee.
    - Inviter tells server about invite.

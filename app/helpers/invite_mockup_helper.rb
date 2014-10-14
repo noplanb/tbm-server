@@ -1,0 +1,2 @@
+module InviteMockupHelper
+end

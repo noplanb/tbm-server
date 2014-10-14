@@ -5,20 +5,15 @@ class Connection < ActiveRecord::Base
   belongs_to :creator, :class_name => 'User'
   belongs_to :target, :class_name => 'User'
   
-  # validates_presence_of :creator_id, :on => :create, :message => "can't be blank"
-  # validates_presence_of :target_id, :on => :create, :message => "can't be blank"
+  validates_presence_of :creator_id, :on => :create
+  validates_presence_of :target_id, :on => :create
+  validates_presence_of :status, :on => :create
   
+  before_save :check_for_dups
   
-  define_enum :status,[
-                       :initiated, 
-                       :established, 
-                       :rejected, :rejected_ack, 
-                       :voided, :voided_ack, 
-                       :terminated_by_creator, :terminated_by_creator_ack,
-                       :terminated_by_target, :terminated_by_target_ack,
-                       ],
+  define_enum :status,[:established, :voided],
                        :sets => {
-                         :live => [:initiated, :established]
+                         :live => [:established]
                        },
                        :primary => true
 
@@ -29,8 +24,16 @@ class Connection < ActiveRecord::Base
     between_creator_and_target(user1_id, user2_id).live + between_creator_and_target(user2_id, user1_id).live
   end
   
+  def self.between(user1_id, user2_id)
+    between_creator_and_target(user1_id, user2_id) + between_creator_and_target(user2_id, user1_id)
+  end
+  
   def self.find_or_create(creator_id, target_id)
-    live_between(creator_id, target_id).first || create(creator_id: creator_id, target_id: target_id, status: :initiated)
+    between(creator_id, target_id).first || create(creator_id: creator_id, target_id: target_id, status: :established)
+  end
+  
+  def check_for_dups
+    raise "Cannot create a connection between #{creator_id} and #{target_id} a live one already exists." unless Connection.live_between(creator_id, target_id).blank?
   end
   
 end

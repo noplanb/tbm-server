@@ -3,6 +3,7 @@ class NotificationController < ApplicationController
   
   def set_push_token
     PushUser.create_or_update(push_user_params)
+    logger.info("set_push_token: #{push_user_params}")
     render :json => {status: "200"}
   end
   

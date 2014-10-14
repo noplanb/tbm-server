@@ -1,0 +1,6 @@
+GOAL: To create a working HTML mockup of the invite system.
+
+With the concept of the bench the invite sequence became so simple that there is not a need to mock it up. 
+
+More important is to build the bench on android and IOS.
+
