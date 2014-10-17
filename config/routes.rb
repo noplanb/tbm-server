@@ -5,6 +5,7 @@ ThreebymeServer::Application.routes.draw do
   
   get 'users/new_connection/:id' => 'users#new_connection'
   get 'users/establish_connection/:id' => 'users#establish_connection'
+  get 'users/receive_test_video/:id' => 'users#receive_test_video'
 
   post 'videos/create'
   get 'videos/get'

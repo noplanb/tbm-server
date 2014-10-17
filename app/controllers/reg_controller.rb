@@ -34,7 +34,9 @@ class RegController < ApplicationController
   private
   
   def only_app_attrs(u)
-    u.slice(:id, :auth, :mkey, :first_name, :last_name, :device_platform, :connection_status, :is_connection_creator)
+    r = u.slice(:id, :auth, :mkey, :first_name, :last_name, :mobile_number, :device_platform, :connection_status, :is_connection_creator)
+    r[:id] = r[:id].to_s
+    r
   end
   
   def user_params

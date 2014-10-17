@@ -9,7 +9,7 @@ class Connection < ActiveRecord::Base
   validates_presence_of :target_id, :on => :create
   validates_presence_of :status, :on => :create
   
-  before_save :check_for_dups
+  before_create :check_for_dups
   
   define_enum :status,[:established, :voided],
                        :sets => {

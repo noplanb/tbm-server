@@ -266,7 +266,11 @@ Since we are adding the bench connections can be simplified or even eliminated.
      - Inviter app ui
        - Back to the home screen with square of person clicked from the bench highlighted 
        - Same as connected user just send a message.
-     - Invitee app ui
+     - Actions on receiving a notification for a friend you dont have.
+       - Invitee gets message notification. 
+       - He doesnt recognize friend.
+       - He gets friend from server
+       - He polls for video
        - Square filled with connected inviter and welcome message.
        
 - Registration unknown user

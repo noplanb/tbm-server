@@ -41,6 +41,10 @@ class User < ActiveRecord::Base
     Connection.for_user_id(id).live.count
   end
   
+  def connection_count
+    Connection.for_user_id(id).count
+  end
+  
   def set_keys
     update_attribute(:auth, gen_key("auth"))
     update_attribute(:mkey, gen_key("mkey"))
