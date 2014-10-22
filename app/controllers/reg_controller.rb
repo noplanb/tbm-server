@@ -8,12 +8,12 @@ class RegController < ApplicationController
     else
       user = User.create user_params
     end
-    render :json => only_app_attrs(user.attributes.symbolize_keys)
+    render :json => user.only_app_attrs_for_user
   end
   
   def get_friends
-    if user = params[:mkey] && User.find_by_mkey(params[:mkey])
-      render :json => user.connected_users_attributes_with_connection_status.map{|f| only_app_attrs(f)}
+    if user = params[:auth] && User.find_by_auth(params[:auth])
+      render :json => user.connected_users.map{|u| u.only_app_attrs_for_friend}
     else
       render :json => []
     end
@@ -21,7 +21,7 @@ class RegController < ApplicationController
   
   def get_user
     if user = params[:mobile_number] && User.find_by_mobile_number(params[:mobile_number])
-      render :json => only_app_attrs(user.attributes.symbolize_keys)
+      render :json => user.only_app_attrs_for_user
     else
       render :json => {}
     end
@@ -32,12 +32,6 @@ class RegController < ApplicationController
   end
   
   private
-  
-  def only_app_attrs(u)
-    r = u.slice(:id, :auth, :mkey, :first_name, :last_name, :mobile_number, :device_platform, :connection_status, :is_connection_creator)
-    r[:id] = r[:id].to_s
-    r
-  end
   
   def user_params
     params.require(:user).permit(:first_name, :last_name, :mobile_number, :device_platform)

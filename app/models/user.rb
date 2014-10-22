@@ -30,13 +30,6 @@ class User < ActiveRecord::Base
     User.where ["id IN ?", connected_user_ids]
   end
   
-  def connected_users_attributes_with_connection_status
-    connected_users.map{|cu|
-      con = Connection.live_between(id, cu.id).first;
-      cu.attributes.symbolize_keys.merge(is_connection_creator: is_connection_creator(cu, con))
-    }
-  end
-  
   def live_connection_count
     Connection.for_user_id(id).live.count
   end
@@ -52,6 +45,19 @@ class User < ActiveRecord::Base
   
   def gen_key(type)
     "#{first_name.gsub(" ", "")}_#{last_name}_#{id}_#{type}"
+  end
+  
+  def only_app_attrs_for_user
+    r = attributes.symbolize_keys.slice(:id, :auth, :mkey, :first_name, :last_name, :mobile_number, :device_platform)
+    r[:id] = r[:id].to_s
+    r
+  end
+  
+  def only_app_attrs_for_friend
+    r = attributes.symbolize_keys.slice(:id, :mkey, :first_name, :last_name, :mobile_number, :device_platform)
+    r[:id] = r[:id].to_s
+    r[:has_app] = device_platform.blank? ? "false" : "true"
+    r
   end
   
   private

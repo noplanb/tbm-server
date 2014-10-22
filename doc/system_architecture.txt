@@ -13,18 +13,18 @@ VideoFilename: The filename for a video sent from one user to another.  When the
 
 LatestVideoIdKV: A key value store which holds the VideoId for the latest video uploaded from a sender->receiver. Written only by sender. 
 
-LatestVideoIdKVKey: This is the key used to access the LatestVidoeKV for a particular sender->receiver. It is created from the ConnectionKey
+LatestVideoIdKVKey: This is the key used to access the LatestVideoKV for a particular sender->receiver. It is created from the ConnectionKey
 
 VideoStatusKV: This is a key value store which holds the VideoID as well as the VideoStatus for a particular sender-receiver.
 
-VideoStatusKVKey: This is the key used to access the VideoStatusKV for a particular sender->receiver. It is created fromt the ConnectionKey
+VideoStatusKVKey: This is the key used to access the VideoStatusKV for a particular sender->receiver. It is created from the ConnectionKey
 
 VideoId: A unique ID for a video instance.  We could use any unique ID for this, such as a timestamp.  The benefit of using a timestamp is that it naturally includes information about the file age, so we could display in the UI, if we wanted to, that the video was sent - minutes/days ago, and it's sequential.  We use this videoId to make sure meta-data, such as video status, is tied to the correct video instance.
 
 PushToken: In the mobile OS notification model, each program instance in a device has a PushToken which is then used to as a target when sending notifications to the program on that device.
 
 
-MESSAGING DATABASE high bandwidth. (Deprecated becuause it doesnt handle multiple videos sent. See next section)
+MESSAGING DATABASE high bandwidth. (Deprecated because it doesn't handle multiple videos sent. See next section)
 =================================
  - Each user gets a MailboxKey for themselves as well as the MailboxKey for each of their friends.
  - They put their MailboxKey and their friends MailboxKey through scramble algorithm to get a ConnectionKey one for each direction for each friend.

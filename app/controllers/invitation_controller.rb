@@ -1,15 +1,15 @@
 class InvitationController < ApplicationController
   
   def invite
-    invitee = User.find_by_mobile_number(params[:invitee][:mobile_number]) || User.create(invitee_params)
-    user = User.find_by_mkey(params[:mkey])
-    raise "Unable to find user with mkey: #{meky}" unless user
+    invitee = User.find_by_mobile_number(params[:mobile_number]) || User.create(invitee_params)
+    user = User.find_by_auth(params[:auth])
+    raise "Unable to find user with auth: #{auth}" unless user
     connection = Connection.find_or_create(user.id, invitee.id)
-    render :json => invitee.attributes.merge({connection_status: connection.status})
+    render :json => invitee.only_app_attrs_for_friend
   end
   
   
   def invitee_params
-    params.require(:invitee).permit(:first_name, :last_name, :mobile_number)
+    params.permit(:first_name, :last_name, :mobile_number)
   end
 end
