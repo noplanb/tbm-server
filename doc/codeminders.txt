@@ -1,0 +1,16 @@
+Rabbit mQ
+
+active mQ
+
+Amazon sQ
+
+
+- Age based storage. 
+- Hbase.
+- MemcachedD
+
+- MemcachedD in front of the storage.
+
+
+- Notification
+  - Sqs

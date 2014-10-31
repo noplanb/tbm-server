@@ -1,19 +1,12 @@
 - Some indication that the file get or create will fail permanently Upload and download.
+IMPORTANT: Handle phone numbers and phone number comparison in ruby properly when doing invites.
 
 - Invitations
 - Upgrade notification server to handle errors
 - Switch from emulated to actual use DynamoDb and S3
 
-Add phoneNumberUtil gem and parse and validate phone numbers
   - Reg
     - getUser
   - Invite
 
-Add database columns
-User 
-  For users without phone number in the future
-  - user_name
-  - email
-  
-Connection
-  - Connection key
+

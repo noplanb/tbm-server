@@ -4,6 +4,7 @@ class CreatePushUsers < ActiveRecord::Migration
       t.string :mkey
       t.string :push_token
       t.string :device_platform
+      t.string :device_build
 
       t.timestamps
     end

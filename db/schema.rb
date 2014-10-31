@@ -11,12 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140915194544) do
+ActiveRecord::Schema.define(version: 20140723224335) do
 
   create_table "connections", force: true do |t|
     t.integer  "creator_id"
     t.integer  "target_id"
     t.string   "status"
+    t.string   "connection_key"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -35,9 +36,9 @@ ActiveRecord::Schema.define(version: 20140915194544) do
     t.string   "mkey"
     t.string   "push_token"
     t.string   "device_platform"
+    t.string   "device_build"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "device_build"
   end
 
   add_index "push_users", ["mkey"], name: "index_push_users_on_mkey"
@@ -46,9 +47,13 @@ ActiveRecord::Schema.define(version: 20140915194544) do
     t.string   "first_name"
     t.string   "last_name"
     t.string   "mobile_number"
+    t.string   "email"
+    t.string   "user_name"
     t.string   "device_platform"
     t.string   "auth"
     t.string   "mkey"
+    t.string   "verification_code"
+    t.datetime "verification_date_time"
     t.string   "status"
     t.datetime "created_at"
     t.datetime "updated_at"

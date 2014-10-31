@@ -1,4 +1,33 @@
+
+
 Ability to send test video from server.
- - Add a send test video link next to each of a users connections.
- - 
- - 
+---------------------------------------
+x Add a send test video link next to each of a users connections.
+ 
+
+GlobalPhone gem and parse and validate phone numbers
+----------------------------------------------------
+x install and test
+
+
+Update database
+---------------
+User 
+  For users without phone number in the future
+  x user_name
+  x email
+  x verification code
+  x verification time
+  
+Connection
+  x Connection key
+  
+  
+SMS Loopback on Reg
+-------------------
+x install twilio gem
+x User status
+  x initialized
+  x verified
+- 
+  

@@ -1,1 +1,15 @@
 54.193.206.174
+
+
+AWS Services to use
+
+EC2
+Elastic beanstalk
+S3
+CloudFormation
+CloudTrail
+CloudWatch
+Elastic Beanstalk
+IAM
+Trusted Advisor
+o SNS - will not work for us. Uses subscriber and topics.

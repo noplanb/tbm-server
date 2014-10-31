@@ -59,3 +59,5 @@ gem 'debugger', group: [:development, :test]
 # Push Notification servers
 gem 'gcm'
 gem 'apns', :git => 'git://github.com/noplanb/APNS.git'
+gem 'twilio-ruby', '~> 3.12'
+gem 'global_phone'

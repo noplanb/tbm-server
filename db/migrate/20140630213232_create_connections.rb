@@ -4,6 +4,7 @@ class CreateConnections < ActiveRecord::Migration
       t.integer :creator_id
       t.integer :target_id
       t.string :status
+      t.string :connection_key
 
       t.timestamps
     end
