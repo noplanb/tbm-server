@@ -29,4 +29,9 @@ Itunes Connect
 sani@sbcglobal.net
 Sanie*1
 
+eb ec2 pems
+-----------
+~/.ssh
+
+
 
