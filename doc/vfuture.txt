@@ -9,4 +9,4 @@ IMPORTANT: Handle phone numbers and phone number comparison in ruby properly whe
     - getUser
   - Invite
 
-
+- Remove add accounts.txt to gitignore.

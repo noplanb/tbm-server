@@ -14,6 +14,7 @@ ThreebymeServer::Application.routes.draw do
   get 'reg/reg'
   get 'reg/verify_code'
   get 'reg/get_friends'
+  get 'reg/debug_get_user'
 
   post 'notification/set_push_token'
   post 'notification/send_video_received'

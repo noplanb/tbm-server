@@ -29,5 +29,18 @@ x install twilio gem
 x User status
   x initialized
   x verified
-- 
+
+
+Validation of user prior to create
+----------------------------------
+ - On registration
+   - Client will always send first, last, phone. 
+   - We validate the phone prior to sending sms loopback
+   - We 
+   
+ x Status set to initialized in after_create
+ x First name must be non nil
+ - Telephone must be validated before attempting to create user
+ - HasApp set to false if nil
   
+In reg and invitation check user created before returning success to client.

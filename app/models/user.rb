@@ -11,10 +11,8 @@ class User < ActiveRecord::Base
   
   # GARF: Change this to before_create when we finalize the algorithm for creating keys. Right now I incorporate id
   # in the key so I need to have after_create
-  after_create :set_keys
-  
-  before_create :set_status_initialized
-  
+  after_create :set_status_initialized, :ensure_names_not_null, :set_keys
+    
   def name
     [first_name,last_name].join(" ")
   end
@@ -41,14 +39,10 @@ class User < ActiveRecord::Base
     Connection.for_user_id(id).count
   end
   
-  def set_keys
-    update_attribute(:auth, gen_key("auth"))
-    update_attribute(:mkey, gen_key("mkey"))
+  def has_app?
+    device_platform.blank? ? false : true
   end
   
-  def gen_key(type)
-    "#{first_name.gsub(" ", "")}_#{last_name}_#{id}_#{type}"
-  end
   
   # ==================
   # = App Attributes =
@@ -63,7 +57,7 @@ class User < ActiveRecord::Base
   def only_app_attrs_for_friend
     r = attributes.symbolize_keys.slice(:id, :mkey, :first_name, :last_name, :mobile_number, :device_platform)
     r[:id] = r[:id].to_s
-    r[:has_app] = device_platform.blank? ? "false" : "true"
+    r[:has_app] = has_app?.to_s
     r
   end
   
@@ -98,8 +92,25 @@ class User < ActiveRecord::Base
   
   private
   
+  # ==================
+  # = Filter Actions =
+  # ==================
   def set_status_initialized
-    status = :initialized
+    update_attribute(:status, :initialized)
+  end
+  
+  def ensure_names_not_null
+    update_attribute(:first_name, "") if first_name.nil?
+    update_attribute(:last_name, "") if last_name.nil?
+  end
+  
+  def set_keys
+    update_attribute(:auth, gen_key("auth"))
+    update_attribute(:mkey, gen_key("mkey"))
+  end
+  
+  def gen_key(type)
+    "#{first_name.gsub(" ", "")}_#{last_name}_#{id}_#{type}"
   end
   
   def is_connection_creator(connected_user, con)

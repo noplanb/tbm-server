@@ -84,6 +84,7 @@ class UsersController < ApplicationController
     sender = User.find params[:sender_id]
     video_id = create_test_video(sender, @user)
     send_video_received_notification(sender, @user, video_id)
+    add_remote_key(sender, @user, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
   
@@ -120,6 +121,10 @@ class UsersController < ApplicationController
     gpn.send
   end
   
+  def add_remote_key(sender, receiver, video_id)
+    Kvstore.create(key1: "#{sender.mkey}-#{receiver.mkey}-VideoIdKVKey", key2: video_id, value: "{'videoId':'#{video_id}'}")
+  end
+  
   # Use callbacks to share common setup or constraints between actions.
   def set_user
     @user = User.find(params[:id])
@@ -127,6 +132,6 @@ class UsersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :mobile_number, :auth, :mkey, :status)
+    params.require(:user).permit(:first_name, :last_name, :mobile_number, :device_platform, :auth, :mkey, :status)
   end
 end
