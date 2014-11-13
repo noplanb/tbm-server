@@ -6,7 +6,7 @@ gem 'rails', '4.0.2'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 gem 'mysql2'
-gem 'multi_json', '1.7.8' 
+# gem 'multi_json', '1.7.8' 
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'

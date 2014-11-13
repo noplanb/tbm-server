@@ -13,3 +13,44 @@ Elastic Beanstalk
 IAM
 Trusted Advisor
 o SNS - will not work for us. Uses subscriber and topics.
+
+
+
+Elastic Beanstalk Installation Of TBM using RDS
+-----------------------------------------------
+PROBLEM: Installed old version of awsebcli. When I upgraded it to 3.6 I ran into and solved the following problems:
+  - Using macports version of python on my machine
+  - First try did not use macports version of pip. 
+    - SOLUTION install macports version of pip. http://truongtx.me/2014/02/25/mac-os-install-python-pip-virtualenv-using-macports/
+  - Then could not find the eb command.
+    - SOLUTION found it in the awsebcli source code and manually put the file in /opt/local/bin
+  
+PROBLEM: bundle failing on elastic beanstalk
+REASON: We are installing gems using git from our own private repos the ec2 instance does not have git.
+SOLUTION: Work around here:
+
+http://stackoverflow.com/questions/13642171/elastic-beanstalk-ruby-rails-need-to-install-git-so-bundle-install-works-but-i
+You can do this by setting the BUNDLE_DISABLE_SHARED_GEMS Bundler environment variable in your existing .ebextensions/ruby.config file like so:
+  option_settings:
+    - option_name: BUNDLE_DISABLE_SHARED_GEMS
+      value: "1"
+    - option_name: BUNDLE_PATH
+      value: "vendor/bundle"
+
+  packages:
+    yum:
+      git: []
+
+PROBLEM: Rake migrate was failing. 
+REASON: Above failure in running bundle was preventing rake from being there.
+
+QUESTION: How to associate an eb deployment with an already running RDS instance?
+http://serverfault.com/questions/540828/how-to-associate-an-existing-rds-instance-to-an-elastic-beanstalk-environment
+
+
+USEFUL:
+curl canhazip.com to check the outgoing ip from a server.
+
+
+PROBLEM: GCM whitelists ip addresses. Each ec2 instance has a separate ip address. 
+SOLUTION: ? use a NAT? http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_NAT_Instance.html ?
