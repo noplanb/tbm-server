@@ -19,7 +19,7 @@ class KvstoreController < ApplicationController
   def delete
     kvs = get_kvs
     logger.info "deleting #{kvs.length} kvs"
-    kvs.each{|kv|Time kv.destroy}
+    kvs.each{|kv| kv.destroy}
     render :json => {status: "200"}
   end
   
