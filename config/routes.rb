@@ -31,6 +31,7 @@ ThreebymeServer::Application.routes.draw do
   get 'invite_mockup/user/:id' => 'invite_mockup#user'
   
   get 'invitation/invite'
+  get 'invitation/has_app'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
