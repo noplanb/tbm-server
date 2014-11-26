@@ -19,6 +19,7 @@ ThreebymeServer::Application.routes.draw do
   post 'notification/set_push_token'
   post 'notification/send_video_received'
   post 'notification/send_video_status_update'
+  get 'notification/load_test_populate'
   
   post 'kvstore/set'
   get 'kvstore/get'
