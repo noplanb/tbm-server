@@ -22,6 +22,7 @@ class PushUser < ActiveRecord::Base
   
   def self.load_test_populate(first, last)
     (first.to_i..last.to_i).each do |n| 
+      puts "-----"
       params = {mkey:"this_is_a_relatively_long_mkey_that_is_used_for_load_testing_#{n}", push_token:"this_is_a_relatively_long_push_token_that_is_used_for_load_testing_#{n}"}
       t0 = Time.now
       push_user = PushUser.find_by_mkey(params[:mkey])
@@ -34,6 +35,11 @@ class PushUser < ActiveRecord::Base
         PushUser.create(params)
         puts "Create time #{1000 * (Time.now - t1)}"
       end
+      
+      puts "lpop time #{1000 * (Time.now - t0)}"
+      t0 = Time.now
+      PushUser.create_or_update(params)
+      puts "createOrUpdate time = #{1000 * (Time.now - t0)}"
     end
   end
 end
