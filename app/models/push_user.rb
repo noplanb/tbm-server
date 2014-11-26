@@ -21,6 +21,8 @@ class PushUser < ActiveRecord::Base
   # ================
   
   def self.load_test_populate(first, last)
+    tstart = Time.now
+    
     (first.to_i..last.to_i).each do |n| 
       puts "-----"
       params = {mkey:"this_is_a_relatively_long_mkey_that_is_used_for_load_testing_#{n}", push_token:"this_is_a_relatively_long_push_token_that_is_used_for_load_testing_#{n}"}
@@ -41,5 +43,10 @@ class PushUser < ActiveRecord::Base
       PushUser.create_or_update(params)
       puts "createOrUpdate time = #{1000 * (Time.now - t0)}"
     end
+    
+    ttot = 1000 * (Time.now - tstart)
+    puts "=========="
+    puts "total = #{ttot} average per = #{ttot / (last.to_i-first.to_i)}"
+    
   end
 end
