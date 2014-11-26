@@ -22,6 +22,10 @@ ActiveRecord::Schema.define(version: 20140723224335) do
     t.datetime "updated_at"
   end
 
+  add_index "connections", ["connection_key"], name: "index_connections_on_connection_key"
+  add_index "connections", ["creator_id"], name: "index_connections_on_creator_id"
+  add_index "connections", ["target_id"], name: "index_connections_on_target_id"
+
   create_table "kvstores", force: true do |t|
     t.string   "key1"
     t.string   "key2"
@@ -58,6 +62,9 @@ ActiveRecord::Schema.define(version: 20140723224335) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "users", ["mkey"], name: "index_users_on_mkey"
+  add_index "users", ["mobile_number"], name: "index_users_on_mobile_number"
 
   create_table "videos", force: true do |t|
     t.string   "filename"
