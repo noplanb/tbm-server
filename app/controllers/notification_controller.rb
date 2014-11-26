@@ -53,8 +53,8 @@ class NotificationController < ApplicationController
   # ====================
   
   def load_test_populate
-    render text:"Usage load_test_populate?start_num=nstart&num=n" and return unless params[:num] && params[:num_start]
-    (params[:start_num].to_i..params[:num].to_i).each{|n| PushUser.create_or_update mkey:"this_is_a_relatively_long_mkey_that_is_used_for_load_testing_#{n}", push_token:"this_is_a_relatively_long_push_token_that_is_used_for_load_testing_#{n}"}
+    render text:"Usage load_test_populate?start=n&end=m" and return unless params[:start] && params[:end]
+    PushUser.load_test_populate(params[:start].to_i, params[:end].to_i)
     render text:"push_user count = #{PushUser.count}"
   end
   

@@ -15,4 +15,12 @@ class PushUser < ActiveRecord::Base
     end
   end
   
+  
+  # ================
+  # = Load Testing =
+  # ================
+  
+  def self.load_test_populate(first, last)
+    (first.to_i..last.to_i).each{|n| PushUser.create_or_update mkey:"this_is_a_relatively_long_mkey_that_is_used_for_load_testing_#{n}", push_token:"this_is_a_relatively_long_push_token_that_is_used_for_load_testing_#{n}"}
+  end
 end
