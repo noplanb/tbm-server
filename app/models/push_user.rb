@@ -17,8 +17,15 @@ class PushUser < ActiveRecord::Base
   # ================
   # = Load Testing =
   # ================
-  
   def self.load_test_populate(first, last)
+    (first.to_i..last.to_i).each do |n|
+      params = {mkey:"this_is_a_relatively_long_mkey_that_is_used_for_load_testing_#{n}", push_token:"this_is_a_relatively_long_push_token_that_is_used_for_load_testing_#{n}"}
+      PushUser.create_or_update(params)
+      puts n if n%1000 == 0
+    end
+  end
+  
+  def self.load_test_populate_with_times(first, last)
     tstart = Time.now
     
     (first.to_i..last.to_i).each do |n| 
