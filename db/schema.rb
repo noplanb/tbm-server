@@ -22,9 +22,9 @@ ActiveRecord::Schema.define(version: 20140723224335) do
     t.datetime "updated_at"
   end
 
-  add_index "connections", ["connection_key"], name: "index_connections_on_connection_key"
-  add_index "connections", ["creator_id"], name: "index_connections_on_creator_id"
-  add_index "connections", ["target_id"], name: "index_connections_on_target_id"
+  add_index "connections", ["connection_key"], name: "index_connections_on_connection_key", using: :btree
+  add_index "connections", ["creator_id"], name: "index_connections_on_creator_id", using: :btree
+  add_index "connections", ["target_id"], name: "index_connections_on_target_id", using: :btree
 
   create_table "kvstores", force: true do |t|
     t.string   "key1"
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20140723224335) do
     t.datetime "updated_at"
   end
 
-  add_index "kvstores", ["key1"], name: "index_kvstores_on_key1"
+  add_index "kvstores", ["key1"], name: "index_kvstores_on_key1", using: :btree
 
   create_table "push_users", force: true do |t|
     t.string   "mkey"
@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20140723224335) do
     t.datetime "updated_at"
   end
 
-  add_index "push_users", ["mkey"], name: "index_push_users_on_mkey"
+  add_index "push_users", ["mkey"], name: "index_push_users_on_mkey", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "first_name"
@@ -63,8 +63,8 @@ ActiveRecord::Schema.define(version: 20140723224335) do
     t.datetime "updated_at"
   end
 
-  add_index "users", ["mkey"], name: "index_users_on_mkey"
-  add_index "users", ["mobile_number"], name: "index_users_on_mobile_number"
+  add_index "users", ["mkey"], name: "index_users_on_mkey", using: :btree
+  add_index "users", ["mobile_number"], name: "index_users_on_mobile_number", using: :btree
 
   create_table "videos", force: true do |t|
     t.string   "filename"
@@ -77,6 +77,6 @@ ActiveRecord::Schema.define(version: 20140723224335) do
     t.datetime "updated_at"
   end
 
-  add_index "videos", ["filename"], name: "index_videos_on_filename"
+  add_index "videos", ["filename"], name: "index_videos_on_filename", using: :btree
 
 end

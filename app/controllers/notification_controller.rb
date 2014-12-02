@@ -48,6 +48,10 @@ class NotificationController < ApplicationController
     render :json => {status: "200"}
   end
   
+  # ====================
+  # = LoadTest Methods =
+  # ====================
+  
   private 
   
   def get_target_push_user

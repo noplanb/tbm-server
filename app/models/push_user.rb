@@ -12,5 +12,5 @@ class PushUser < ActiveRecord::Base
       PushUser.create(params)
     end
   end
-  
+
 end
