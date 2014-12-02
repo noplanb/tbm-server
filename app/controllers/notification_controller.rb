@@ -58,6 +58,7 @@ class NotificationController < ApplicationController
     # do an http request to google
     uri = URI.parse("http://www.google.com/?#safe=off&q=eggsalad")
     resp = Net::HTTP.get_response(uri)
+    logger.info "pu=#{pu} body_count=#{resp.body.length}"
     render text: "ok"
   end
   
