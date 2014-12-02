@@ -51,6 +51,15 @@ class NotificationController < ApplicationController
   # ====================
   # = LoadTest Methods =
   # ====================
+  # mimic a send notification
+  def load_test_send_notification
+    # get push user
+    pu = PushUser.find_by_mkey params[:mkey]    
+    # do an http request to google
+    uri = URI.parse("http://www.google.com/?#safe=off&q=eggsalad")
+    resp = Net::HTTP.get_response(uri)
+    render text: "ok"
+  end
   
   private 
   
