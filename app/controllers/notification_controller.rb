@@ -52,12 +52,6 @@ class NotificationController < ApplicationController
   # = LoadTest Methods =
   # ====================
   
-  def load_test_populate
-    render text:"Usage load_test_populate?start=n&end=m" and return unless params[:start] && params[:end]
-    PushUser.load_test_populate(params[:start].to_i, params[:end].to_i)
-    render text:"push_user count = #{PushUser.count}"
-  end
-  
   private 
   
   def get_target_push_user
