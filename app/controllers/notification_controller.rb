@@ -56,7 +56,8 @@ class NotificationController < ApplicationController
     # get push user
     pu = PushUser.find_by_mkey params[:mkey]    
     # do an http request to google
-    uri = URI.parse("http://www.google.com/?#safe=off&q=eggsalad")
+    # uri = URI.parse("http://www.google.com/?#safe=off&q=eggsalad")
+    uri = URI.parse("http://www.yahoo.com")
     resp = Net::HTTP.get_response(uri)
     logger.info "pu=#{pu} body_count=#{resp.body.length}"
     render text: "ok"
