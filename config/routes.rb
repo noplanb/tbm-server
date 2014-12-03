@@ -25,6 +25,8 @@ ThreebymeServer::Application.routes.draw do
   get 'kvstore/get'
   get 'kvstore/get_all'
   get 'kvstore/delete'
+  get 'kvstore/load_test_read'
+  get 'kvstore/load_test_write'
 
   get 'version/check_compatibility'
   
