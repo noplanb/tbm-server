@@ -15,5 +15,7 @@ class CreateUsers < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :users, :mkey
+    add_index :users, :mobile_number
   end
 end

@@ -5,14 +5,12 @@ class PushUser < ActiveRecord::Base
   define_enum :device_build, [:dev,:prod]
   
   def self.create_or_update(params)
+    params = params.slice(:mkey, :push_token, :device_platform, :device_build)
     if push_user = PushUser.find_by_mkey(params[:mkey])
-      [:push_token, :device_platform, :device_build].each do |key|
-        push_user.send("#{key}=".to_sym, params[key])
-      end
-      push_user.save
+      push_user.update_attributes(params)
     else
       PushUser.create(params)
     end
   end
-  
+
 end

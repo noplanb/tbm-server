@@ -5,7 +5,15 @@ module GcmServer
   include NpbNotification 
   
   URI = "https://android.googleapis.com/gcm/send"
-  API_KEY = "AIzaSyDSFYoue4kZiz9Fx1W9DSr03tMO-Pfl54Q"
+  # Key created at console.developers.google.com under project ThreeByMe. 
+  # currently tbm beta server and andrey server using this key for 
+  # API_KEY = "AIzaSyDSFYoue4kZiz9Fx1W9DSr03tMO-Pfl54Q" 
+  
+  # Key created at console.developers.google.com under project Zazo.
+  # This key should be used for development, staging, & production servers.
+  # This account is set up so that any host may present this key. It does not have a white list
+  # of ip addresses.
+  API_KEY = "AIzaSyA_O47DvkbB4E24pg6goTgcxstLQ8WJRUk"
   
   def send_notification(ids, data)
     post_to_gcm( make_payload(ids, data) )

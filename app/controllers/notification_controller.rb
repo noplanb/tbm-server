@@ -48,6 +48,21 @@ class NotificationController < ApplicationController
     render :json => {status: "200"}
   end
   
+  # ====================
+  # = LoadTest Methods =
+  # ====================
+  # mimic a send notification
+  def load_test_send_notification
+    # get push user
+    pu = PushUser.find_by_mkey params[:mkey]    
+    # do an http request to google
+    # uri = URI.parse("http://www.google.com/?#safe=off&q=eggsalad")
+    uri = URI.parse("http://www.yahoo.com")
+    resp = Net::HTTP.get_response(uri)
+    logger.info "pu=#{pu} body_count=#{resp.body.length}"
+    render text: "ok"
+  end
+  
   private 
   
   def get_target_push_user
