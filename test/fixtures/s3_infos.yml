@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  region: MyString
+  bucket: MyString
+  access_key: MyString
+  secret_key: MyString
+
+two:
+  region: MyString
+  bucket: MyString
+  access_key: MyString
+  secret_key: MyString

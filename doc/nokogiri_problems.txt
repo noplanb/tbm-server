@@ -1,0 +1,9 @@
+I could not get gem install nokogiri to work on my machine after upgrading to mavericks.
+
+There is some problem in building using their packaged version of libxml2. 
+
+I ended up building against my macports installed version of libxml2 as follows:
+
+Building native extensions with: '--use-system-libraries --with-xml2-include=/opt/local/include/libxml2 --with-xml2-lib=/opt/local/lib'
+
+https://github.com/sparklemotion/nokogiri/issues/1166

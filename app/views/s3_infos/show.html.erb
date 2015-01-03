@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Region:</strong>
+  <%= @s3_info.region %>
+</p>
+
+<p>
+  <strong>Bucket:</strong>
+  <%= @s3_info.bucket %>
+</p>
+
+<p>
+  <strong>Access key:</strong>
+  <%= @s3_info.access_key %>
+</p>
+
+<p>
+  <strong>Secret key:</strong>
+  <%= @s3_info.secret_key %>
+</p>
+
+<%= link_to 'Edit', edit_s3_info_path(@s3_info) %> |
+<%= link_to 'Back', s3_infos_path %>
