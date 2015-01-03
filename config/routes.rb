@@ -1,7 +1,10 @@
 ThreebymeServer::Application.routes.draw do
 
+  get 's3_infos/info'
+  resources :s3_infos
   resources :connections
   resources :users
+  
   
   get 'users/new_connection/:id' => 'users#new_connection'
   get 'users/establish_connection/:id' => 'users#establish_connection'

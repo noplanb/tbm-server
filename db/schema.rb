@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140723224335) do
+ActiveRecord::Schema.define(version: 20150102214612) do
 
   create_table "connections", force: true do |t|
     t.integer  "creator_id"
@@ -46,6 +46,15 @@ ActiveRecord::Schema.define(version: 20140723224335) do
   end
 
   add_index "push_users", ["mkey"], name: "index_push_users_on_mkey", using: :btree
+
+  create_table "s3_infos", force: true do |t|
+    t.string   "region"
+    t.string   "bucket"
+    t.string   "access_key"
+    t.string   "secret_key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "first_name"
