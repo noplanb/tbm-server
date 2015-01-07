@@ -17,12 +17,12 @@ ActiveRecord::Schema.define(version: 20150102214612) do
     t.integer  "creator_id"
     t.integer  "target_id"
     t.string   "status"
-    t.string   "connection_key"
+    t.string   "ckey"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "connections", ["connection_key"], name: "index_connections_on_connection_key", using: :btree
+  add_index "connections", ["ckey"], name: "index_connections_on_ckey", using: :btree
   add_index "connections", ["creator_id"], name: "index_connections_on_creator_id", using: :btree
   add_index "connections", ["target_id"], name: "index_connections_on_target_id", using: :btree
 

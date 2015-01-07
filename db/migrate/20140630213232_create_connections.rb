@@ -4,12 +4,12 @@ class CreateConnections < ActiveRecord::Migration
       t.integer :creator_id
       t.integer :target_id
       t.string :status
-      t.string :connection_key
+      t.string :ckey
 
       t.timestamps
     end
     add_index :connections, :creator_id
     add_index :connections, :target_id
-    add_index :connections, :connection_key
+    add_index :connections, :ckey
   end
 end

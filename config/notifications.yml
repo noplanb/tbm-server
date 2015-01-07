@@ -1,15 +1,13 @@
 email:
-  from: admin@threebyme.com
-  to: ff
-  subject_prefix: TBM
+  from: elfishawy.sani@gmail.com
+  to: sani
+  subject_prefix: ZAZO
   subject_line_length: 50
   addresses:
-    ff: ff@onebeat.com
     sani: elfishawy.sani@gmail.com
 sms:
-  from: TBM <admin@threebyme.com>
-  subject_prefix: DMS
-  to: ff
+  from: elfishawy.sani@gmail.com
+  subject_prefix: ZAZO
+  to: sani
   addresses:
-    ff: 4156020256@verizon
     sani: 6502453537@att

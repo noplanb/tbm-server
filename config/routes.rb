@@ -5,6 +5,7 @@ ThreebymeServer::Application.routes.draw do
   resources :connections
   resources :users
   
+  post 'dispatch/post_dispatch'
   
   get 'users/new_connection/:id' => 'users#new_connection'
   get 'users/establish_connection/:id' => 'users#establish_connection'

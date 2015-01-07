@@ -1,0 +1,21 @@
+v1.40 1/7/2015
+==============
+
+
+Connection_key version 2. 
+-------------------------
+  see doc/connection_key_2.txt
+  
+Dispatch 
+--------
+  see doc/dispatch.txt
+
+S3 credentials
+---------------
+  see saniLocal/Doc/s3.txt
+
+Modifications to FTM
+--------------------
+  see FileTransferManager/doc/v0.5.x
+  
+

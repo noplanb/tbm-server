@@ -1,0 +1,10 @@
+Using npb_mail with Aws SES smtp server.
+
+- In aws console i have IAM zazo-ses-smtp-user who can send email via SES smtp
+- Make sure the credentials for this user are put in user_name and password in initializers/action_mailer_init.rb
+- Sandbox account on SES
+  - We are using a sandbox not production account on SES
+  - Only allows sending email from verified emails to verified emails.
+  - Make sure to add a verified email on AWS SES to enable sending to that email
+- Add the email in notifications.yml
+- include NpbNotification; npb_mail "message";

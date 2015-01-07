@@ -17,7 +17,18 @@ o SNS - will not work for us. Uses subscriber and topics.
 
 
 Elastic Beanstalk Installation Of TBM using RDS
------------------------------------------------
+===============================================
+
+Deployment steps creating a new RDS created by EB and new EB environment
+------------------------------------------------------------------------
+
+
+
+
+
+Problems and solutions
+----------------------
+
 PROBLEM: Installed old version of awsebcli. When I upgraded it to 3.6 I ran into and solved the following problems:
   - Using macports version of python on my machine
   - First try did not use macports version of pip. 
@@ -54,3 +65,5 @@ curl canhazip.com to check the outgoing ip from a server.
 
 PROBLEM: GCM whitelists ip addresses. Each ec2 instance has a separate ip address. 
 SOLUTION: ? use a NAT? http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_NAT_Instance.html ?
+
+

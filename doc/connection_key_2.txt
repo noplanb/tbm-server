@@ -1,0 +1,30 @@
+ConnectionKey: A key that uniquely identifies a connection from one user to another user.  The proposal is to create the ConnectionKey as a function of the sender MailboxKey and receiver MailboxKey.  This is a non-commuting function, i.e. order is important, so the ConnectionKey from user1->user2 is different from user2->user1.  The space for ConnectionKeys is large, so that it is very sparsely populated, making it difficult for a hacker to guess. 
+
+PROBLEM with ConnectionKey version 1. A hacker who is friends with two people can send a message to one of those people posing as the other. 
+
+SOLUTION: ConnectionKey version 2: Create a unique connection key CKEY which is stored in the connections table. It is passed with friend when client gets friend. Client creates filenames and kv keys using mkeys and connection key as follows: u1->u2 = mkey1-mkey2-ckey.
+
+
+TODO:
+Server
+------
+x Add ckey to connection table.
+x Generate ckey when connection is created.
+x Add random strings to mkey and ckey when generated (20 characters each).
+x Make auth longer (20 characters).
+x Pass ckey with friends.
+  x reg
+  x invite
+
+
+Client
+------
+x Save ckey in friend model.
+x Change remoteStorageHandler to use ckey in generating keys.
+
+x test
+- Write it up for andrey.
+- Release ftm again with region bug fix and ftm.m bug fix
+- Change keys to remove mkey etc.
+
+

@@ -1,5 +1,5 @@
 class Connection < ActiveRecord::Base
-  
+  require "no_plan_b/utils/text_utils"
   include EnumHandler
     
   belongs_to :creator, :class_name => 'User'
@@ -10,6 +10,8 @@ class Connection < ActiveRecord::Base
   validates_presence_of :status, :on => :create
   
   before_create :check_for_dups
+  
+  after_create :set_ckey
   
   define_enum :status,[:established, :voided],
                        :sets => {
@@ -35,5 +37,10 @@ class Connection < ActiveRecord::Base
   def check_for_dups
     raise "Cannot create a connection between #{creator_id} and #{target_id} a live one already exists." unless Connection.live_between(creator_id, target_id).blank?
   end
+  
+  def set_ckey
+    update_attribute(:ckey, "#{creator_id}_#{target_id}_#{NoPlanB::TextUtils.random_string(20)}")
+  end
+  
   
 end

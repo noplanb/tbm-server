@@ -49,7 +49,7 @@ class RegController < ApplicationController
   
   def get_friends
     if @user
-      render json: @user.connected_users.map{|u| u.only_app_attrs_for_friend}
+      render json: @user.connected_users.map{|u| u.only_app_attrs_for_friend_with_ckey(@user)}
     else
       render json: []
     end

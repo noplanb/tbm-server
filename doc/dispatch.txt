@@ -1,0 +1,35 @@
+Dispatch is our facility for our mobile clients to send messages to the server. 
+
+We initially need it to send notifications to ourselves that errors have occurred on the client.
+
+ARCHITECTURE
+============
+
+Server
+------
+- dispatch_controller
+  - post_dispatch(message)
+  - Authenticate client.
+  - Prepend User information.
+  - Send message to admin emails via npb_mail.
+  
+  
+Clients
+-------       
+- IOS
+  - Dispatch.m
+    - Sends a message to the server via dispatch_controller post
+  - Setting in OBLogger
+    - Add observer for oblogger
+    - Dispatch ON_ERROR
+  - Mod OBLogger with user info push to farhad repo.
+    
+
+- Android 
+  - 
+  
+
+TODO:
+ - create dispatch_controller.
+ - add method for post.  
+ - Checkout what facilities OB_LOGGER has.    

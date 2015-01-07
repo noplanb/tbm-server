@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  require "no_plan_b/utils/text_utils"
+  
   include EnumHandler
   
   has_many :connections_as_creator, :class_name => 'Connection', :foreign_key => :creator_id, :dependent => :destroy
@@ -61,6 +63,12 @@ class User < ActiveRecord::Base
     r
   end
   
+  def only_app_attrs_for_friend_with_ckey(connected_user)
+    conn = Connection.live_between(id, connected_user.id).first
+    raise "No connection found with connected user. This should never happen." if conn.nil?
+    only_app_attrs_for_friend.merge({ckey:conn.ckey})
+  end
+  
   # =====================
   # = Verification code =
   # =====================
@@ -110,7 +118,7 @@ class User < ActiveRecord::Base
   end
   
   def gen_key(type)
-    "#{first_name.gsub(" ", "")}_#{last_name}_#{id}_#{type}"
+    "#{first_name.gsub(" ", "")}_#{last_name}_#{id}_#{type}_#{NoPlanB::TextUtils.random_string(20)}"
   end
   
   def is_connection_creator(connected_user, con)
