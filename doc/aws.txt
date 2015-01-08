@@ -1,7 +1,48 @@
 54.193.206.174
 
 
+Elastic Beanstalk Installation Of TBM using RDS
+===============================================
+
+
+
+Deployment steps creating a new RDS created by EB and new EB environment
+------------------------------------------------------------------------
+
+For dev servers
+
+Elastic Beanstalk
+  - application 
+    - use zazo-dev
+  
+  - Environment
+    - use zazo-devn-n where n-nn is the version of the server (zazo-dev1-40)
+    - For a simple change to the server where existing clients will still work do not change the version number just ob-deploy to the right environment.
+    - For a change that where you want to keep the old environment running for legacy dev clients create a new environment with a new version.
+
+RDS
+  - Instance zazo-dev
+    - This instance was created with security group open-ssh and publicly accessible to allow access with mysql client remotely through ssh.
+    - To access: mysql -h zazo-dev.czebeq6fsif6.us-west-1.rds.amazonaws.com -P 3306 -u admin -p
+                 pw = Statorama1
+    - database.yml
+      production:
+        adapter: mysql2
+        encoding: utf8
+        database: zazo_dev_1_4
+        username: admin
+        password: Statorama1
+        host: zazo-dev.czebeq6fsif6.us-west-1.rds.amazonaws.com
+        port: 3306
+        
+  - If a deployment does not require a change to the database or a migration that can be done on an existing database without  
+    
+  
+        
+
+
 AWS Services to use
+-------------------
 
 EC2
 Elastic beanstalk
@@ -13,22 +54,6 @@ Elastic Beanstalk
 IAM
 Trusted Advisor
 o SNS - will not work for us. Uses subscriber and topics.
-
-
-
-Elastic Beanstalk Installation Of TBM using RDS
-===============================================
-
-MySql 
-Log into a remote rds instance that is publicly accessible.
-mysql -h tbm1-4.czebeq6fsif6.us-west-1.rds.amazonaws.com -P 3306 -u admin -p
-
-
-Deployment steps creating a new RDS created by EB and new EB environment
-------------------------------------------------------------------------
-
-
-
 
 
 Problems and solutions
