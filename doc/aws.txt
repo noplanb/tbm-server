@@ -19,6 +19,11 @@ o SNS - will not work for us. Uses subscriber and topics.
 Elastic Beanstalk Installation Of TBM using RDS
 ===============================================
 
+MySql 
+Log into a remote rds instance that is publicly accessible.
+mysql -h tbm1-4.czebeq6fsif6.us-west-1.rds.amazonaws.com -P 3306 -u admin -p
+
+
 Deployment steps creating a new RDS created by EB and new EB environment
 ------------------------------------------------------------------------
 
