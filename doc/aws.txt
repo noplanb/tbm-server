@@ -35,9 +35,18 @@ RDS
         host: zazo-dev.czebeq6fsif6.us-west-1.rds.amazonaws.com
         port: 3306
         
-  - If a deployment does not require a change to the database or a migration that can be done on an existing database without  
+  - If a deployment does not requires no change to the database or a migration that can be done on the current existing database without affecting existing clients on an older environment 
+    - just deploy without touching database.yml
     
-  
+  - If a deployment requires a change to the database that cannot be done as a migration to existing db or is not backwards compatible with another environment that we want to preserve
+    - Create a new database on the instance:
+      - log in using mysql per above.
+      - database create zazo_dev_n_n
+      - Change database.yml to point to that database.
+      - When you do eb deploy it will run a migration on that fresh db and use it.
+    
+S3
+  - Make sure you grant permission to IAM user for the contents of the bucket rather than the bucket. videos.zazo.com/*
         
 
 
