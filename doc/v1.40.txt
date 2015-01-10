@@ -18,4 +18,3 @@ Modifications to FTM
 --------------------
   see FileTransferManager/doc/v0.5.x
   
-
