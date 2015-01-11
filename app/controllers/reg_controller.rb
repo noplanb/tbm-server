@@ -1,6 +1,6 @@
 class RegController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :verify_user, except: [:reg, :debug_get_user]
+  before_filter :authenticate, except: [:reg, :debug_get_user]
   
   def reg  
     raw_phone = params[:mobile_number]

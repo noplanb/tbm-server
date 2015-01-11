@@ -1,7 +1,7 @@
 require "no_plan_b/core_extensions/ruby/string"
 
 class VideosController < ApplicationController  
-  skip_before_filter :verify_authenticity_token
+  before_filter :authenticate
     
   def create
     video = Video.create_or_update(filename: params[:filename], file: params[:file])

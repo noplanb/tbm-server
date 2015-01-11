@@ -1,5 +1,6 @@
 class NotificationController < ApplicationController  
   skip_before_filter :verify_authenticity_token
+  before_filter :authenticate
   
   def set_push_token
     PushUser.create_or_update(push_user_params)
