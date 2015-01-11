@@ -7,18 +7,11 @@ class ApplicationController < ActionController::Base
   # ==================
   # = Before filters =
   # ==================
-  def verify_user
-    set_user
-    if @user.blank? || @user.auth != params[:auth] 
-      render nothing: true, status: :unauthorized
-      return false
+  
+  def authenticate
+    authenticate_or_request_with_http_digest(REALM) do |mkey|
+        USERS[username]
     end
-    true
   end
-  
-  def set_user
-    @user = User.find_by_mkey(params[:mkey])
-  end
-  
 
 end

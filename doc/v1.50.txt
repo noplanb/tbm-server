@@ -1,0 +1,14 @@
+v1.5
+
+
+Use httpDigest authentication
+-----------------------------
+ - branch code hhtpauth
+ - add auth to controllers
+   - dispatch
+   - invitation
+   - notification 
+   - reg
+   - s3_infos
+   - version
+   - videos
