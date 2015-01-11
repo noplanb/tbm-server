@@ -20,9 +20,22 @@ class DigestController < ApplicationController
   end
 
   private
-    def authenticate
-      authenticate_or_request_with_http_digest(REALM) do |username|
-        USERS[username]
-      end
+  def verify_user
+    set_user
+    if @user.blank? || @user.auth != params[:auth] 
+      render nothing: true, status: :unauthorized
+      return false
     end
+    true
+  end
+  
+  def set_user
+    @user = User.find_by_mkey(params[:mkey])
+  end
+  
+  def authenticate
+    authenticate_or_request_with_http_digest(REALM) do |username|
+      USERS[username]
+    end
+  end
 end

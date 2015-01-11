@@ -12,3 +12,7 @@ Use httpDigest authentication
    - s3_infos
    - version
    - videos
+
+
+TODO: 
+ - fix dispatch first line bug in server 1.4 and deploy. 
