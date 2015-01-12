@@ -14,11 +14,14 @@ Use httpDigest authentication
 
  - IOS / Android
    x Add user credentials to all http requests
-   - Remove never put auth in the parameters for requests
-   - Remove mkey from the parameters for requests except:
-     - Notification#set_push_user
+   x Remove never put auth in the parameters for requests
+   x Remove mkey from the parameters for requests except:
+     x Notification#set_push_user
    
  - Android
+   - Instructions for Andrey
+ 
+ - Release. deploy as 1_5 in eb.
 
 TODO: 
  - fix dispatch first line bug in server 1.4 and deploy. 
