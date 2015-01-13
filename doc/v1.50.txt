@@ -1,0 +1,27 @@
+v1.5
+
+
+Use httpDigest authentication
+-----------------------------
+ x branch code hhtpauth
+ x add auth to controllers
+   x dispatch
+   x invitation
+   x notification 
+   x reg
+   x s3_infos
+   x videos
+
+ x IOS / Android
+   x Add user credentials to all http requests
+   x Remove never put auth in the parameters for requests
+   x Remove mkey from the parameters for requests except:
+     x Notification#set_push_user
+   
+ x Android
+   x Instructions for Andrey
+ 
+ x Release. deploy as 1_5 in eb.
+
+TODO: 
+ x fix dispatch first line bug in server 1.4 and deploy. 
