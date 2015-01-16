@@ -1,16 +1,10 @@
 class S3Info < ActiveRecord::Base
     
-  validates :region, inclusion: { in: region_list=%w(us_east_1 us_west_1 us_west_2 ap_southeast_1 ap_southeast_2 ap_northeast_1 sa_east_1), message: "bust either: #{region_list.join(', ')}" }
+  validates :region, inclusion: { in: region_list=%w(us-east-1 us-west-1 us-west-2 ap-southeast-1 ap-southeast-2 ap-northeast-1 sa-east-1), message: "must either: #{region_list.join(', ')}" }
   validates :region, :bucket, :access_key, :secret_key, presence: true
   
   def only_app_attributes
-    r = attributes.symbolize_keys.slice(:bucket, :access_key, :secret_key)
-    r[:region] = region.to_s
-    r
-  end
-  
-  def region_str
-    region.to_s
+    attributes.symbolize_keys.slice(:bucket, :access_key, :secret_key, :region)
   end
   
 end
