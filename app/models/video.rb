@@ -6,7 +6,7 @@ class Video < ActiveRecord::Base
   paperclip_options = {
     use_timestamp: false
   }
-  if APP_CONFIG[:use_s3]
+  if false && APP_CONFIG[:use_s3]
     paperclip_options = {
       use_timestamp: false,
       storage: :s3,
@@ -16,7 +16,7 @@ class Video < ActiveRecord::Base
   end
     
   
-  # has_attached_file :file, paperclip_options
+  has_attached_file :file, paperclip_options
   # validates_attachment_presence :file
   # do_not_validate_attachment_file_type :file
   validates_attachment_content_type :file, :content_type => /\A(audio|image|video)\/.*\Z/
