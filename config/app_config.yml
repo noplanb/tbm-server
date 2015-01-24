@@ -12,14 +12,11 @@ defaults: &settings
   twilio_ssid: "ACe5e5ec0578491107044c959f906b3f09"
   twilio_token: "f5c4ef94c00d76960d27eb28ed03a8c1"
   app_schema: "zazo://"
-  admin_ids:
-  - 2
-  - 3
-  s3_bucket: videos.threebyme.com
+  use_s3: false
+
 
 development: 
   <<: *settings
-  use_s3: false
 
 test:
   <<: *settings
@@ -27,10 +24,8 @@ test:
 staging:
   <<: *settings
   site_url: http://staging.threebyme.com
-  s3_bucket: staging.threebyme.com
 
 production:
   <<: *settings
-  use_s3: false
   site_url: http://www.threebyme.com
 

@@ -1,5 +1,5 @@
 class VersionController < ApplicationController
-    
+  
   def check_compatibility
     v = params[:version].to_i
     r = "error"

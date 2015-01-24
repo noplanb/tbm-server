@@ -92,12 +92,16 @@ class UsersController < ApplicationController
   
   def create_test_video(sender, receiver)
     video_id = Time.now.to_i.to_s
-    Video.create filename: video_filename(sender, receiver, video_id), file: test_video.file
+    s3 = AWS::S3.new(access_key_id: S3Info.first.access_key, secret_access_key: S3Info.first.secret_key, region: S3Info.first.region)
+    b = s3.buckets[S3Info.first.bucket]
+    o = b.objects[video_filename(sender, receiver, video_id)]
+    o.write(file: "#{Rails.root}/test_video.mp4")         
     video_id
   end
   
   def video_filename(sender, receiver, video_id)
-    "#{sender.mkey}-#{receiver.mkey}-#{video_id}-filename"
+    c = Connection.live_between(sender.id, receiver.id).first
+    "#{sender.mkey}-#{receiver.mkey}-#{c.ckey}-#{video_id}-filename"
   end
   
   def test_video

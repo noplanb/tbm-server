@@ -1,4 +1,6 @@
 
+s3 = AWS::S3.new(:access_key_id => 'AKIAJAB6VZVOPTV6JQWA', :secret_access_key => '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', :region => "us-west-1")
+b = s3.buckets["test.sani.com"]
 
 
 m = ActionMailer::Base.mail(to:"sani@sbcglobal.net", subject:"test", body:"testbody")

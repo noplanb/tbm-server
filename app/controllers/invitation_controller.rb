@@ -1,7 +1,6 @@
 class InvitationController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :verify_user
-  before_filter :validate_phone
+  before_filter :authenticate, :validate_phone
   
   def invite    
     invitee = User.find_by_mobile_number(params[:mobile_number]) || User.create(invitee_params)

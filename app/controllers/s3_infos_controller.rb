@@ -1,6 +1,6 @@
 class S3InfosController < ApplicationController
   http_basic_authenticate_with :name => "admin", :password => "Statorama1", except: :info
-  before_filter :verify_user, only: :info
+  before_filter :authenticate, only: :info
   
   # =====================
   # = Mobile client api =

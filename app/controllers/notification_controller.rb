@@ -1,5 +1,6 @@
 class NotificationController < ApplicationController  
-  skip_before_filter :verify_authenticity_token
+  before_filter :authenticate
+  before_filter :send_notification_enabled, only:[:send_video_received, :send_video_status_update]
   
   def set_push_token
     PushUser.create_or_update(push_user_params)
@@ -73,6 +74,11 @@ class NotificationController < ApplicationController
   
   def push_user_params
     params.permit(:mkey, :push_token, :device_platform, :device_build)
+  end
+  
+  def send_notification_enabled
+    # render json: {status:"failure"}
+    return true
   end
   
 end
