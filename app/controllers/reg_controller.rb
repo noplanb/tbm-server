@@ -38,9 +38,16 @@ class RegController < ApplicationController
   
   def verify_code
     if @user && @user.passes_verification(params[:verification_code])
+      
+      if (params[:device_platform].blank?)
+        Rails.logger.error("ERROR: reg/reg: no device_platform: #{params.inspect}")
+        render json: {status:"failure", title:"No Platform", msg:"No device_platform"}
+        return
+      end
+      
       # Update first and last here in case user decided to change his name to correct it
       # or something when logging in again.
-      @user.update_attributes first_name: params[:first_name], last_name: params[:last_name], status: :verified
+      @user.update_attributes first_name: params[:first_name], last_name: params[:last_name], status: :verified, device_platform: params[:device_platform]
       render json: {status: "success"}.merge(@user.only_app_attrs_for_user)
     else
       render json: {status: "failure"}
@@ -58,6 +65,6 @@ class RegController < ApplicationController
   private
   
   def user_params
-    params.permit(:first_name, :last_name, :mobile_number, :device_platform, :status)
+    params.permit(:first_name, :last_name, :mobile_number, :device_platform, :status, :verification_code)
   end
 end

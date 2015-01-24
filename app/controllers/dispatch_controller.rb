@@ -1,7 +1,6 @@
 class DispatchController < ApplicationController
   include NpbNotification
   
-  skip_before_filter :verify_authenticity_token
   before_filter :authenticate
   
   def post_dispatch    
