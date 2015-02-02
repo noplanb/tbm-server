@@ -8,7 +8,9 @@ class ApplicationController < ActionController::Base
   # = Before filters =
   # ==================
   def authenticate
+    debugger
     authenticate_or_request_with_http_digest(REALM) do |mkey|
+      debugger
       @user = User.find_by_mkey(mkey)
       @user && @user.auth 
     end

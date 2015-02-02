@@ -6,6 +6,7 @@ email:
   addresses:
     sani: elfishawy.sani@gmail.com
     andrey: aboyko@codeminders.com
+    serhii: skamenkovych@codeminders.com
 sms:
   from: elfishawy.sani@gmail.com
   subject_prefix: ZAZO

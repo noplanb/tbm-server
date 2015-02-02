@@ -32,7 +32,8 @@ class RegController < ApplicationController
   end
   
   def debug_get_user
-    user = User.find_by_mobile_number(params[:mobile_number]) || User.first
+    mobile = params[:country_code] ? "+#{params[:country_code]}#{params[:mobile_number]}" : params[:mobile_number]
+    user = User.find_by_mobile_number(mobile) || User.first
     render json: {status: "success"}.merge(user.only_app_attrs_for_user)
   end
   
