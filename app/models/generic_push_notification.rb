@@ -18,7 +18,7 @@ class GenericPushNotification
     @type = attrs[:type] || :silent
     @alert = attrs[:alert] unless @type == :silent
     @badge = attrs[:badge] unless @type == :silent
-    @sound = attrs[:sound] || (@type == :silent ? nil : "default")
+    @sound = attrs[:sound] || (@type == :silent ? nil : "NotificationTone.wav")
     @content_available =  attrs[:content_available] == false ? nil : true  # In our app for ios this should 
     @payload = attrs[:payload]        
   end
@@ -37,12 +37,12 @@ class GenericPushNotification
     params = if @build == :prod
       {
         host: "gateway.push.apple.com",
-        pem: "#{Rails.root}/certs/tbm_aps_prod.pem"
+        pem: "#{Rails.root}/certs/zazo_aps_prod.pem"
       }
     else
       {
         host: "gateway.sandbox.push.apple.com",
-        pem: "#{Rails.root}/certs/tbm_aps_dev.pem"
+        pem: "#{Rails.root}/certs/zazo_aps_dev.pem"
       }
     end
     APNS::Server.new(params)

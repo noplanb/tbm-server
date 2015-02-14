@@ -1,4 +1,13 @@
 
+ssh -i ~/.ssh/ec2.pem ubuntu@54.67.7.124
+
+http://54.67.7.124:9000/users
+
+ssh -N -R 9000:localhost:3000 -i ~/.ssh/ec2.pem ubuntu@54.67.7.124
+
+ssh -o ClearAllForwardings=yes -N -R 9000:localhost:3000 -i ~/.ssh/ec2.pem ubuntu@54.67.7.124
+
+
 s3 = AWS::S3.new(:access_key_id => 'AKIAJAB6VZVOPTV6JQWA', :secret_access_key => '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', :region => "us-west-1")
 b = s3.buckets["test.sani.com"]
 

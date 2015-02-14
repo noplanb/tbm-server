@@ -21,7 +21,6 @@ class NotificationController < ApplicationController
                    from_mkey: params[:from_mkey], 
                    video_id: params[:video_id]},
       :alert => "New message from #{params[:sender_name]}", 
-      :sound => "default", 
       :content_available  => true
     })    
     gpn.send
