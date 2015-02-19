@@ -119,7 +119,6 @@ class UsersController < ApplicationController
                    from_mkey: sender.mkey, 
                    video_id: video_id},
       :alert => "New message from #{sender.first_name}", 
-      :sound => "default", 
       :content_available  => true
     })    
     gpn.send
