@@ -83,8 +83,8 @@ class UsersController < ApplicationController
   def receive_test_video
     sender = User.find params[:sender_id]
     video_id = create_test_video(sender, @user)
-    send_video_received_notification(sender, @user, video_id)
     add_remote_key(sender, @user, video_id)
+    send_video_received_notification(sender, @user, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
   
@@ -126,7 +126,12 @@ class UsersController < ApplicationController
   end
   
   def add_remote_key(sender, receiver, video_id)
-    Kvstore.create(key1: "#{sender.mkey}-#{receiver.mkey}-VideoIdKVKey", key2: video_id, value: "{'videoId':'#{video_id}'}")
+    conn = Connection.live_between(sender.id, receiver.id).first
+    params = {}
+    params[:key1] = "#{sender.mkey}-#{receiver.mkey}-#{conn.ckey}-VideoIdKVKey"
+    params[:key2] = video_id
+    params[:value] = {'videoId' => video_id}.to_json
+    Kvstore.create_or_update params
   end
   
   # Use callbacks to share common setup or constraints between actions.
