@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.2'
 
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+gem 'sqlite3', group: [:development, :test]
 gem 'mysql2'
 # gem 'multi_json', '1.7.8' 
 
@@ -27,7 +27,6 @@ gem 'jquery-rails'
 gem 'turbolinks'
 
 gem 'aws-sdk', '< 2.0'
-gem 'paperclip'
 
 # Used in notifications
 gem 'httparty'
