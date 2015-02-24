@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
     return request.user_agent =~ /ios/i
   end
   
-  def store_link
-    android? ? APP_CONFIG[:android_store_link] : APP_CONFIG[:iphone_store_link]
+  def store_url
+    android? ? APP_CONFIG[:android_store_url] : APP_CONFIG[:iphone_store_url]
   end
 end

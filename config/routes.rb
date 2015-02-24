@@ -47,8 +47,8 @@ ThreebymeServer::Application.routes.draw do
   get 'invitation/has_app'
   
   get 'landing' => 'landing#index'
-  get 'landing/:id' => 'landing#invite'
   get 'l/:id' => 'landing#invite'
+  get 'landing/test'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -1,369 +1,54 @@
-/*
- * Globals
- */
-
-
- * {margin:0}
-html, body {
-	height: 100%;
-}
-body {
-	font-family: "Roboto", Times, serif;
-	color: #555;
-	font-size: 14px;
-}
+* {margin:0} 
 
 body {
-	background: #fff;
-}
-.padding_0_15px {
-	padding: 0 15px
-}
-h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
-	font-family: "Roboto", Helvetica, Arial, sans-serif;
+	font-family: "Roboto", Helvetica, Arial, sans-serif; color: #efefef; font-weight:300;
+  text-align:center;
+  background: #747161;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0); 
+  -webkit-tap-highlight-color: transparent;  // i.e. Nexus5/Chrome and Kindle Fire HD 7''
 }
 
-.top_heading {
- 	font-size: 100px;
-	font-weight: 700;
+button{
+  cursor:pointer;
 }
 
-
-.middle_heading {
-	font-size: 45px;
-	font-weight: 100;
-	font-style: italic;
-}
-
-.bottom_heading {
-	font-size: 24px;
-	font-weight: 100;
-	font-style: italic;
-
-}
-
-@media (max-width: 767px){
-	.top_heading {
-		font-size: 50px;
-	}
-	.middle_heading {
-		font-size: 24px;
-
-	}
-	.bottom_heading {
-		font-size: 14px;
-	}
-}
-/*
- * Override Bootstrap's default container.
- */
-
-@media (min-width: 1200px) {
-.container {
-	width: 970px;
-}
-}
-
-/*=====================Content css=======================*/
-header {
-	height: 130px;
-}
-
-
-
-
-header {
-	border-bottom: 1px solid #000;
-}
-
-body{
-	color: #353434;
-}
-/*.font-gotham_condensed {
-	font-family: 'PT Sans Narrow', sans-serif;
-}*/
-
-
-.border-top1px {
-	border-top: 1px solid #dfdfdf;
-	box-shadow: 0 1px 0 #a0a0a0;
-}
-
-.margin_bottom40 {
-	margin-bottom: 40px;
-}
-.border-top_black {
-	border-top: 1px solid #000;
-}
-.search_box {
-	right:0;
-	top: 41px;
-	z-index: 100000;
-	position: absolute;
-}
-
-
-
-.margin_70px_0_60px {
-	margin: 80px 0 60px;
-}
-.margin_top_0 {
-	margin-top: 0;
-}
-
-.main li a:hover, .main li a:active  {
-	color: #000;
-}
-
-
-.input-group .form-control {
-	background-color: #ccc;
-	border-radius: 0;
-	font-size: 10px;
-	height: 20px;
-	padding: 4px;
-	width: 95%;
-}
-
-.input-group .form-control::-moz-placeholder {
-	color: #000 !important;
-}
-
-.input-group .btn {
-	background-color: #ccc;
-	border-radius: 0;
-	font-size: 10px;
-	padding: 2px;
-}
-.search {
-	background: #FFFFFF;
-}
-.footer_links {
-	display: inline;
-}
-.footer_links li{
-	float: left;
-
-}
-.footer_links li a{
-	color:#000;
-	padding: 0 6px;
-	border-right: 1px solid;
-}
-
-
-/********************border radius*************/
-.border_radius_4px {
-	border-radius: 4px
-}
-.border_radius_10px {
-	border-radius: 10px
-}
-.border_radius_15px {
-	border-radius: 15px
-}
-.border_radius_18px {
-	border-radius: 18px
-}
-.border_radius_7px {
-	border-radius: 7px
-}
-.border_radius_7px_7px_0_0{
-		border-top-left-radius:7px;
-		border-top-right-radius:7px;
-}
-/********************border radius*************/
-
-/********************margins and paddings*************/
-.no_margin{margin:0 !important}
-.no_padding {padding: 0 !important;}
-.margin_top10px {
-	margin-top: 10px
-}
-.margin_top20{
-	margin-top:20px
-}
-
-.margin_top50{
-	margin-top:50px
-}
-
-.margin_bottom5px {
-	margin-bottom:5px
-}
-.margin_bottom10px{
-	margin-bottom:10px
-}
-.margin_bottom15px{
-	margin-bottom:15px
-}
-.margin_left20 {
-	margin-left:20px
-}
-.margin_top25px {
-	margin-top: 25px;
-}
-.margin_top42px {
-	margin-top: 42px;
-}
-.padding_15px {
-	padding: 15px
-}
-.padding15px_0 {
-	padding: 15px 0;
-}
-.padding_20px{padding:20px}
-
-.padding_10em_20em {
-	padding: 10% 0;
-}
-/********************margins and paddings*************/
-
-.wrapper {
-/*	min-height: 100%;
-	margin-bottom: -271px*/
-}
-.wrapper:after {
-	content: "";
-	display: block;
-	clear: both;
-}
-.wrapper:after, .footer {
-	height:auto;
-}
-
-.heading{
-	color: #336699;
-}
 
 .top {
-  background-color: #f88b00;
-	color: #ffffff;
+  background-color: #F68A25; color: #ffffff; padding:60px 0px 35px;
+}
+
+.salutation { font-size: 40px; font-weight: 700; padding-bottom:18px; }
+.message { font-size: 25px; font-weight:300; font-style: italic; padding-bottom:20px; }
+.closing { font-size: 16px; font-weight: 300; font-style: italic; padding-bottom: 50px; }
+
+@media (max-width: 350px){
+	.salutation { font-size: 32px; }
+	.message { font-size: 20px; }
+	.closing { font-size: 14px; }
+  .store_icon img{ width:120px; }
 }
 
 .middle {
-	background-color: #4e4d43;
-
-}
-
-.text_download {
-	font-size: 14px;
-	font-style: italic;
-	color: #aaa;
-	font-weight: 100;
-	margin-bottom: 60px;
-}
-.get_btn {
-	background: #99c42d;
-	border: 8px solid #3e3e36;
-	border-radius: 70px;
-	color: #ffffff;
-	font-weight: 100;
-	font-size: 30px;
-	padding: 20px 50px;
-	margin-bottom: 40px;
-}
-.get_btn:hover {
-	color:#ffffff;
+	background-color: #4e4d43; padding:50px 0px;
+  
+  .text_download {
+  	font-size: 14px; font-style: italic; color: #aaa; font-weight: 300;
+  	padding-bottom: 40px;
+  }
 }
 
 .bottom {
-	background-color: #747161;
-
+  padding: 50px 0px;
+  .tagline{
+  	font-size: 12px; padding-top:20px;
+  } 
 }
 
-.bottom_content {
-	color: #ffffff;
-	margin-top: 50px;
-	font-weight: 100;
-}
-.horizontal_line{
-	margin-bottom:15px;
-	border-bottom:1px solid #CBCBCB
-	}
-	
-	.table_header {
-		background:#32BFE3;
-		color:#FFFFFF;
-	}
-	.bg_green{
-		background:#ccff99
-	}
-	.bg_grey{
-		background:#f8f8f8;
-	}
-	
-
-	.border_right {
-		border-right:1px solid #A09F9F
-	}
-	.arial {
-		font-family:Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif
-	}
-
-
-
-
-
-/*=====================Content css=======================*/
-
-
-/*
- * Masthead for nav
- */
-
-
-/*
- * Main column and sidebar layout
- */
-
-
-/* Pagination */
-.pager {
-	margin-bottom: 60px;
-	text-align: left;
-}
-.pager > li > a {
-	width: 140px;
-	padding: 10px 20px;
-	text-align: center;
-	border-radius: 30px;
-}
-/*
- * Blog posts
- */
-
-.blog-post {
-	margin-bottom: 60px;
-}
-.blog-post-title {
-	margin-bottom: 5px;
-	font-size: 40px;
-}
-.blog-post-meta {
-	margin-bottom: 20px;
-	color: #999;
-}
-/*
- * Footer
- */
-
-.footer {
-	margin-top: 18px;
-	color: #acacac;
-	font-size: 11px;
-	border-top: 1px solid #fff;
-	padding: 5px 0 10px;
-}
-.footer {
-	border-top: 1px solid #000;
-	color: #000;
-	text-align: right;
-}
-.footer a {
-	color: #000;
-}
-
-.blog-footer p:last-child {
-	margin-bottom: 0;
+.get_btn {
+	background: #9AC23B;
+	border: 4px solid #333;
+	border-radius: 70px;
+	font-size: 24px; font-weight: 300; color: #ffffff;
+	padding: 20px 50px;
+	margin-bottom: 40px;
 }
