@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class CredentialsTest < ActiveSupport::TestCase
+class CredentialTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
