@@ -1,11 +1,11 @@
 class CreateCredentials < ActiveRecord::Migration
   def change
     create_table :credentials do |t|
-      t.string :type
+      t.string :cred_type
       t.string :cred
 
       t.timestamps
     end
-    add_index :credentials, :type
+    add_index :credentials, :cred_type
   end
 end
