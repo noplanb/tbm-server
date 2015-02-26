@@ -3,6 +3,7 @@ require 'spec_helper'
 describe SpecificCredential do  
   
   it "creates or returns singleton for instance" do 
+    
     # Kill all specific credentials
     SpecificCredential.all.each{|sc| sc.destroy}
     SpecificCredential.count.should == 0
@@ -10,7 +11,7 @@ describe SpecificCredential do
     # Instance should return a new empty sc since none were in the db.
     sc = SpecificCredential.instance
     sc.cred_type.should == SpecificCredential::CRED_TYPE
-    sc.cred.should be_nil
+    sc.cred.should_not be_nil
     
     SpecificCredential::ATTRIBUTES.each do |a|
       sc.send(a).should be_nil

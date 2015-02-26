@@ -13,17 +13,12 @@ class SpecificCredential < Credential
   before_save :set_cred_with_attrs
   after_initialize :set_cred_type
   
-  # def initialize(params={})
-  #   params.merge!(cred_type: CRED_TYPE)
-  #   super(params)
-  # end
-  
   def self.instance
     if found = find_by_cred_type(self::CRED_TYPE)
       found.set_attrs_with_cred
       return found
     else
-      new
+      create
     end
   end
   
