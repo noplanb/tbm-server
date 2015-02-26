@@ -9,7 +9,7 @@ Use httpDigest authentication
    x invitation
    x notification 
    x reg
-   x s3_infos
+   x s3_credentials
    x videos
 
 

@@ -1,0 +1,23 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Region:</strong>
+  <%= @s3_credential.region %>
+</p>
+
+<p>
+  <strong>Bucket:</strong>
+  <%= @s3_credential.bucket %>
+</p>
+
+<p>
+  <strong>Access key:</strong>
+  <%= @s3_credential.access_key %>
+</p>
+
+<p>
+  <strong>Secret key:</strong>
+  <%= @s3_credential.secret_key %>
+</p>
+
+<%= link_to 'Edit', edit_s3_credential_path(@s3_credential) %>

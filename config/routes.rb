@@ -1,7 +1,7 @@
 ThreebymeServer::Application.routes.draw do
 
-  get 's3_infos/info'
-  resources :s3_infos
+  get 's3_credentials/info'
+  resources :s3_credentials
   resources :connections
   resources :users
   
