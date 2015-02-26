@@ -17,10 +17,7 @@
 config/s3.yml
 public/system
 config/app_config_local.yml
-.ruby-version
-.rvmrc
 .elasticbeanstalk/
-Gemfile.lock
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
