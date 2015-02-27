@@ -4,12 +4,12 @@ RSpec.describe S3Credential, type: :model do
   let(:instance) { S3Credential.instance }
 
   context 'attributes' do
-    subject { S3Credential.credentail_attributes }
+    subject { S3Credential.credential_attributes }
     it { is_expected.to match_array [:region, :access_key, :secret_key, :bucket] }
   end
 
   context 'methods' do
-    S3Credential.credentail_attributes.each do |attr|
+    S3Credential.credential_attributes.each do |attr|
       it { is_expected.to respond_to(attr) }
       it { is_expected.to respond_to(:"#{attr}=") }
     end
