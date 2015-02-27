@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe S3Credential do
   let(:instance) { S3Credential.instance }
+  let(:instance) { S3Credential.instance }
 
   context "attributes" do
     subject { S3Credential.credentail_attributes }

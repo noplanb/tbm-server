@@ -12,9 +12,9 @@ module SpecificCredential
     end
 
     def instance
-      if found = find_by_cred_type(self::CRED_TYPE)
+      if found = find_by_cred_type(credentail_type)
         found.set_attrs_with_cred
-        return found
+        found
       else
         create
       end
