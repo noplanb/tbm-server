@@ -14,5 +14,6 @@ class SmsManager
     to = Rails.env.development? ? Figaro.env.twilio_to_number : user.mobile_number
     msg = "#{APP_CONFIG[:app_name]} access code: #{user.verification_code}"
     send_sms(to, msg)
+    logger.info "send_verification_sms: to:#{to} msg:#{msg}"
   end
 end

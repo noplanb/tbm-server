@@ -3,24 +3,25 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   # protect_from_forgery with: :exception
   REALM = "zazo.com"
-  
+
   # ==================
   # = Before filters =
   # ==================
   def authenticate
+    debugger
     authenticate_or_request_with_http_digest(REALM) do |mkey|
       @user = User.find_by_mkey(mkey)
-      @user && @user.auth 
+      @user && @user.auth
     end
   end
-  
+
   # ==============================
   # = User Agent related methods =
   # ==============================
   def mobile_device?
     return request.user_agent =~ /mobile|webos/i
   end
-  
+
   def android?
     return request.user_agent =~ /android/i
   end
@@ -28,7 +29,7 @@ class ApplicationController < ActionController::Base
   def ios?
     return request.user_agent =~ /ios/i
   end
-  
+
   def store_url
     android? ? APP_CONFIG[:android_store_url] : APP_CONFIG[:iphone_store_url]
   end

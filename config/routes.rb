@@ -4,12 +4,13 @@ ThreebymeServer::Application.routes.draw do
   resources :s3_credentials
   resources :connections
   resources :users
-  
+
+  get 's3_infos/info' => 's3_credentials#info'
   get 'digest/open'
   get 'digest/secure'
-  
+
   post 'dispatch/post_dispatch'
-  
+
   get 'users/new_connection/:id' => 'users#new_connection'
   get 'users/establish_connection/:id' => 'users#establish_connection'
   get 'users/receive_test_video/:id' => 'users#receive_test_video'
@@ -17,7 +18,7 @@ ThreebymeServer::Application.routes.draw do
   post 'videos/create'
   get 'videos/get'
   get 'videos/delete'
-  
+
   get 'reg/reg'
   get 'reg/verify_code'
   get 'reg/get_friends'
@@ -27,29 +28,29 @@ ThreebymeServer::Application.routes.draw do
   post 'notification/send_video_received'
   post 'notification/send_video_status_update'
   get 'notification/load_test_send_notification'
-  
+
   post 'kvstore/set'
   get 'kvstore/get'
   get 'kvstore/get_all'
   get 'kvstore/delete'
   get 'kvstore/load_test_read'
   get 'kvstore/load_test_write'
-  
+
   get 'kvstore_admin'=> 'kvstore_admin#index'
   get 'kvstore_admin/delete_all'=> 'kvstore_admin#delete_all'
 
   get 'version/check_compatibility'
-  
+
   get 'invite_mockup' => 'invite_mockup#index'
   get 'invite_mockup/user/:id' => 'invite_mockup#user'
-  
+
   get 'invitation/invite'
   get 'invitation/has_app'
-  
+
   get 'landing' => 'landing#index'
   get 'l/:id' => 'landing#invite'
   get 'landing/test'
-  
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

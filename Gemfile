@@ -65,13 +65,11 @@ gem 'gcm'
 gem 'apns', github: 'noplanb/APNS'
 
 # Phone helpers
-# gem 'twilio-ruby', '~> 3.12'
 gem 'twilio-ruby'
 gem 'global_phone'
 gem 'pry-rails'
 gem 'figaro'
 gem 'awesome_print'
-gem 'puma'
 
 group :development do
   gem 'better_errors'
