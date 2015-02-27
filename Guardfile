@@ -88,7 +88,7 @@ guard :bundler do
   files.each { |file| watch(helper.real_path(file)) }
 end
 
-guard :rubocop do
+guard :rubocop, all_on_start: false, cli: ['--format', 'clang', '--rails'] do
   watch(%r{.+\.rb$})
   watch(%r{(?:.+/)?\.rubocop\.yml$}) { |m| File.dirname(m[0]) }
 end
