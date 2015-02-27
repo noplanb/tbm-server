@@ -130,6 +130,8 @@ GEM
       guard (~> 2.2)
       guard-compat (~> 1.1)
     guard-compat (1.2.1)
+    guard-pow (2.0.0)
+      guard (~> 2.0)
     guard-rails (0.7.1)
       guard (~> 2.11)
       guard-compat (~> 1.0)
@@ -310,6 +312,7 @@ DEPENDENCIES
   gcm
   global_phone
   guard-bundler
+  guard-pow
   guard-rails
   guard-rspec
   guard-rubocop

@@ -78,6 +78,7 @@ group :development do
   gem 'guard-rails'
   gem 'guard-rspec'
   gem 'guard-rubocop'
+  gem 'guard-pow', require: false
   gem 'quiet_assets'
   gem 'rb-fchange', require: false
   gem 'rb-fsevent', require: false

@@ -92,3 +92,16 @@ guard :rspec, cmd: 'bundle exec rspec' do
     Dir[File.join("**/#{m[1]}.feature")][0] || 'spec/acceptance'
   end
 end
+
+guard :pow do
+  watch('.powrc')
+  watch('.powenv')
+  watch('.rvmrc')
+  watch('.ruby-version')
+  watch('Gemfile')
+  watch('Gemfile.lock')
+  watch('config/application.rb')
+  watch('config/environment.rb')
+  watch(%r{^config/environments/.*\.rb$})
+  watch(%r{^config/initializers/.*\.rb$})
+end
