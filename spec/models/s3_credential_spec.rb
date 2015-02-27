@@ -1,9 +1,9 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe S3Credential do
+RSpec.describe S3Credential, type: :model do
   let(:instance) { S3Credential.instance }
 
-  context "attributes" do
+  context 'attributes' do
     subject { S3Credential.credentail_attributes }
     it { is_expected.to match_array [:region, :access_key, :secret_key, :bucket] }
   end
@@ -15,16 +15,16 @@ describe S3Credential do
     end
   end
 
-  context "validations" do
+  context 'validations' do
     it { is_expected.to validate_inclusion_of(:region).in_array(%w(us-east-1 us-west-1 us-west-2 ap-southeast-1 ap-southeast-2 ap-northeast-1 sa-east-1)) }
   end
 
-  describe "methods" do
+  describe 'methods' do
     before do
-      instance.region = "us-east-1"
-      instance.bucket = "bucket"
-      instance.access_key = "access_key"
-      instance.secret_key = "secret_key"
+      instance.region = 'us-east-1'
+      instance.bucket = 'bucket'
+      instance.access_key = 'access_key'
+      instance.secret_key = 'secret_key'
     end
 
     context '#id' do
@@ -39,22 +39,22 @@ describe S3Credential do
 
     context '#region' do
       subject { instance.region }
-      it { is_expected.to eq("us-east-1") }
+      it { is_expected.to eq('us-east-1') }
     end
 
     context '#bucket' do
       subject { instance.bucket }
-      it { is_expected.to eq("bucket") }
+      it { is_expected.to eq('bucket') }
     end
 
     context '#access_key' do
       subject { instance.access_key }
-      it { is_expected.to eq("access_key") }
+      it { is_expected.to eq('access_key') }
     end
 
     context '#secret_key' do
       subject { instance.secret_key }
-      it { is_expected.to eq("secret_key") }
+      it { is_expected.to eq('secret_key') }
     end
   end
 end
