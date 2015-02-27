@@ -27,3 +27,6 @@ config/app_config_local.yml
 
 # Ignore application configuration
 /config/application.yml
+
+# Sani temp
+/config/sani_old_db.yml
