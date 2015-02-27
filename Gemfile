@@ -70,6 +70,7 @@ gem 'twilio-ruby'
 gem 'global_phone'
 gem 'pry-rails'
 gem 'figaro'
+gem 'awesome_print'
 
 group :development do
   gem 'better_errors'
