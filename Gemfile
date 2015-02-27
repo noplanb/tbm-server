@@ -3,9 +3,6 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails'
 
-
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3', group: [:development, :test]
 gem 'mysql2'
 # gem 'multi_json', '1.7.8'
 
@@ -36,10 +33,10 @@ gem 'aws-sdk', '< 2.0'
 # Used in notifications
 gem 'httparty'
 
-# gem 'npb_logging', :git => "git://github.com/etcetc/npb_logging.git"
-gem 'console_candy', :git => 'git://github.com/etcetc/console_candy.git'
-gem 'npb_notification', :git => 'git://github.com/etcetc/npb_notification.git'
-gem 'enum_handler', :git => 'git://github.com/etcetc/enum_handler.git'
+# gem 'npb_logging', github: 'etcetc/npb_logging'
+gem 'console_candy', github: 'etcetc/console_candy'
+gem 'npb_notification', github: 'etcetc/npb_notification'
+gem 'enum_handler', github: 'etcetc/enum_handler'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 1.2'
@@ -62,28 +59,40 @@ gem 'enum_handler', :git => 'git://github.com/etcetc/enum_handler.git'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-gem 'byebug', group: [:development, :test]
 
 # Push Notification servers
 gem 'gcm'
-gem 'apns', :git => 'git://github.com/noplanb/APNS.git'
+gem 'apns', github: 'noplanb/APNS'
 
 # Phone helpers
 # gem 'twilio-ruby', '~> 3.12'
 gem 'twilio-ruby'
 gem 'global_phone'
+gem 'pry-rails'
+
+group :development do
+  gem 'better_errors'
+  gem 'guard-bundler'
+  gem 'guard-rails'
+  gem 'guard-rspec'
+  gem 'guard-rubocop'
+  gem 'quiet_assets'
+  gem 'rb-fchange', require: false
+  gem 'rb-fsevent', require: false
+  gem 'rb-inotify', require: false
+end
 
 # Testing
 group :development, :test do
-  gem "rspec-rails"
-  gem "factory_girl_rails"
-  gem "database_cleaner"
+  gem 'pry-rescue'
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
 end
 
 group :test do
-  gem "faker"
-  gem "capybara"
-  gem "guard-rspec"
-  gem "launchy"
-  gem "shoulda-matchers"
+  gem 'database_cleaner'
+  gem 'faker'
+  gem 'capybara'
+  gem 'launchy'
+  gem 'shoulda-matchers'
 end
