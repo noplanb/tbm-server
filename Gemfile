@@ -71,6 +71,7 @@ gem 'global_phone'
 gem 'pry-rails'
 gem 'figaro'
 gem 'awesome_print'
+gem 'puma'
 
 group :development do
   gem 'better_errors'
@@ -89,6 +90,8 @@ end
 # Testing
 group :development, :test do
   gem 'pry-rescue'
+  gem 'pry-remote'
+  gem 'pry-byebug'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
 end
