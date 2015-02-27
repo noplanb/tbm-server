@@ -1,0 +1,33 @@
+domain_name: localhost:3000
+secret_key_base:
+smtp_address:
+smtp_port: '587'
+smtp_user_name:
+smtp_password:
+db_name: tbm
+db_username: root
+db_password:
+db_host: localhost
+db_port: '3306'
+http_basic_username: admin
+http_basic_password: Statorama1
+gcm_uri: https://android.googleapis.com/gcm/send
+gcm_api_key:
+twilio_ssid:
+twilio_token:
+twilio_from_number:
+twilio_to_number:
+
+test:
+  db_name: tbm_test
+
+staging:
+  domain_name:
+
+production:
+  domain_name:
+  secret_key_base:
+  db_name:
+  db_username:
+  db_password:
+  db_host:

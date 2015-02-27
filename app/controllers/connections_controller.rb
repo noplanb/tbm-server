@@ -1,6 +1,6 @@
 class ConnectionsController < ApplicationController
-  http_basic_authenticate_with :name => "admin", :password => "Statorama1"
-  
+  http_basic_authenticate_with name: Figaro.env.http_basic_username, password: Figaro.env.http_basic_password
+
   before_action :set_connection, only: [:show, :edit, :update, :destroy]
 
   # GET /connections
@@ -64,13 +64,14 @@ class ConnectionsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_connection
-      @connection = Connection.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def connection_params
-      params.require(:connection).permit(:creator_id, :target_id, :status)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_connection
+    @connection = Connection.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def connection_params
+    params.require(:connection).permit(:creator_id, :target_id, :status)
+  end
 end

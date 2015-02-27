@@ -1,8 +1,9 @@
 ActionMailer::Base.smtp_settings = {
-:address => 'email-smtp.us-east-1.amazonaws.com',
-:port => '587',
-:user_name => "AKIAIEZZVOG6CHJYWIBQ",
-:password => "AobNshn+JUNb+618PJjrmNymDwuSx4sSwKXiGIegGLg+",
-:authentication => :plain,
-:enable_starttls_auto => true
+  address: Figaro.env.smtp_address,
+  port: Figaro.env.smtp_port.to_i,
+  user_name: Figaro.env.smtp_user_name,
+  password: Figaro.env.smtp_password,
+  domain: Figaro.env.domain_name,
+  authentication: :plain,
+  enable_starttls_auto: true
 }

@@ -69,6 +69,7 @@ gem 'apns', github: 'noplanb/APNS'
 gem 'twilio-ruby'
 gem 'global_phone'
 gem 'pry-rails'
+gem 'figaro'
 
 group :development do
   gem 'better_errors'

@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  http_basic_authenticate_with :name => "admin", :password => "Statorama1"
-  
+  http_basic_authenticate_with name: Figaro.env.http_basic_username, password: Figaro.env.http_basic_password
+
   before_action :set_user, only: [:show, :edit, :update, :destroy, :new_connection, :establish_connection, :receive_test_video]
 
   # GET /users
@@ -62,12 +62,12 @@ class UsersController < ApplicationController
       format.json { head :no_content }
     end
   end
-  
+
   # GET /users/new_connection/1
   def new_connection
     @users = User.all - [@user] - @user.connected_users
   end
-  
+
   def establish_connection
     respond_to do |format|
       if connection = Connection.find_or_create(@user.id, params[:target_id])
@@ -78,7 +78,7 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
   # Send test_video
   def receive_test_video
     sender = User.find params[:sender_id]
@@ -87,52 +87,50 @@ class UsersController < ApplicationController
     send_video_received_notification(sender, @user, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
-  
+
   private
-  
+
   def create_test_video(sender, receiver)
     video_id = Time.now.to_i.to_s
     s3 = AWS::S3.new(access_key_id: S3Info.first.access_key, secret_access_key: S3Info.first.secret_key, region: S3Info.first.region)
     b = s3.buckets[S3Info.first.bucket]
     o = b.objects[video_filename(sender, receiver, video_id)]
-    o.write(file: "#{Rails.root}/test_video.mp4")         
+    o.write(file: "#{Rails.root}/test_video.mp4")
     video_id
   end
-  
+
   def video_filename(sender, receiver, video_id)
     c = Connection.live_between(sender.id, receiver.id).first
     "#{sender.mkey}-#{receiver.mkey}-#{c.ckey}-#{video_id}-filename"
   end
-  
+
   def test_video
-    Video.find_by_filename "test_video"
+    Video.find_by_filename 'test_video'
   end
-  
+
   def send_video_received_notification(sender, receiver, video_id)
     target_push_user = PushUser.find_by_mkey(receiver.mkey)
-    gpn = GenericPushNotification.new({
-      :platform  => target_push_user.device_platform, 
-      :build => target_push_user.device_build,
-      :token => target_push_user.push_token, 
-      :type => :alert, 
-      :payload => {type: "video_received", 
-                   from_mkey: sender.mkey, 
-                   video_id: video_id},
-      :alert => "New message from #{sender.first_name}", 
-      :content_available  => true
-    })    
+    gpn = GenericPushNotification.new(platform: target_push_user.device_platform,
+                                      build: target_push_user.device_build,
+                                      token: target_push_user.push_token,
+                                      type: :alert,
+                                      payload: { type: 'video_received',
+                                                 from_mkey: sender.mkey,
+                                                 video_id: video_id },
+                                      alert: "New message from #{sender.first_name}",
+                                      content_available: true)
     gpn.send
   end
-  
+
   def add_remote_key(sender, receiver, video_id)
     conn = Connection.live_between(sender.id, receiver.id).first
     params = {}
     params[:key1] = "#{sender.mkey}-#{receiver.mkey}-#{conn.ckey}-VideoIdKVKey"
     params[:key2] = video_id
-    params[:value] = {'videoId' => video_id}.to_json
+    params[:value] = { 'videoId' => video_id }.to_json
     Kvstore.create_or_update params
   end
-  
+
   # Use callbacks to share common setup or constraints between actions.
   def set_user
     @user = User.find(params[:id])
