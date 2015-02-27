@@ -104,6 +104,8 @@ GEM
     faker (1.4.3)
       i18n (~> 0.5)
     ffi (1.9.6)
+    figaro (1.1.0)
+      thor (~> 0.14)
     formatador (0.2.5)
     gcm (0.1.0)
       httparty
@@ -300,6 +302,7 @@ DEPENDENCIES
   enum_handler!
   factory_girl_rails
   faker
+  figaro
   gcm
   global_phone
   guard-bundler

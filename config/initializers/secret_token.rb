@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-ThreebymeServer::Application.config.secret_key_base = 'dd0b0a718749417aac045867225a1a65b22e32cad35c90d713e75960016099170863792d0497d9540cd43bae353c0b3980e22524614a6734131c7f7cd6472e41'
+ThreebymeServer::Application.config.secret_key_base = Figaro.env.secret_key_base

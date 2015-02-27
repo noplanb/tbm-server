@@ -1,5 +1,4 @@
 defaults: &settings
-  site_url: http://localhost:3000
   android_store_url: market://details?id=com.noplanbees.threebyme
   iphone_store_url: https://itunes.apple.com/us/app/threebyme/id585542753?mt=8
   domain_name: zazoapp.com
@@ -7,15 +6,10 @@ defaults: &settings
   app_name: "Zazo"
   admin_email: admin@zazoapp.com
   support_email: support@zazoapp.com
-  twilio_from_number: '+16503766005'
-  twilio_to_number: '+16502453537'
-  twilio_ssid: "ACe5e5ec0578491107044c959f906b3f09"
-  twilio_token: "f5c4ef94c00d76960d27eb28ed03a8c1"
   app_schema: "zazo://"
   use_s3: false
 
-
-development: 
+development:
   <<: *settings
 
 test:
@@ -23,9 +17,7 @@ test:
 
 staging:
   <<: *settings
-  site_url: http://staging.threebyme.com
 
 production:
   <<: *settings
-  site_url: http://www.threebyme.com
 
