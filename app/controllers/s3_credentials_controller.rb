@@ -1,5 +1,5 @@
 class S3CredentialsController < ApplicationController
-  http_basic_authenticate_with name: Figaro.env.http_basic_username, password: Figaro.env.http_basic_password
+  http_basic_authenticate_with name: Figaro.env.http_basic_username, password: Figaro.env.http_basic_password, except: :info
   before_action :authenticate, only: :info
 
   # =====================
