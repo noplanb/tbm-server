@@ -19,6 +19,8 @@ RSpec.describe SpecificCredential, type: :model do
   end
 
   context 'instance' do
+    subject { instance }
+
     context '#cred_type' do
       subject { instance.cred_type }
       it { is_expected.to eq('test') }
@@ -43,6 +45,20 @@ RSpec.describe SpecificCredential, type: :model do
       context '#only_app_attributes' do
         subject { instance.reload.only_app_attributes }
         it { is_expected.to eq(foo: 'value1', bar: nil) }
+      end
+    end
+
+    context 'when record not found' do
+      it { expect { subject }.to change(TestCredential, :count).by(1) }
+    end
+
+    context 'when record exists' do
+      let!(:record) { TestCredential.create(foo: 'value1', bar: 'value2') }
+      it { is_expected.to eq(record) }
+
+      context '#cred_type' do
+        subject { instance.cred_type }
+        it { is_expected.to eq('test') }
       end
     end
   end
