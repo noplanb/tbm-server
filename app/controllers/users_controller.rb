@@ -92,8 +92,9 @@ class UsersController < ApplicationController
 
   def create_test_video(sender, receiver)
     video_id = Time.now.to_i.to_s
-    s3 = AWS::S3.new(access_key_id: S3Info.first.access_key, secret_access_key: S3Info.first.secret_key, region: S3Info.first.region)
-    b = s3.buckets[S3Info.first.bucket]
+    creds = S3Credential.instance
+    s3 = AWS::S3.new(access_key_id: creds.access_key, secret_access_key: creds.secret_key, region: creds.region)
+    b = s3.buckets[creds.bucket]
     o = b.objects[video_filename(sender, receiver, video_id)]
     o.write(file: "#{Rails.root}/test_video.mp4")
     video_id
