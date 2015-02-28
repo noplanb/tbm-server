@@ -58,7 +58,8 @@ RSpec.describe SpecificCredential, type: :model do
     end
 
     context 'when record exists' do
-      let!(:record) { TestCredential.create(cred: { foo: 'value1', bar: 'value2' }) }
+      let(:cred) { { foo: 'value1', bar: 'value2' }.with_indifferent_access }
+      let!(:record) { TestCredential.create(cred: cred) }
       it { is_expected.to eq(record) }
 
       context '#cred_type' do

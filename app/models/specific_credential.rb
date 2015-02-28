@@ -5,16 +5,14 @@ module SpecificCredential
 
   module ClassMethods
     def define_attributes(*attributes)
-      self.credential_attributes = attributes.map(&:to_s)
+      self.credential_attributes = attributes.map(&:to_sym)
 
       credential_attributes.each do |attr|
         define_method attr do
-          self.cred ||= {}
           self.cred[attr]
         end
 
         define_method :"#{attr}=" do |value|
-          self.cred ||= {}
           self.cred[attr] = value
         end
       end
@@ -31,7 +29,7 @@ module SpecificCredential
 
   included do
     cattr_accessor :credential_attributes
-    serialize :cred, JSON
+    serialize :cred, HashWithIndifferentAccess
     after_initialize :set_cred_type, if: -> { cred_type.blank? }
     after_initialize :set_default_cred
   end
@@ -41,7 +39,10 @@ module SpecificCredential
   end
 
   def set_default_cred
-    self.cred = Hash[self.class.credential_attributes.map{ |a| [a, nil] }]
+    self.cred = self.class.credential_attributes.each_with_object(cred) do |a, memo|
+      memo[a] = nil
+      memo
+    end
   end
 
   def only_app_attributes

@@ -6,7 +6,7 @@ RSpec.describe S3Credential, type: :model do
 
   context 'attributes' do
     subject { S3Credential.credential_attributes }
-    it { is_expected.to match_array(%w(region access_key secret_key bucket)) }
+    it { is_expected.to match_array(%i(region access_key secret_key bucket)) }
   end
 
   context 'methods' do
