@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe S3Credential, type: :model do
   let(:instance) { S3Credential.instance }
-  let(:instance) { S3Credential.instance }
 
   context 'attributes' do
     subject { S3Credential.credential_attributes }
