@@ -56,15 +56,6 @@ ActiveRecord::Schema.define(version: 20150225002929) do
 
   add_index "push_users", ["mkey"], name: "index_push_users_on_mkey", using: :btree
 
-  create_table "s3_infos", force: :cascade do |t|
-    t.string   "region",     limit: 255
-    t.string   "bucket",     limit: 255
-    t.string   "access_key", limit: 255
-    t.string   "secret_key", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string   "first_name",             limit: 255
     t.string   "last_name",              limit: 255
@@ -83,18 +74,5 @@ ActiveRecord::Schema.define(version: 20150225002929) do
 
   add_index "users", ["mkey"], name: "index_users_on_mkey", using: :btree
   add_index "users", ["mobile_number"], name: "index_users_on_mobile_number", using: :btree
-
-  create_table "videos", force: :cascade do |t|
-    t.string   "filename",          limit: 255
-    t.string   "file_file_name",    limit: 255
-    t.string   "file_content_type", limit: 255
-    t.integer  "file_file_size",    limit: 4
-    t.datetime "file_updated_at"
-    t.integer  "length",            limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "videos", ["filename"], name: "index_videos_on_filename", using: :btree
 
 end
