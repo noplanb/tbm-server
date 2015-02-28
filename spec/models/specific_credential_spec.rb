@@ -26,24 +26,29 @@ RSpec.describe SpecificCredential, type: :model do
       it { is_expected.to eq('test') }
     end
 
+    it do
+      expect { subject.foo = 'value1' }.to change(subject, :cred)
+        .from('foo' => nil, 'bar' => nil)
+        .to('foo' => 'value1', 'bar' => nil)
+    end
+
     context 'when foo is "value1"' do
       before do
         instance.foo = 'value1'
-        instance.save
       end
 
       context '#foo' do
-        subject { instance.reload.foo }
+        subject { instance.foo }
         it { is_expected.to eq('value1') }
       end
 
       context '#cred' do
-        subject { instance.reload.cred }
-        it { is_expected.to eq({ 'foo' => 'value1', 'bar' => nil }.to_json) }
+        subject { instance.cred }
+        it { is_expected.to eq('foo' => 'value1', 'bar' => nil) }
       end
 
       context '#only_app_attributes' do
-        subject { instance.reload.only_app_attributes }
+        subject { instance.only_app_attributes }
         it { is_expected.to eq(foo: 'value1', bar: nil) }
       end
     end
@@ -53,7 +58,7 @@ RSpec.describe SpecificCredential, type: :model do
     end
 
     context 'when record exists' do
-      let!(:record) { TestCredential.create(foo: 'value1', bar: 'value2') }
+      let!(:record) { TestCredential.create(cred: { foo: 'value1', bar: 'value2' }) }
       it { is_expected.to eq(record) }
 
       context '#cred_type' do

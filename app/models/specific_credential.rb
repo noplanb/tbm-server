@@ -5,18 +5,23 @@ module SpecificCredential
 
   module ClassMethods
     def define_attributes(*attributes)
-      self.credential_attributes = attributes
-      attr_accessor *attributes
+      self.credential_attributes = attributes.map(&:to_s)
+
+      credential_attributes.each do |attr|
+        define_method attr do
+          self.cred ||= {}
+          self.cred[attr]
+        end
+
+        define_method :"#{attr}=" do |value|
+          self.cred ||= {}
+          self.cred[attr] = value
+        end
+      end
     end
 
     def instance
-
-      if found = find_by_cred_type(credential_type)
-        found.set_attrs_with_cred
-        found
-      else
-        create
-      end
+      find_or_create_by(cred_type: credential_type)
     end
 
     def credential_type
@@ -26,27 +31,20 @@ module SpecificCredential
 
   included do
     cattr_accessor :credential_attributes
-    before_save :set_cred_with_attrs
-    after_initialize :set_cred_type
-  end
-
-  def set_cred_with_attrs
-    cred_obj = Hash[self.class.credential_attributes.map{ |a| [a, public_send(a)] }]
-    self.cred = cred_obj.to_json
-  end
-
-  def set_attrs_with_cred
-    cred_obj = JSON.parse(cred).symbolize_keys
-    self.class.credential_attributes.each do |a|
-      send(:"#{a}=", cred_obj[a])
-    end
+    serialize :cred, JSON
+    after_initialize :set_cred_type, if: -> { cred_type.blank? }
+    after_initialize :set_default_cred
   end
 
   def set_cred_type
     self.cred_type = self.class.credential_type
   end
 
+  def set_default_cred
+    self.cred = Hash[self.class.credential_attributes.map{ |a| [a, nil] }]
+  end
+
   def only_app_attributes
-    Hash[self.class.credential_attributes.map { |attr| [attr, public_send(attr)] }]
+    self.cred.symbolize_keys
   end
 end
