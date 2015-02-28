@@ -1,45 +1,71 @@
-require 'spec_helper'
+require 'rails_helper'
 
-class TestClass < ActiveRecord::Base
+# Model to test SpecificCredential behaviour
+class TestCredential < Credential
   include SpecificCredential
+  define_attributes :foo, :bar
 end
 
-describe SpecificCredential do
+RSpec.describe SpecificCredential, type: :model do
+  let(:model) { TestCredential }
+  let(:instance) { model.instance }
 
-  pending "creates or returns singleton for instance" do
+  subject { model }
+  it { is_expected.to respond_to(:credential_attributes) }
 
-    # Kill all specific credentials
-    SpecificCredential.all.each{|sc| sc.destroy}
-    SpecificCredential.count.should == 0
-
-    # Instance should return a new empty sc since none were in the db.
-    sc = SpecificCredential.instance
-    sc.cred_type.should == SpecificCredential::CRED_TYPE
-    sc.cred.should_not be_nil
-
-    SpecificCredential::ATTRIBUTES.each do |a|
-      sc.send(a).should be_nil
-
-      # Set all the attributes before saving
-      setter = (a.to_s + "=").to_sym
-      sc.send(setter, a.to_s)
-    end
-
-    sc.save
-    # There should now be one in the db
-    SpecificCredential.count.should == 1
-    sc.cred.should_not be_nil
-
-    # This should now return the one in the db
-    sc = SpecificCredential.instance
-    # It should have a json for cred
-    sc.cred.should_not be_nil
-
-    # Retrieving it should set all the attributes from the cred json.
-    SpecificCredential::ATTRIBUTES.each do |a|
-      sc.send(a).should == a.to_s
-    end
-
+  context '.credential_type' do
+    subject { model.credential_type }
+    it { is_expected.to eq('test') }
   end
 
+  context 'instance' do
+    subject { instance }
+
+    context '#cred_type' do
+      subject { instance.cred_type }
+      it { is_expected.to eq('test') }
+    end
+
+    it do
+      expect { subject.foo = 'value1' }.to change(subject, :cred)
+        .from('foo' => nil, 'bar' => nil)
+        .to('foo' => 'value1', 'bar' => nil)
+    end
+
+    context 'when foo is "value1"' do
+      before do
+        instance.foo = 'value1'
+      end
+
+      context '#foo' do
+        subject { instance.foo }
+        it { is_expected.to eq('value1') }
+      end
+
+      context '#cred' do
+        subject { instance.cred }
+        it { is_expected.to eq('foo' => 'value1', 'bar' => nil) }
+      end
+
+      context '#only_app_attributes' do
+        subject { instance.only_app_attributes }
+        it { is_expected.to eq(foo: 'value1', bar: nil) }
+      end
+    end
+
+    context 'when record not found' do
+      it { expect { subject }.to change(TestCredential, :count).by(1) }
+    end
+
+    context 'when record exists' do
+      let(:cred) { { foo: 'value1', bar: 'value2' }.with_indifferent_access }
+      let!(:record) { TestCredential.create(cred: cred) }
+      it { is_expected.to eq(record) }
+
+      context '#cred_type' do
+        subject { instance.cred_type }
+        it { is_expected.to eq('test') }
+      end
+    end
+  end
 end

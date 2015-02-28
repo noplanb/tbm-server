@@ -1,13 +1,17 @@
 # spec/models/credential.rb
-require 'spec_helper'
+require 'rails_helper'
 
-describe Credential do
-  
-  it "has a valid factory" do
-    create(:credential).should be_valid
+RSpec.describe Credential, type: :model do
+  subject { build(:credential) }
+  it { is_expected.to be_valid }
+
+  describe 'columns' do
+    it { is_expected.to have_db_column(:cred_type).of_type(:string) }
+    it { is_expected.to have_db_column(:cred).of_type(:text) }
   end
-  
-  it { should validate_presence_of :cred_type }
-  it { should validate_uniqueness_of :cred_type }
 
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:cred_type) }
+    it { is_expected.to validate_uniqueness_of(:cred_type) }
+  end
 end
