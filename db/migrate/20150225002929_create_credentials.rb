@@ -2,7 +2,7 @@ class CreateCredentials < ActiveRecord::Migration
   def change
     create_table :credentials do |t|
       t.string :cred_type
-      t.string :cred
+      t.text :cred
 
       t.timestamps
     end
