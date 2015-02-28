@@ -102,7 +102,7 @@ class UsersController < ApplicationController
 
   def video_filename(sender, receiver, video_id)
     c = Connection.live_between(sender.id, receiver.id).first
-    "#{sender.mkey}-#{receiver.mkey}-#{c.ckey}-#{video_id}-filename"
+    "#{sender.mkey}-#{receiver.mkey}-#{Digest::MD5.new.update(c.ckey + video_id).hexdigest}"
   end
 
   def test_video
