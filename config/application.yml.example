@@ -1,34 +1,40 @@
-secret_key_base:
+db_host:
+db_name:
+db_password:
+db_port: '3306'
+db_username:
+
 domain_name: localhost:3000
-helo_domain_name: zazoapp.com
-smtp_address:
+
+gcm_api_key:
+gcm_uri: https://android.googleapis.com/gcm/send
+
+http_basic_password:
+http_basic_username:
+
+secret_key_base:
+
+smtp_address: email-smtp.us-east-1.amazonaws.com
+smtp_helo_domain_name: zazoapp.com
+smtp_password:
 smtp_port: '587'
 smtp_user_name:
-smtp_password:
-db_name: tbm
-db_username: root
-db_password:
-db_host: localhost
-db_port: '3306'
-http_basic_username: admin
-http_basic_password: Statorama1
-gcm_uri: https://android.googleapis.com/gcm/send
-gcm_api_key:
+
+twilio_from_number: '+16503766005'
 twilio_ssid:
+twilio_to_number: '+16502453537'
 twilio_token:
-twilio_from_number:
-twilio_to_number:
 
 test:
-  db_name: tbm_test
+  db_name: tbm_test:
 
 staging:
-  domain_name:
+  domain_name: dev.zazoapp.com
 
 production:
-  domain_name:
+  domain_name: prod.zazoapp.com
   secret_key_base:
-  db_name:
+  db_name: zazo
   db_username:
   db_password:
-  db_host:
+  db_host: zazo-prod.czebeq6fsif6.us-west-1.rds.amazonaws.com
