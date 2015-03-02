@@ -18,6 +18,25 @@ RSpec.describe SpecificCredential, type: :model do
     it { is_expected.to eq('test') }
   end
 
+  context '.instance' do
+    subject { TestCredential.instance }
+
+    before do
+      instance.foo = 'value1'
+      instance.save
+    end
+
+    context '#cred' do
+      subject { instance.cred }
+      it { is_expected.to eq('foo' => 'value1', 'bar' => nil) }
+    end
+
+    context '#foo' do
+      subject { TestCredential.instance.foo }
+      it { is_expected.to eq('value1') }
+    end
+  end
+
   context 'instance' do
     subject { instance }
 
@@ -26,7 +45,7 @@ RSpec.describe SpecificCredential, type: :model do
       it { is_expected.to eq('test') }
     end
 
-    it do
+    specify do
       expect { subject.foo = 'value1' }.to change(subject, :cred)
         .from('foo' => nil, 'bar' => nil)
         .to('foo' => 'value1', 'bar' => nil)

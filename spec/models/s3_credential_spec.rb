@@ -61,5 +61,23 @@ RSpec.describe S3Credential, type: :model do
       subject { instance.save }
       it { is_expected.to be_truthy }
     end
+
+    context 'loads attributes' do
+      before do
+        instance.region = 'us-east-1'
+        instance.bucket = 'bucket'
+        instance.access_key = 'access_key'
+        instance.secret_key = 'secret_key'
+        instance.save
+      end
+      subject { S3Credential.instance }
+
+      specify do
+        is_expected.to have_attributes(region: 'us-east-1',
+                                       bucket: 'bucket',
+                                       access_key: 'access_key',
+                                       secret_key: 'secret_key')
+      end
+    end
   end
 end

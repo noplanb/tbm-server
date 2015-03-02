@@ -11,16 +11,24 @@ RSpec.describe S3CredentialsController, type: :controller do
         end
       end
 
-      it { is_expected.to respond_with(:unauthorized) }
+      specify { is_expected.to respond_with(:unauthorized) }
     end
 
     context 'when HTTP Digest auth credentials are missing' do
       before { get :info }
 
-      it { is_expected.to respond_with(:unauthorized) }
+      specify { is_expected.to respond_with(:unauthorized) }
     end
 
     context 'when credential are valid' do
+      before do
+        s3_credential.region = 'us-west-1'
+        s3_credential.bucket = 'bucket'
+        s3_credential.access_key = 'access_key'
+        s3_credential.secret_key = 'secret_key'
+        s3_credential.save
+      end
+
       let!(:user) { create(:user) }
 
       before do
@@ -29,7 +37,14 @@ RSpec.describe S3CredentialsController, type: :controller do
         end
       end
 
-      it { is_expected.to respond_with(:success) }
+      specify { is_expected.to respond_with(:success) }
+      specify do
+        expect(JSON.parse(response.body)).to eq('status' => 'success',
+                                                'region' => 'us-west-1',
+                                                'bucket' => 'bucket',
+                                                'access_key' => 'access_key',
+                                                'secret_key' => 'secret_key')
+      end
     end
   end
 end
