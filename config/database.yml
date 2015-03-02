@@ -8,7 +8,7 @@ default: &default
   # port: <%= Figaro.env.db_port.to_i %>
   database: tbm
   username: admin
-  pasword: zazoismessaging
+  password: statorama
   host: zazo-staging.czebeq6fsif6.us-west-1.rds.amazonaws.com
   port: 3306
 
