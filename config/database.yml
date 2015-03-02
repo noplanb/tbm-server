@@ -16,8 +16,3 @@ test:
 
 production:
   <<: *default
-  # database: tbm
-  # username: admin
-  # password: statorama
-  # host: zazo-staging.czebeq6fsif6.us-west-1.rds.amazonaws.com
-  # port: 3306
