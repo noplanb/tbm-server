@@ -36,7 +36,7 @@ gem 'httparty'
 # gem 'npb_logging', github: 'etcetc/npb_logging'
 gem 'console_candy', github: 'etcetc/console_candy'
 gem 'npb_notification', github: 'etcetc/npb_notification'
-gem 'enum_handler', github: 'etcetc/enum_handler'
+gem 'enum_handler', github: 'asux/enum_handler'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 1.2'

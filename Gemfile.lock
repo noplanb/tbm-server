@@ -1,15 +1,15 @@
 GIT
+  remote: git://github.com/asux/enum_handler.git
+  revision: 676228d228851c9f6873f7b0fb220fab7426ef4f
+  specs:
+    enum_handler (0.3)
+      rails (> 3.2.0)
+
+GIT
   remote: git://github.com/etcetc/console_candy.git
   revision: 4ee068894af688419ba086adfbfec45cc21d3b41
   specs:
     console_candy (0.0.1)
-
-GIT
-  remote: git://github.com/etcetc/enum_handler.git
-  revision: effa4de7e1e557d39a30c609d0ba5f12a42c969f
-  specs:
-    enum_handler (0.3)
-      rails (> 3.2.0)
 
 GIT
   remote: git://github.com/etcetc/npb_notification.git
