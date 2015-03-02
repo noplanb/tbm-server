@@ -1,5 +1,6 @@
-domain_name: localhost:3000
 secret_key_base:
+domain_name: localhost:3000
+helo_domain_name: zazoapp.com
 smtp_address:
 smtp_port: '587'
 smtp_user_name:
