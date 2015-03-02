@@ -28,12 +28,10 @@ class S3CredentialsController < ApplicationController
 
   # PATCH/PUT /s3_credentials/1
   def update
-    respond_to do |format|
-      if @s3_credential.update(s3_credential_params)
-        format.html { redirect_to @s3_credential, notice: 'S3 info was successfully updated.' }
-      else
-        format.html { render action: 'edit' }
-      end
+    if @s3_credential.update(s3_credential_params)
+      redirect_to @s3_credential, notice: 'S3 info was successfully updated.'
+    else
+      render action: 'edit'
     end
   end
 
