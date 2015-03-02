@@ -57,11 +57,9 @@ RSpec.describe S3Credential, type: :model do
       it { is_expected.to eq('secret_key') }
     end
 
-    #TODO: alex this passes but in the console fails becuase of the uniqueness validation on credential.
     context '#save' do
       subject { instance.save }
       it { is_expected.to be_truthy }
     end
-
   end
 end
