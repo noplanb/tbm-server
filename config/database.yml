@@ -1,16 +1,12 @@
 default: &default
   adapter: mysql2
   encoding: utf8
-  # database: <%= Figaro.env.db_name %>
-  # username: <%= Figaro.env.db_username %>
-  # password: <%= Figaro.env.db_password %>
-  # host: <%= Figaro.env.db_hostname %>
-  # port: <%= Figaro.env.db_port.to_i %>
-  database: tbm
-  username: admin
-  password: statorama
-  host: zazo-staging.czebeq6fsif6.us-west-1.rds.amazonaws.com
-  port: 3306
+  database: <%= Figaro.env.db_name %>
+  username: <%= Figaro.env.db_username %>
+  password: <%= Figaro.env.db_password %>
+  host: <%= Figaro.env.db_host %>
+  port: <%= Figaro.env.db_port.to_i %>
+
 
 development:
   <<: *default
@@ -20,3 +16,8 @@ test:
 
 production:
   <<: *default
+  # database: tbm
+  # username: admin
+  # password: statorama
+  # host: zazo-staging.czebeq6fsif6.us-west-1.rds.amazonaws.com
+  # port: 3306
