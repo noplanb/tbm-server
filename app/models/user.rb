@@ -118,7 +118,9 @@ class User < ActiveRecord::Base
   end
 
   def gen_key(type)
-    "#{first_name.gsub(" ", "")}_#{last_name}_#{id}_#{type}_#{NoPlanB::TextUtils.random_string(20)}"
+    k = Figaro.env.user_debuggable_keys? ? "#{first_name}_#{last_name}_#{id}_#{type}_" : "";
+    k += NoPlanB::TextUtils.random_string(20)
+    k.gsub(" ", "")
   end
 
   def is_connection_creator(connected_user, con)
