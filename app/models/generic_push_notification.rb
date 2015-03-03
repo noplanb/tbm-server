@@ -2,15 +2,15 @@ require "apns"
 require "gcm_server"
 
 class GenericPushNotification
-  
+
   # :build = :dev, :prod (for IOS only)
   attr_accessor :platform, :token, :type, :payload,          # ios and android
                 :alert, :badge, :sound, :content_available, :build   # ios only
-  
+
   # include EnumHandler
   # define_enum :platform, [:ios,:android]
   # define_enum :type, [:alert, :silent] # Only relevant for ios
-  
+
   def initialize(attrs = {})
     @build = attrs[:build] || :dev
     @token = attrs[:token] or raise "#{self.class.name}: token required."
@@ -19,20 +19,20 @@ class GenericPushNotification
     @alert = attrs[:alert] unless @type == :silent
     @badge = attrs[:badge] unless @type == :silent
     @sound = attrs[:sound] || (@type == :silent ? nil : "NotificationTone.wav")
-    @content_available =  attrs[:content_available] == false ? nil : true  # In our app for ios this should 
-    @payload = attrs[:payload]        
+    @content_available =  attrs[:content_available] == false ? nil : true  # In our app for ios this should
+    @payload = attrs[:payload]
   end
-  
+
   def send
     @platform == :ios ? send_ios : send_android
   end
-  
+
   private
-  
+
   def send_ios
     apns.send_notifications [ios_notification]
   end
-  
+
   def apns
     params = if @build == :prod
       {
@@ -47,11 +47,11 @@ class GenericPushNotification
     end
     APNS::Server.new(params)
   end
-  
+
   def send_android
     GcmServer.send_notification(@token, @payload)
   end
-  
+
   def ios_notification
     n = APNS::Notification.new(@token, {})
     n.alert = @alert if @alert
