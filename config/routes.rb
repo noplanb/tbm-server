@@ -5,6 +5,10 @@ ThreebymeServer::Application.routes.draw do
   resources :connections
   resources :users
 
+  get '/' => 'landing#index'
+  get 'landing' => 'landing#index'
+  get 'l/:id' => 'landing#invite'
+
   get 'digest/open'
   get 'digest/secure'
 
@@ -45,10 +49,6 @@ ThreebymeServer::Application.routes.draw do
 
   get 'invitation/invite'
   get 'invitation/has_app'
-
-  get 'landing' => 'landing#index'
-  get 'l/:id' => 'landing#invite'
-  get 'landing/test'
 
   get 'status', to:'status#heartbeat'
 
