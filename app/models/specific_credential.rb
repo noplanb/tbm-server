@@ -9,7 +9,7 @@ module SpecificCredential
 
       credential_attributes.each do |attr|
         define_method attr do
-          self.cred[attr]
+          cred[attr]
         end
 
         define_method :"#{attr}=" do |value|
@@ -23,7 +23,7 @@ module SpecificCredential
     end
 
     def credential_type
-      name.gsub('Credential', '').underscore
+      @credential_type ||= name.gsub('Credential', '').underscore
     end
   end
 
@@ -40,12 +40,18 @@ module SpecificCredential
 
   def set_default_cred
     self.cred = self.class.credential_attributes.each_with_object(cred) do |a, memo|
-      memo[a] = nil
+      memo[a] = nil if memo[a].blank?
       memo
     end
   end
 
   def only_app_attributes
     self.cred.symbolize_keys
+  end
+
+  def update_credentials(credentials)
+    raise TypeError, 'credentials must be a Hash' unless Hash === credentials
+    self.cred.update(credentials.slice(*self.class.credential_attributes))
+    save
   end
 end
