@@ -10,9 +10,9 @@ class VersionController < ApplicationController
   def get_ios_response(v)
     if false
       return "update_schema_required"
-    elsif v < 19
+    elsif v < 18
       return "update_required"
-    elsif v < 19
+    elsif v < 18
       return "update_optional"
     else
       return "current"
