@@ -48,4 +48,10 @@ module SpecificCredential
   def only_app_attributes
     self.cred.symbolize_keys
   end
+
+  def update_credentials(credentials)
+    raise TypeError, 'credentials must be a Hash' unless Hash === credentials
+    self.cred.update(credentials.slice(*self.class.credential_attributes))
+    save
+  end
 end

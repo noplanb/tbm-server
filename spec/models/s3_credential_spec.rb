@@ -64,11 +64,10 @@ RSpec.describe S3Credential, type: :model do
 
     context 'loads attributes' do
       before do
-        instance.region = 'us-east-1'
-        instance.bucket = 'bucket'
-        instance.access_key = 'access_key'
-        instance.secret_key = 'secret_key'
-        instance.save
+        instance.update_credentials(region: 'us-east-1',
+                                    bucket: 'bucket',
+                                    access_key: 'access_key',
+                                    secret_key: 'secret_key')
       end
       subject { S3Credential.instance }
 

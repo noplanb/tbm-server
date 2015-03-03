@@ -21,10 +21,7 @@ RSpec.describe SpecificCredential, type: :model do
   context '.instance' do
     subject { TestCredential.instance }
 
-    before do
-      instance.foo = 'value1'
-      instance.save
-    end
+    before { instance.update_credentials(foo: 'value1') }
 
     context '#cred' do
       subject { instance.cred }
@@ -85,6 +82,24 @@ RSpec.describe SpecificCredential, type: :model do
         subject { instance.cred_type }
         it { is_expected.to eq('test') }
       end
+    end
+  end
+
+  context '#update_credentials' do
+    context 'when credentials is a Hash' do
+      subject { instance.update_credentials(foo: 'us-west-1') }
+      specify { expect { subject }.to change(instance, :foo).from(nil).to('us-west-1') }
+    end
+
+    context 'when credentials has not permitted attributes' do
+      before { instance.update_credentials(foo: 'us-west-1', buzz: 'buzz') }
+      subject { instance.cred }
+      specify { is_expected.to eq('foo' => 'us-west-1', 'bar' => nil) }
+    end
+
+    context 'when credentials is not Hash' do
+      subject { instance.update_credentials('foo') }
+      specify { expect { subject }.to raise_error(TypeError) }
     end
   end
 end
