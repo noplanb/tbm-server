@@ -5,7 +5,7 @@ ThreebymeServer::Application.routes.draw do
   resources :connections
   resources :users
 
-  get '/' => 'landing#index'
+  root 'landing#index'
   get 'landing' => 'landing#index'
   get 'l/:id' => 'landing#invite'
 
