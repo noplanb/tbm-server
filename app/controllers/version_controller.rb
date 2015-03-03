@@ -12,7 +12,7 @@ class VersionController < ApplicationController
       return "update_schema_required"
     elsif v < 18
       return "update_required"
-    elsif v < 18
+    elsif false
       return "update_optional"
     else
       return "current"
@@ -22,7 +22,7 @@ class VersionController < ApplicationController
   def get_android_response(v)
     if false
       return "update_schema_required"
-    elsif v < 30
+    elsif v < 37
       return "update_required"
     elsif false
        return"update_optional"
