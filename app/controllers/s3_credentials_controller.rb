@@ -28,7 +28,7 @@ class S3CredentialsController < ApplicationController
 
   # PATCH/PUT /s3_credentials/1
   def update
-    if @s3_credential.update(s3_credential_params)
+    if @s3_credential.update_credentials(s3_credential_params)
       redirect_to @s3_credential, notice: 'S3 info was successfully updated.'
     else
       render action: 'edit'

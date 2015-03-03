@@ -18,6 +18,22 @@ RSpec.describe SpecificCredential, type: :model do
     it { is_expected.to eq('test') }
   end
 
+  context '.instance' do
+    subject { TestCredential.instance }
+
+    before { instance.update_credentials(foo: 'value1') }
+
+    context '#cred' do
+      subject { instance.cred }
+      it { is_expected.to eq('foo' => 'value1', 'bar' => nil) }
+    end
+
+    context '#foo' do
+      subject { TestCredential.instance.foo }
+      it { is_expected.to eq('value1') }
+    end
+  end
+
   context 'instance' do
     subject { instance }
 
@@ -26,7 +42,7 @@ RSpec.describe SpecificCredential, type: :model do
       it { is_expected.to eq('test') }
     end
 
-    it do
+    specify do
       expect { subject.foo = 'value1' }.to change(subject, :cred)
         .from('foo' => nil, 'bar' => nil)
         .to('foo' => 'value1', 'bar' => nil)
@@ -66,6 +82,24 @@ RSpec.describe SpecificCredential, type: :model do
         subject { instance.cred_type }
         it { is_expected.to eq('test') }
       end
+    end
+  end
+
+  context '#update_credentials' do
+    context 'when credentials is a Hash' do
+      subject { instance.update_credentials(foo: 'us-west-1') }
+      specify { expect { subject }.to change(instance, :foo).from(nil).to('us-west-1') }
+    end
+
+    context 'when credentials has not permitted attributes' do
+      before { instance.update_credentials(foo: 'us-west-1', buzz: 'buzz') }
+      subject { instance.cred }
+      specify { is_expected.to eq('foo' => 'us-west-1', 'bar' => nil) }
+    end
+
+    context 'when credentials is not Hash' do
+      subject { instance.update_credentials('foo') }
+      specify { expect { subject }.to raise_error(TypeError) }
     end
   end
 end
