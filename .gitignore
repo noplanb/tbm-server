@@ -23,8 +23,6 @@ config/app_config_local.yml
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
-/certs
-
 # Ignore application configuration
 /config/application.yml
 
