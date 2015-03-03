@@ -2,17 +2,17 @@
   <div class="salutation">Hi <%= @invitee.first_name %>,</div>
   <div class="message">I sent you a message on <%= APP_CONFIG[:app_name] %></div>
   <div class="closing">~ <%= @inviter.first_name %></div>
-  <%= link_to image_tag("down_arrow@2x.png"), @store_url %>
+  <%= link_to image_tag("down-arrow.png"), @store_url %>
 </div>
 
 <div class="middle">
   <button onclick="window.location='<%= @store_url %>'" class="get_btn">Get the App!</button>
   <div class="text_download">Download Zazo now</div>
-  <%= link_to image_tag("appstore_btn.png"), APP_CONFIG[:iphone_store_url],  class: "store_icon"%>
-  <%= link_to image_tag("google_play_btn.png"), APP_CONFIG[:android_store_url],  class: "store_icon"%>
+  <%= link_to image_tag("apple-store-badge.png"), APP_CONFIG[:iphone_store_url],  class: "store_icon"%>
+  <%= link_to image_tag("google-play-badge.png"), APP_CONFIG[:android_store_url],  class: "store_icon"%>
 </div>
 
 <div class="bottom">
-  <%= link_to image_tag("logo.png"), @store_url %>
+  <%= link_to image_tag("zazo-type.png"), @store_url %>
   <div class="tagline">There ain't nothing like it.</div>
 </div>
