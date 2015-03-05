@@ -7,6 +7,8 @@
       <th>Mobile number</th>
       <th>Device platform</th>
       <th>Status</th>
+      <th>Verification code</th>
+      <th>Verification code sent at</th>
       <th></th>
       <th></th>
       <th></th>
@@ -20,6 +22,8 @@
         <td><%= user.mobile_number %></td>
         <td><%= user.device_platform %></td>
         <td><%= user.status %></td>
+        <td><%= user.verification_code %></td>
+        <td><%= user.verification_date_time %></td>
         <td><%= link_to 'Show', user %></td>
         <td><%= link_to 'Edit', edit_user_path(user) %></td>
         <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
