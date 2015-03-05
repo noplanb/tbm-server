@@ -1,8 +1,8 @@
-<div class="top <%= 'no_connection' if @connection.blank? %>">
-  <% if @connection %>
-    <div class="salutation">Hi <%= @invitee.first_name %>,</div>
+<div class="top <%= 'no_inviter' if @inviter.blank? %>">
+  <% if @inviter %>
+    <div class="salutation">Hi,</div>
     <div class="message">I sent you a message on <%= APP_CONFIG[:app_name] %></div>
-    <div class="closing">~ <%= @inviter.first_name %></div>
+    <div class="closing">~ <%= @inviter.fullname %></div>
     <%= link_to image_tag("down-arrow.png"), @store_url %>
   <% else %>
     <%= link_to image_tag("zazo-type.png"), @store_url %>

@@ -16,12 +16,7 @@ class LandingController < ApplicationController
 
   def set_state
     @store_url = store_url
-
-    @connection = params[:id] && Connection.where(id: params[:id]).first
-    if (@connection)
-      @inviter = @connection.creator
-      @invitee = @connection.target
-    end
+    @inviter = params[:id] && User.where(mkey: params[:id]).first
   end
 
 end
