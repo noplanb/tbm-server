@@ -1,7 +1,7 @@
 defaults: &settings
   version: '2.0.0'
-  android_store_url: market://details?id=com.noplanbees.threebyme
-  iphone_store_url: https://itunes.apple.com/us/app/threebyme/id585542753?mt=8
+  android_store_url: https://play.google.com/store/apps/details?id=com.zazoapp.client
+  iphone_store_url: http://itunes.com/apps/zazo
   domain_name: zazoapp.com
   site_name: zazoapp
   app_name: "Zazo"
