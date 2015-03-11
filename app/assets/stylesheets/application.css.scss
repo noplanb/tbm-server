@@ -27,4 +27,12 @@
   &.established {
     @extend .label-primary;
   }
+  &.voided {
+    @extend .label-danger;
+  }
+}
+
+input[type='submit'] {
+  @extend .btn;
+  @extend .btn-primary;
 }

@@ -74,6 +74,7 @@ gem 'awesome_print'
 gem 'slim-rails'
 
 gem 'bootstrap-sass'
+gem 'simple_form'
 
 group :development do
   gem 'better_errors'
