@@ -17,7 +17,7 @@ table.table
     td = @user.mobile_number
   tr
     td Device platform
-    td = @user.device_platform
+    td = human_device_platform @user.device_platform
   tr
     td Auth
     td

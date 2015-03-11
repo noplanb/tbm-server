@@ -2,7 +2,7 @@
   = f.input :first_name
   = f.input :last_name
   = f.input :mobile_number
-  = f.input :device_platform
+  = f.input :device_platform, as: :radio_buttons, collection: User::DEVICE_PLATFORMS.map {|p| [human_device_platform(p), p] }
   = f.input :auth
   = f.input :mkey
   = f.input :status
