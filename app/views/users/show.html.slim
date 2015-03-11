@@ -1,38 +1,46 @@
 h1 = @user.name
 p#notice
   = notice
-p
-  strong> Id:
-  = @user.id
-p
-  strong> First name:
-  = @user.first_name
-p
-  strong> Last name:
-  = @user.last_name
-p
-  strong> Mobile number:
-  = @user.mobile_number
-p
-  strong> Device platform:
-  = @user.device_platform
-p
-  strong> Auth:
-  = @user.auth
-p
-  strong> Mkey:
-  = @user.mkey
-p
-  strong> Status:
-  = @user.status
-p
-  strong> Verification code:
-  = @user.verification_code
-p
-  strong> Verification sent at:
-  = @user.verification_date_time
+
+table.table
+  tr
+    td Id
+    td = @user.id
+  tr
+    td First name
+    td = @user.first_name
+  tr
+    td Last name
+    td = @user.last_name
+  tr
+    td Mobile number
+    td = @user.mobile_number
+  tr
+    td Device platform
+    td = @user.device_platform
+  tr
+    td Auth
+    td
+      code = @user.auth
+  tr
+    td Mkey
+    td
+      code = @user.mkey
+  tr
+    td Status
+    td = status_tag @user.status
+  tr
+    td Verification code
+    td = @user.verification_code
+  tr
+    td Verification sent at
+    td = @user.verification_date_time
+
 = link_to 'Edit', edit_user_path(@user), class: 'btn btn-default'
-h2 Connections (#{@user.live_connection_count})
+
+h4
+  ' Connections
+  span.badge = @user.live_connection_count
 table.table border="0" cellspacing="5" cellpadding="5"
   - @user.connected_users.each do |u|
     - connection = Connection.live_between(@user.id, u.id).first

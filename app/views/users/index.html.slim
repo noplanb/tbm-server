@@ -19,8 +19,7 @@ table.table
         td = user.name
         td = user.mobile_number
         td = user.device_platform
-        td
-          span class=(['status', user.status]) = user.status
+        td = status_tag user.status
         td = user.verification_code
         td = user.verification_date_time
         td = link_to 'Show', user
