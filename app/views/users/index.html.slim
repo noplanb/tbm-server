@@ -1,7 +1,8 @@
 h1 Listing users
-table
+table.table
   thead
     tr
+      th ID
       th Name
       th Mobile number
       th Device platform
@@ -13,15 +14,17 @@ table
       th
   tbody
     - @users.each do |user|
-      tr
-        td = user.info
+      tr class=([user.status, user.device_platform])
+        td = user.id
+        td = user.name
         td = user.mobile_number
         td = user.device_platform
-        td = user.status
+        td
+          span class=(['status', user.status]) = user.status
         td = user.verification_code
         td = user.verification_date_time
         td = link_to 'Show', user
         td = link_to 'Edit', edit_user_path(user)
         td = link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
 br
-= link_to 'New User', new_user_path
+= link_to 'New User', new_user_path, class: 'btn btn-default'

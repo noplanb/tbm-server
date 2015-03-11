@@ -10,6 +10,21 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require framework_and_overrides
  *= require_self
  */
+
+@import 'framework_and_overrides';
+
+.status {
+  @extend .label;
+
+  &.initialized {
+    @extend .label-default;
+  }
+  &.verified {
+    @extend .label-primary;
+  }
+  &.established {
+    @extend .label-primary;
+  }
+}

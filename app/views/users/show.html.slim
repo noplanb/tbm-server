@@ -1,3 +1,4 @@
+h1 = @user.name
 p#notice
   = notice
 p
@@ -30,19 +31,18 @@ p
 p
   strong> Verification sent at:
   = @user.verification_date_time
-= link_to 'Edit', edit_user_path(@user)
-h1 Connections (#{@user.live_connection_count})
-p
-  table[border="0" cellspacing="5" cellpadding="5"]
-    - @user.connected_users.each do |u|
-      - connection = Connection.live_between(@user.id, u.id).first
-      tr
-        td = u.info
-        td
-          = link_to 'Destroy', connection, {method: :delete, data: { confirm: 'Are you sure?' }}
-          '  |
-          = link_to 'Test Video', {controller: "users", action:"receive_test_video", params: {id: @user.id, sender_id: u.id}}
-- # @user.live_connection_count >= 8 ? "Max connections (destroy before adding more)." : (link_to 'Add a connection', "/users/new_connection/#{@user.id}")
-= link_to 'Add a connection', "/users/new_connection/#{@user.id}"
-'  |
-= link_to 'Users', users_path
+= link_to 'Edit', edit_user_path(@user), class: 'btn btn-default'
+h2 Connections (#{@user.live_connection_count})
+table.table border="0" cellspacing="5" cellpadding="5"
+  - @user.connected_users.each do |u|
+    - connection = Connection.live_between(@user.id, u.id).first
+    tr
+      td = u.id
+      td = link_to u.name, user_path(u)
+      td
+        = link_to 'Destroy', connection, {method: :delete, data: { confirm: 'Are you sure?' }}
+        '  |
+        = link_to 'Test Video', {controller: "users", action:"receive_test_video", params: {id: @user.id, sender_id: u.id}}
+= link_to 'Add a connection', "/users/new_connection/#{@user.id}", class: 'btn btn-default'
+' &nbsp;
+= link_to 'Users', users_path, class: 'btn btn-default'
