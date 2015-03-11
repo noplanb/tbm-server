@@ -1,7 +1,10 @@
 doctype html
 html
   head
-    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    meta charset="utf-8"
+    link rel="shortcut icon" href=image_path('favicon.ico') type="image/x-icon"
+    link rel="image_src" href=image_path('logo.png')
+    link rel="icon" href=image_path('favicon16.ico')
     title
       = content_for?(:title) ? yield(:title) : 'Zazo'
     meta name="description" content="#{content_for?(:description) ? yield(:description) : 'Zazo'}"
