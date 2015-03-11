@@ -33,7 +33,7 @@ module ThreebymeServer
                        request_specs: true
       g.fixture_replacement :factory_girl, dir: 'spec/factories'
       g.template_engine :slim
-      g.stylesheet_engine :scss
+      g.stylesheet_engine :sass
     end
   end
 end
