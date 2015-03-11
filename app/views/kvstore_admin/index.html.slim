@@ -1,0 +1,15 @@
+h1 Listing Kvstore
+table style="font-size:10px"
+  thead style="font-size:10px"
+    tr
+      th Key1
+      th Key2
+      th Value
+  tbody style="font-size:9px"
+    - Kvstore.all.each do |kv|
+      tr
+        td = kv.key1
+        td = kv.key2
+        td = kv.value
+br
+= link_to 'Delete all kvs', 'kvstore_admin/delete_all'

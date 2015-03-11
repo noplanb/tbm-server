@@ -1,0 +1,21 @@
+.top class=('no_inviter' if @inviter.blank?)
+- if @inviter
+  .salutation
+    | Hi,
+  .message
+    | I sent you a message on
+    = APP_CONFIG[:app_name]
+  .closing
+    | ~
+    = @inviter.fullname
+  = link_to image_tag("down-arrow.png"), @store_url
+- else
+  = link_to image_tag("zazo-type.png"), @store_url
+.middle
+  button.get_btn onclick="window.location='#{@store_url}'" Get the App!
+  .text_download Download Zazo now
+  = link_to image_tag("apple-store-badge.png"), APP_CONFIG[:iphone_store_url],  class: "store_icon"
+  = link_to image_tag("google-play-badge.png"), APP_CONFIG[:android_store_url],  class: "store_icon"
+.bottom
+  = link_to image_tag("zazo-type.png"), @store_url
+  .tagline There ain't nothing like it.

@@ -1,0 +1,20 @@
+p#notice
+  = notice
+p
+  strong> Creator:
+  = @connection.creator.name
+  | [
+  = @connection.creator_id
+  | ]
+p
+  strong> Target:
+  = @connection.target.name
+  | [
+  = @connection.target_id
+  | ]
+p
+  strong> Status:
+  = @connection.status
+= link_to 'Edit', edit_connection_path(@connection)
+'  |
+= link_to 'Back', connections_path

@@ -1,0 +1,10 @@
+= form_for @video  do |f|
+  = f.label :user_id, "Sender"
+  = f.collection_select :user_id, User.all, :id, :name, {}, name: 'user_id'
+  br
+  = f.label :receiver_id, "Receiver"
+  = f.collection_select :receiver_id, User.all, :id, :name, {}, name: 'receiver_id'
+  br
+  = f.file_field :file, name: "file"
+  br
+  = f.submit

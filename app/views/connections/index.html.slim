@@ -1,0 +1,9 @@
+h1 Listing connections
+table
+  thead
+    = render :partial => 'list_head'
+  tbody
+    - @connections.each do |connection|
+      = render :partial => 'list_row', :locals => {:connection => connection}
+br
+= link_to 'New Connection', new_connection_path

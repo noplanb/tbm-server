@@ -1,0 +1,27 @@
+h1 Listing users
+table
+  thead
+    tr
+      th Name
+      th Mobile number
+      th Device platform
+      th Status
+      th Verification code
+      th Verification code sent at
+      th
+      th
+      th
+  tbody
+    - @users.each do |user|
+      tr
+        td = user.info
+        td = user.mobile_number
+        td = user.device_platform
+        td = user.status
+        td = user.verification_code
+        td = user.verification_date_time
+        td = link_to 'Show', user
+        td = link_to 'Edit', edit_user_path(user)
+        td = link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
+br
+= link_to 'New User', new_user_path

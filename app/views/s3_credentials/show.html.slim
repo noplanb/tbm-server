@@ -1,0 +1,15 @@
+p#notice
+  = notice
+p
+  strong> Region:
+  = @s3_credential.region
+p
+  strong> Bucket:
+  = @s3_credential.bucket
+p
+  strong> Access key:
+  = @s3_credential.access_key
+p
+  strong> Secret key:
+  = @s3_credential.secret_key
+= link_to 'Edit', edit_s3_credential_path(@s3_credential)
