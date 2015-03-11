@@ -73,6 +73,8 @@ gem 'figaro'
 gem 'awesome_print'
 gem 'slim-rails'
 
+gem 'bootstrap-sass'
+
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -85,6 +87,7 @@ group :development do
   gem 'rb-fchange', require: false
   gem 'rb-fsevent', require: false
   gem 'rb-inotify', require: false
+  gem 'rails_layout'
 end
 
 # Testing
