@@ -7,7 +7,9 @@ class LandingController < ApplicationController
   end
 
   def invite
-    render :invite
+  end
+
+  def privacy
   end
 
   private
