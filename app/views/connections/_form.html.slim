@@ -1,4 +1,5 @@
 = simple_form_for(@connection) do |f|
+  = f.error_notification
   = f.association :creator
   = f.association :target
   = f.input :status
