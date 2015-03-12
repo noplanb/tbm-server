@@ -4,7 +4,7 @@ defaults: &settings
   iphone_store_url: http://itunes.com/apps/zazo
   domain_name: zazoapp.com
   site_name: zazoapp
-  app_name: "Zazo"
+  app_name: zazo
   admin_email: admin@zazoapp.com
   support_email: support@zazoapp.com
   app_schema: "zazo://"
