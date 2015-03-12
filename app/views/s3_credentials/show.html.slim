@@ -1,0 +1,21 @@
+h1 S3 credential
+p#notice
+  = notice
+
+table.table
+  tr
+    td Region
+    td = @s3_credential.region
+  tr
+    td Bucket
+    td = @s3_credential.bucket
+  tr
+    td Access key
+    td
+      code = @s3_credential.access_key
+  tr
+    td Secret key
+    td
+      code = @s3_credential.secret_key
+
+= link_to 'Edit', edit_s3_credential_path(@s3_credential), class: 'btn btn-default'

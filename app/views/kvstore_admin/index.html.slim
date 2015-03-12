@@ -1,0 +1,15 @@
+h1 Listing Kvstore
+table.table
+  thead
+    tr
+      th Key1
+      th Key2
+      th Value
+  tbody
+    - @kvstores.each do |kv|
+      tr
+        td = kv.key1
+        td = kv.key2
+        td = kv.value
+br
+= link_to 'Delete all kvs', kvstore_admin_delete_all_path, class: 'btn btn-default'

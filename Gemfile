@@ -67,9 +67,14 @@ gem 'apns', github: 'noplanb/APNS'
 # Phone helpers
 gem 'twilio-ruby'
 gem 'global_phone'
+
 gem 'pry-rails'
 gem 'figaro'
 gem 'awesome_print'
+gem 'slim-rails'
+
+gem 'bootstrap-sass'
+gem 'simple_form'
 
 group :development do
   gem 'better_errors'
@@ -83,6 +88,7 @@ group :development do
   gem 'rb-fchange', require: false
   gem 'rb-fsevent', require: false
   gem 'rb-inotify', require: false
+  gem 'rails_layout'
 end
 
 # Testing

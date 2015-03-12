@@ -1,0 +1,25 @@
+h1 Listing connections
+table.table
+  thead
+    tr
+      th Creator ID
+      th Creator
+      th Target ID
+      th Target
+      th Status
+      th
+      th
+      th
+  tbody
+    - @connections.each do |connection|
+      tr
+        td = connection.creator.id
+        td = connection.creator.name
+        td = connection.target.id
+        td = connection.target.name
+        td = status_tag connection.status
+        td = link_to 'Show', connection
+        td = link_to 'Edit', edit_connection_path(connection)
+        td = link_to 'Destroy', connection, method: :delete, data: { confirm: 'Are you sure?' }
+br
+= link_to 'New Connection', new_connection_path, class: 'btn btn-default'

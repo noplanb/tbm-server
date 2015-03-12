@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   require "no_plan_b/utils/text_utils"
+  DEVICE_PLATFORMS = [:ios, :android]
 
   include EnumHandler
 
@@ -8,7 +9,7 @@ class User < ActiveRecord::Base
 
   validates_uniqueness_of :mobile_number, :on => :create
 
-  define_enum :device_platform, [:ios,:android]
+  define_enum :device_platform, DEVICE_PLATFORMS
   define_enum :status, [:initialized, :verified], :primary => true
 
   # GARF: Change this to before_create when we finalize the algorithm for creating keys. Right now I incorporate id

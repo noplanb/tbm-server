@@ -1,0 +1,6 @@
+= simple_form_for @video do |f|
+  = f.error_notification
+  = f.association :user, label: 'Sender'
+  = f.association :receiver, label: 'Receiver'
+  = f.input :file, as: :file
+  = f.submit

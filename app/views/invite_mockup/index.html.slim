@@ -1,0 +1,9 @@
+table border="0" cellspacing="5" cellpadding="5"
+  tr
+    - @users.each do |user|
+      td.phoneCol data-first_name=user[:first_name] data-last_name=user[:last_name] data-mobile_number=user[:mobile_number] data-device_platform=user[:device_platform]
+      .phoneTitle
+        = user[:first_name] + " " + user[:last_name]
+      .phone
+      .phoneTitle SMS App
+      .sms
