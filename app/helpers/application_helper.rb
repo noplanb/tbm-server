@@ -15,7 +15,7 @@ module ApplicationHelper
   end
 
   def store_url
-    android? ? APP_CONFIG[:android_store_url] : APP_CONFIG[:iphone_store_url]
+    ios? ? APP_CONFIG[:iphone_store_url] : APP_CONFIG[:android_store_url]
   end
 
   def status_tag(status)

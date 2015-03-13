@@ -9,6 +9,8 @@ ThreebymeServer::Application.routes.draw do
   get 'landing' => 'landing#index'
   get 'l/:id' => 'landing#invite'
   get 'privacy' => 'landing#privacy'
+  get 'ios' => 'landing#ios_coming_soon'
+
 
   get 'digest/open'
   get 'digest/secure'
