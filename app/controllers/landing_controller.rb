@@ -12,6 +12,9 @@ class LandingController < ApplicationController
   def privacy
   end
 
+  def ios_coming_soon
+  end
+
   private
 
   def set_state
