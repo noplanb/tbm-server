@@ -19,8 +19,7 @@ module LandingHelper
   end
 
   def iphone_store_url
-    # APP_CONFIG[:iphone_store_url]
-    ios_path
+    APP_CONFIG[:iphone_store_url]
   end
 
   def android_store_url
