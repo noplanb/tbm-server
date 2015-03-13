@@ -43,7 +43,6 @@ $well-border: $dark-grey-color
 @import bootstrap/responsive-utilities
 
 body
-  text-align: center
   font-weight: 300
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0)
   // i.e. Nexus5/Chrome and Kindle Fire HD 7''
@@ -69,6 +68,9 @@ section
   @extend .col-lg-12
   @include center-block
 
+#landing
+  text-align: center
+
 #top
   background-color: $orange-color
   color: white
@@ -76,6 +78,7 @@ section
   &.no-inviter
     max-height: 760px
     background-image: url(image_path("orange-background.jpg"))
+    background-position: center bottom
 
   #logo
     @include center-block
