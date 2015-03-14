@@ -7,6 +7,8 @@ class LandingController < ApplicationController
   end
 
   def invite
+    redirect_to iphone_store_url if ios?
+    redirect_to android_store_url if android?
   end
 
   def privacy
