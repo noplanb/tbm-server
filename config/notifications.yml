@@ -1,12 +1,13 @@
 email:
   from: elfishawy.sani@gmail.com
-  to: sani, serhii, alex
+  to: sani, serhii, alex, anna
   subject_prefix: ZAZO
   subject_line_length: 50
   addresses:
     sani: elfishawy.sani@gmail.com
     serhii: skamenkovych@codeminders.com
     alex: a.ulyanitsky@gmail.com
+    anna: anna.karmazina@sannacode.com
 sms:
   from: elfishawy.sani@gmail.com
   subject_prefix: ZAZO
