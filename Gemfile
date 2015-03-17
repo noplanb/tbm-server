@@ -59,7 +59,6 @@ gem 'enum_handler', github: 'asux/enum_handler'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-gem 'puma'
 
 # Push Notification servers
 gem 'gcm'
