@@ -6,6 +6,14 @@ GIT
       rails (> 3.2.0)
 
 GIT
+  remote: git://github.com/asux/figaro.git
+  revision: 0dd352cde48d101c43bfdc00031433eed4e79415
+  branch: feature/eb-set-command
+  specs:
+    figaro (1.1.0)
+      thor (~> 0.14)
+
+GIT
   remote: git://github.com/etcetc/console_candy.git
   revision: 4ee068894af688419ba086adfbfec45cc21d3b41
   specs:
@@ -121,8 +129,6 @@ GEM
     faker (1.4.3)
       i18n (~> 0.5)
     ffi (1.9.6)
-    figaro (1.1.0)
-      thor (~> 0.14)
     formatador (0.2.5)
     gcm (0.1.0)
       httparty
@@ -350,7 +356,7 @@ DEPENDENCIES
   enum_handler!
   factory_girl_rails
   faker
-  figaro
+  figaro!
   gcm
   global_phone
   guard-bundler
