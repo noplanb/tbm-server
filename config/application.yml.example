@@ -29,12 +29,7 @@ test:
   db_name: tbm_test:
 
 staging:
-  domain_name: dev.zazoapp.com
+  domain_name: staging.zazoapp.com
 
 production:
   domain_name: prod.zazoapp.com
-  secret_key_base:
-  db_name: zazo
-  db_username:
-  db_password:
-  db_host: zazo-prod.czebeq6fsif6.us-west-1.rds.amazonaws.com
