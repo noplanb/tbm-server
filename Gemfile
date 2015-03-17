@@ -69,7 +69,7 @@ gem 'twilio-ruby'
 gem 'global_phone'
 
 gem 'pry-rails'
-gem 'figaro'
+gem 'figaro', github: 'asux/figaro', branch: 'feature/eb-set-command'
 gem 'awesome_print'
 gem 'slim-rails'
 
