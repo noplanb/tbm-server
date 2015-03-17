@@ -91,7 +91,7 @@ class UsersController < ApplicationController
   private
 
   def create_test_video(sender, receiver)
-    video_id = Time.now.to_i.to_s
+    video_id = (Time.now.to_f * 1000).to_i.to_s
     creds = S3Credential.instance
     s3 = AWS::S3.new(access_key_id: creds.access_key, secret_access_key: creds.secret_key, region: creds.region)
     b = s3.buckets[creds.bucket]
