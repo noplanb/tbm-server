@@ -25,7 +25,7 @@ RSpec.describe RegController, type: :controller do
         let(:error) { error }
         it do
           expect(JSON.parse(response.body)).to eq('status' => 'failure',
-                                                'title' => 'Bad phone number',
+                                                'title' => 'Bad mobile number',
                                                 'msg' => "'To' Attribute is Invalid")
         end
       end
@@ -45,7 +45,7 @@ RSpec.describe RegController, type: :controller do
         let(:error) { error }
         it do
           expect(JSON.parse(response.body)).to eq('status' => 'failure',
-                                                  'title' => 'Bad phone number',
+                                                  'title' => 'Bad mobile number',
                                                   'msg' => 'Please enter a valid country code and phone number')
         end
       end

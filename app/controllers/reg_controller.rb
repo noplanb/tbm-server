@@ -29,7 +29,7 @@ class RegController < ApplicationController
     rescue Twilio::REST::RequestError => error
       Rails.logger.error "ERROR: reg/reg: #{error.class} ##{error.code}: #{error.message}"
       msg = twilio_invalid_number?(error.code) ? 'Please enter a valid country code and phone number' : error.message
-      return render json: { status: 'failure', title: 'Bad phone number', msg: msg }
+      return render json: { status: 'failure', title: 'Bad mobile number', msg: msg }
     end
 
     render json: { status: 'success', auth: user.auth, mkey: user.mkey }
