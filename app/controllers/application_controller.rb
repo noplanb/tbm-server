@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   # protect_from_forgery with: :exception
-  REALM = "zazo.com"
+  REALM = 'zazo.com'
 
   # ==================
   # = Before filters =
@@ -14,8 +14,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def notify_error(error)
+    env['airbrake.error_id'] = notify_airbrake(error)
+  end
+
   def not_found
-    raise ActionController::RoutingError.new('Not Found')
+    fail ActionController::RoutingError.new('Not Found')
   end
 
   # TODO: Alex this is ugly cuz it is redundant with landing helper. Please fix. Isnt there a way to make the methods in
@@ -46,5 +50,4 @@ class ApplicationController < ActionController::Base
   def store_url
     ios? ? iphone_store_url : android_store_url
   end
-
 end
