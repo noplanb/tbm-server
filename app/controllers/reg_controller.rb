@@ -24,19 +24,15 @@ class RegController < ApplicationController
       return render json: { status: 'failure', title: "Can't Add", msg: 'Unable to create user' }
     end
 
-    begin
-      SmsManager.new.send_verification_sms(user)
-    rescue Twilio::REST::RequestError => error
-      Rails.logger.error "ERROR: reg/reg: #{error.class} ##{error.code}: #{error.message}"
-      opts = if twilio_invalid_number?(error.code)
-        { title: 'Bad mobile number', msg: 'Please enter a valid country code and phone number' }
-      else
-        { title: 'Sorry!', msg:  'We encountered a problem on our end. We will fix shortly. Please try again later.' }
-      end
-      return render json: { status: 'failure' }.merge(opts)
+    opts = case SmsManager.new.send_verification_sms(user)
+    when 0
+      { status: 'success', auth: user.auth, mkey: user.mkey }
+    when 1
+      { status: 'failure', title: 'Bad mobile number', msg: 'Please enter a valid country code and phone number' }
+    else
+      { status: 'failure', title: 'Sorry!', msg:  'We encountered a problem on our end. We will fix shortly. Please try again later.' }
     end
-
-    render json: { status: 'success', auth: user.auth, mkey: user.mkey }
+    render json: opts
   end
 
   def debug_get_user
@@ -74,9 +70,5 @@ class RegController < ApplicationController
 
   def user_params
     params.permit(:first_name, :last_name, :mobile_number, :device_platform, :status, :verification_code)
-  end
-
-  def twilio_invalid_number?(code)
-    [21211, 21214, 21217, 21219, 21401, 21407, 21421, 21614].include?(code.to_i)
   end
 end
