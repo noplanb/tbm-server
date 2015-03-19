@@ -5,7 +5,7 @@ http_interactions:
     uri: https://<%= twilio_ssid %>:<%= twilio_token %>@api.twilio.com/2010-04-01/Accounts/<%= twilio_ssid %>/Messages.json
     body:
       encoding: US-ASCII
-      string: From=%2B16503766005&To=%2B20227368296&Body=Zazo+access+code%3A+091911
+      string: From=<%= CGI.escape from %>&To=<%= CGI.escape to %>&Body=Zazo+access+code%3A+091911
     headers:
       Accept:
       - application/json

@@ -28,8 +28,12 @@ class RegController < ApplicationController
       SmsManager.new.send_verification_sms(user)
     rescue Twilio::REST::RequestError => error
       Rails.logger.error "ERROR: reg/reg: #{error.class} ##{error.code}: #{error.message}"
-      msg = twilio_invalid_number?(error.code) ? 'Please enter a valid country code and phone number' : error.message
-      return render json: { status: 'failure', title: 'Bad mobile number', msg: msg }
+      opts = if twilio_invalid_number?(error.code)
+        { title: 'Bad mobile number', msg: 'Please enter a valid country code and phone number' }
+      else
+        { title: 'Sorry!', msg:  'We encountered a problem on our end. We will fix shortly. Please try again later.' }
+      end
+      return render json: { status: 'failure' }.merge(opts)
     end
 
     render json: { status: 'success', auth: user.auth, mkey: user.mkey }
