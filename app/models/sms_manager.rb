@@ -48,6 +48,7 @@ class SmsManager
     Rails.logger.info "send_verification_sms: to:#{to} msg:#{message}"
     :ok
   rescue Twilio::REST::RequestError => error
+    Airbrake.notify(error)
     Rails.logger.error "ERROR: reg/reg: #{error.class} ##{error.code}: #{error.message}"
     twilio_invalid_number?(error.code) ? :invalid_mobile_number : :other
   end
