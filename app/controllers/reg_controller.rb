@@ -25,9 +25,9 @@ class RegController < ApplicationController
     end
 
     opts = case SmsManager.new.send_verification_sms(user)
-    when 0
+    when :ok
       { status: 'success', auth: user.auth, mkey: user.mkey }
-    when 1
+    when :invalid_mobile_number
       { status: 'failure', title: 'Bad mobile number', msg: 'Please enter a valid country code and phone number' }
     else
       { status: 'failure', title: 'Sorry!', msg:  'We encountered a problem on our end. We will fix shortly. Please try again later.' }

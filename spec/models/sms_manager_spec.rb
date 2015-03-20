@@ -31,7 +31,7 @@ RSpec.describe SmsManager, type: :model do
                            twilio_token: Figaro.env.twilio_token,
                            from: Figaro.env.twilio_from_number,
                            to: mobile_number }) do
-          is_expected.to eq(0)
+          is_expected.to eq(:ok)
         end
       end
     end
@@ -45,7 +45,7 @@ RSpec.describe SmsManager, type: :model do
           twilio_token: Figaro.env.twilio_token,
           from: Figaro.env.twilio_from_number,
           to: mobile_number }.merge(error)) do
-          is_expected.to eq(1)
+          is_expected.to eq(:invalid_mobile_number)
         end
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe SmsManager, type: :model do
           twilio_token: Figaro.env.twilio_token,
           from: Figaro.env.twilio_from_number,
           to: mobile_number }.merge(error)) do
-          is_expected.to eq(2)
+          is_expected.to eq(:other)
         end
       end
     end
