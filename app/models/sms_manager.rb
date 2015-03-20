@@ -15,20 +15,26 @@ class SmsManager
     21624 => "PhoneNumber Requires a Foreign Address",
   }
 
-  def send_verification_sms(user)
+  attr_reader :user
+
+  def initialize(user)
+    @user = user
+  end
+
+  def send_verification_sms
     user.reset_verification_code
-    send_sms(to(user), message(user))
+    send_sms(to, message)
   end
 
   def from
     Figaro.env.twilio_from_number
   end
 
-  def to(user)
+  def to
     Rails.env.development? ? Figaro.env.twilio_to_number : user.mobile_number
   end
 
-  def message(user)
+  def message
     "#{APP_CONFIG[:app_name]} access code: #{user.verification_code}"
   end
 
@@ -37,8 +43,8 @@ class SmsManager
   end
 
   def send_sms(to, message)
-    @twilio = Twilio::REST::Client.new Figaro.env.twilio_ssid, Figaro.env.twilio_token
-    @twilio.messages.create(from: from, to: to, body: message)
+    twilio = Twilio::REST::Client.new Figaro.env.twilio_ssid, Figaro.env.twilio_token
+    twilio.messages.create(from: from, to: to, body: message)
     Rails.logger.info "send_verification_sms: to:#{to} msg:#{message}"
     :ok
   rescue Twilio::REST::RequestError => error

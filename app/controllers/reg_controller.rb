@@ -24,11 +24,11 @@ class RegController < ApplicationController
       return render json: { status: 'failure', title: "Can't Add", msg: 'Unable to create user' }
     end
 
-    opts = case SmsManager.new.send_verification_sms(user)
+    opts = case SmsManager.new(user).send_verification_sms
     when :ok
       { status: 'success', auth: user.auth, mkey: user.mkey }
     when :invalid_mobile_number
-      { status: 'failure', title: 'Bad mobile number', msg: 'Please enter a valid country code and phone number' }
+      { status: 'failure', title: 'Bad mobile number', msg: 'Please enter a valid country code and mobile number' }
     else
       { status: 'failure', title: 'Sorry!', msg:  'We encountered a problem on our end. We will fix shortly. Please try again later.' }
     end

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SmsManager, type: :model do
   let(:mobile_number) { Figaro.env.twilio_to_number }
   let(:user) { build(:user, mobile_number: mobile_number) }
-  let(:instance) { described_class.new }
+  let(:instance) { described_class.new(user) }
 
   describe '#from' do
     subject { instance.from }
@@ -11,18 +11,18 @@ RSpec.describe SmsManager, type: :model do
   end
 
   describe '#to' do
-    subject { instance.to(user) }
+    subject { instance.to }
     it { is_expected.to eq(mobile_number) }
   end
 
   describe '#message' do
-    subject { instance.message(user) }
+    subject { instance.message }
     let(:user) { build(:user, verification_code: 123456) }
     it { is_expected.to eq("#{APP_CONFIG[:app_name]} access code: 123456") }
   end
 
   describe '#send_verification_sms' do
-    subject { instance.send_verification_sms(user) }
+    subject { instance.send_verification_sms }
 
     context 'on success' do
       it do

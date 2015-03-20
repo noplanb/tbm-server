@@ -74,7 +74,7 @@ RSpec.describe RegController, type: :controller do
           it do
             expect(JSON.parse(response.body)).to eq('status' => 'failure',
                                                     'title' => 'Bad mobile number',
-                                                    'msg' => 'Please enter a valid country code and phone number')
+                                                    'msg' => 'Please enter a valid country code and mobile number')
           end
         end
       end
