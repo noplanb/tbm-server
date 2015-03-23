@@ -15,6 +15,9 @@ development:
 test:
   <<: *default
 
+playground:
+  <<: *default
+
 staging:
   <<: *default
 

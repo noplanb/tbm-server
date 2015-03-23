@@ -28,10 +28,27 @@ twilio_token:
 airbrake_api_key:
 
 test:
-  db_name: tbm_test:
+  db_name: tbm_test
 
 staging:
   domain_name: staging.zazoapp.com
+  db_host:
+  db_name:
+  db_password:
+  db_port: '3306'
+  db_username:
+
+playground:
+  db_host:
+  db_name:
+  db_password:
+  db_port: '3306'
+  db_username:
 
 production:
   domain_name: prod.zazoapp.com
+  db_host:
+  db_name:
+  db_password:
+  db_port: '3306'
+  db_username:
