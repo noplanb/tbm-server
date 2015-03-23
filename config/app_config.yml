@@ -16,6 +16,9 @@ development:
 test:
   <<: *settings
 
+playground:
+  <<: *settings
+
 staging:
   <<: *settings
 
