@@ -17,6 +17,10 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_db_column(:status).of_type(:string) }
   end
 
+  describe 'validations' do
+    it { is_expected.to validate_uniqueness_of(:mobile_number) }
+  end
+
   describe 'indexes' do
     it { is_expected.to have_db_index(:mkey) }
     it { is_expected.to have_db_index(:mobile_number) }

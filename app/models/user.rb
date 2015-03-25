@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   has_many :connections_as_creator, :class_name => 'Connection', :foreign_key => :creator_id, :dependent => :destroy
   has_many :connections_as_target, :class_name => 'Connection', :foreign_key =>:target_id, :dependent => :destroy
 
-  validates_uniqueness_of :mobile_number, :on => :create
+  validates :mobile_number, uniqueness: true
 
   define_enum :device_platform, DEVICE_PLATFORMS
   define_enum :status, [:initialized, :verified], :primary => true
