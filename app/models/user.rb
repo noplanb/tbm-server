@@ -93,7 +93,7 @@ class User < ActiveRecord::Base
   end
 
   def verification_code_will_expire_in?(n)
-    return true if verification_code.blank? || :verification_date_time.blank?
+    return true if verification_code.blank? || verification_date_time.blank?
     return true if verification_date_time < n.minutes.from_now
     return false
   end
