@@ -1,41 +1,38 @@
 class VersionController < ApplicationController
-
   def check_compatibility
     v = params[:version].to_i
-    r = "error"
-    r = is_android? ? get_android_response(v) : get_ios_response(v)
-    render :json => {result: r}
+    r = 'error'
+    r = android? ? android_response(v) : ios_response(v)
+    render json: { result: r }
   end
-
-  def get_ios_response(v)
-    if false
-      return "update_schema_required"
-    elsif v < 22
-      return "update_required"
-    elsif false
-      return "update_optional"
-    else
-      return "current"
-    end
-  end
-
-  def get_android_response(v)
-    if false
-      return "update_schema_required"
-    elsif v < 42
-      return "update_required"
-    elsif false
-       return"update_optional"
-    else
-      return "current"
-    end
-  end
-
 
   private
 
-  def is_android?
-    params[:device_platform].downcase.match("android")
+  def ios_response(v)
+    if false
+      return 'update_schema_required'
+    elsif v < 22
+      return 'update_required'
+    elsif false
+      return 'update_optional'
+    else
+      return 'current'
+    end
   end
 
+  def android_response(v)
+    if false
+      return 'update_schema_required'
+    elsif v < 42
+      return 'update_required'
+    elsif false
+      return 'update_optional'
+    else
+      return 'current'
+    end
+  end
+
+  def android?
+    params[:device_platform].to_s.downcase.include?('android')
+  end
 end
