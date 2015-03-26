@@ -6,7 +6,7 @@ notify() {
   local text=$1
   local color=$2
   echo "${text}"
-  curl -X POST --data-urlencode "payload={\"channel\": \"${channel}\", \"username\": \"${username}\", \"attachments\": [{\"color\": \"${color}\", \"text\": \"${text}\", \"mrkdwn_in\": [\"text\"] }]}" https://hooks.slack.com/services/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
+  curl -s -X POST --data-urlencode "payload={\"channel\": \"${channel}\", \"username\": \"${username}\", \"attachments\": [{\"color\": \"${color}\", \"text\": \"${text}\", \"mrkdwn_in\": [\"text\"] }]}" https://hooks.slack.com/services/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
 }
 
 # Variables
@@ -46,6 +46,7 @@ deploy_cmd="eb deploy ${eb_environment}"
 # Commands
 
 notify "${started_text}"
+echo ${deploy_cmd}
 if ${deploy_cmd}; then
   bundle exec rake airbrake:deploy TO=${environment} REVISION=${revision} REPO=${repo_url}
   notify "${finished_text}" good
