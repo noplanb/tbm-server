@@ -91,6 +91,8 @@ group :development do
   gem 'rb-fsevent', require: false
   gem 'rb-inotify', require: false
   gem 'rails_layout'
+  gem 'capistrano-rails'
+  gem 'slackistrano', require: false
 end
 
 # Testing
