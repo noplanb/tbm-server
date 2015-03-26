@@ -46,7 +46,7 @@ deploy_cmd="eb deploy ${eb_environment}"
 # Commands
 
 notify "${started_text}"
-if $(${deploy_cmd}); then
+if ${deploy_cmd}; then
   bundle exec rake airbrake:deploy TO=${environment} REVISION=${revision} REPO=${repo_url}
   notify "${finished_text}" good
 else
