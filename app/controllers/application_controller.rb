@@ -9,7 +9,9 @@ class ApplicationController < ActionController::Base
   # ==================
   def authenticate
     authenticate_or_request_with_http_digest(REALM) do |mkey|
+      Rails.logger.info "[HTTP Digest] Trying authenticate with mkey: #{mkey.inspect}"
       @user = User.find_by_mkey(mkey)
+      Rails.logger.info "[HTTP Digest] Found user #{@user.try :info} for mkey #{mkey.inspect}"
       @user && @user.auth
     end
   end
