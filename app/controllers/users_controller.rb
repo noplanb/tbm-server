@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   http_basic_authenticate_with name: Figaro.env.http_basic_username, password: Figaro.env.http_basic_password
 
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :new_connection, :establish_connection, :receive_test_video]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :new_connection, :establish_connection, :receive_test_video, :receive_corrupt_video]
 
   # GET /users
   # GET /users.json
@@ -81,22 +81,30 @@ class UsersController < ApplicationController
 
   # Send test_video
   def receive_test_video
+    receive_video Rails.root.join('test_video.mp4')
+  end
+
+  def receive_corrupt_video
+    receive_video Rails.root.join('app/assets/images/orange-background.jpg')
+  end
+
+  private
+
+  def receive_video(file_name)
     sender = User.find params[:sender_id]
-    video_id = create_test_video(sender, @user)
+    video_id = create_test_video(sender, @user, file_name)
     add_remote_key(sender, @user, video_id)
     send_video_received_notification(sender, @user, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
 
-  private
-
-  def create_test_video(sender, receiver)
+  def create_test_video(sender, receiver, file_name)
     video_id = (Time.now.to_f * 1000).to_i.to_s
     creds = S3Credential.instance
     s3 = AWS::S3.new(access_key_id: creds.access_key, secret_access_key: creds.secret_key, region: creds.region)
     b = s3.buckets[creds.bucket]
     o = b.objects[video_filename(sender, receiver, video_id)]
-    o.write(file: "#{Rails.root}/test_video.mp4")
+    o.write(file: file_name)
     video_id
   end
 
