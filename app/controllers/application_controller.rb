@@ -10,12 +10,25 @@ class ApplicationController < ActionController::Base
   # ==================
   # = Before filters =
   # ==================
-  def authenticate
+  def authenticate_with_digest
     authenticate_or_request_with_http_digest(REALM) do |mkey|
-      Rails.logger.info "[HTTP Digest] Trying authenticate with mkey: #{mkey.inspect}"
       @user = @current_user = User.find_by_mkey(mkey)
-      Rails.logger.info "[HTTP Digest] Found user #{@user.try :info} for mkey #{mkey.inspect}"
       @user && @user.auth
+    end
+  end
+
+  def authenticate_with_token
+    authenticate_with_http_token do |token, options|
+      @user = @current_user = User.find_by_mkey(token)
+      @user && @user.auth
+    end
+  end
+
+  def authenticate
+    if APP_CONFIG[:allow_authentication_with_token]
+      authenticate_with_token || authenticate_with_digest
+    else
+      authenticate_with_digest
     end
   end
 

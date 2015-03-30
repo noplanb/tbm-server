@@ -9,9 +9,11 @@ defaults: &settings
   support_email: support@zazoapp.com
   app_schema: "zazo://"
   use_s3: false
+  allow_authentication_with_token: false
 
 development:
   <<: *settings
+  allow_authentication_with_token: true
 
 test:
   <<: *settings
