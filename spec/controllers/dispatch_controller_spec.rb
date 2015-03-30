@@ -20,7 +20,7 @@ RSpec.describe DispatchController, type: :controller do
         expect(response).to be_success
       end
 
-      it 'notifies Rollbar', :pending do
+      it 'notifies Rollbar', pending: 'FIXME: Rollbar.scope returns nil' do
         expect(Rollbar).to receive(:scope).with(scope)
         expect_any_instance_of(Rollbar::Configuration).to receive(:access_token).with(access_token)
         expect_any_instance_of(Rollbar::Notifier).to receive(:error).with(error_message, report: msg)
@@ -41,7 +41,7 @@ RSpec.describe DispatchController, type: :controller do
         expect(response).to be_success
       end
 
-      it 'notifies Rollbar', :pending do
+      it 'notifies Rollbar', pending: 'FIXME: Rollbar.scope returns nil' do
         expect(Rollbar).to receive(:scope).with(scope)
         expect_any_instance_of(Rollbar::Configuration).to receive(:access_token).with(access_token)
         expect_any_instance_of(Rollbar::Notifier).to receive(:error).with(error_message, report: msg)
