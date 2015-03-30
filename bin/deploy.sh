@@ -61,11 +61,11 @@ fi
 
 # Commands
 
+echo "Deploy command: ${deploy_cmd}"
 notify_slack "${started_text}"
-echo ${deploy_cmd}
 if ${deploy_cmd}; then
-  notify_rollbar
   notify_slack "${finished_text}" good
 else
   notify_slack "${failed_text}" danger
 fi
+notify_rollbar
