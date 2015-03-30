@@ -28,6 +28,9 @@ twilio_token:
 rollbar_access_token:
 client_rollbar_access_token:
 
+ios_rollbar_access_token:
+android_rollbar_access_token:
+
 test:
   db_name: tbm_test
 

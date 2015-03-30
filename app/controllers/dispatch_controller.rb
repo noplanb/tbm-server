@@ -2,10 +2,17 @@ class DispatchController < ApplicationController
   before_action :authenticate
 
   def post_dispatch
-    error_message = params[:msg].lines.first.chomp
-    backtrace = params[:msg]
-    api_key = Figaro.env.send "#{@user.device_platform.to_s.downcase}_airbrake_api_key"
-    Airbrake.notify(error_message: error_message, backtrace: backtrace, api_key: api_key)
+    report = params[:msg]
+    error_message = report.match(/(^[a-z](.+)$)/i) do |m|
+      m[0]
+    end
+    notifier = Rollbar.scope(
+      person: {
+        id: @user.id,
+        username: @user.name,
+        email: @user.mobile_number })
+    notifier.configuration.access_token = Figaro.env.send "#{@user.device_platform.to_s.downcase}_rollbar_access_token"
+    notifier.error(error_message, report: report)
     render json: { status: 'success' }
   end
 end
