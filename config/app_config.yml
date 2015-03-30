@@ -20,6 +20,7 @@ test:
 
 playground:
   <<: *settings
+  allow_authentication_with_token: true
 
 staging:
   <<: *settings
