@@ -1,12 +1,29 @@
-#!/bin/sh
+#!/bin/bash
 
 # Functions
 
-notify() {
+notify_slack() {
+  local username="Elastic Beanstalk"
+  local channel="#dev"
   local text=$1
   local color=$2
-  echo "${text}"
-  curl -s -X POST --data-urlencode "payload={\"channel\": \"${channel}\", \"username\": \"${username}\", \"attachments\": [{\"color\": \"${color}\", \"text\": \"${text}\", \"mrkdwn_in\": [\"text\"] }]}" https://hooks.slack.com/services/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
+
+  echo -n ${text} "-> "
+  curl -X POST --data-urlencode "payload={\"channel\": \"${channel}\", \"username\": \"${username}\", \"attachments\": [{\"color\": \"${color}\", \"text\": \"${text}\", \"mrkdwn_in\": [\"text\"] }]}" https://hooks.slack.com/services/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
+  echo
+}
+
+notify_rollbar() {
+  local rollbar_username=${local_user}
+  local comment=$2
+  curl https://api.rollbar.com/api/1/deploy/ \
+    -F access_token=${rollbar_access_token} \
+    -F environment=${environment} \
+    -F revision=${revision} \
+    -F local_username=${local_user} \
+    -F rollbar_username=${rollbar_username} \
+    -F comment=${comment}
+  echo
 }
 
 # Variables
@@ -16,40 +33,39 @@ environment=$1
 [ -z ${environment} ] && environment=${RACK_ENV}
 [ -z ${environment} ] && environment="staging"
 case ${environment} in
-  production) eb_environment="zazo-prod2-0-1"
+  production) eb_environment="${application}-prod2-0-1"
     ;;
-  *) eb_environment="zazo-${environment}"
+  *) eb_environment="${application}-${environment}"
     ;;
 esac
 
-# Git
-
+local_user=$(whoami)
 repo_url="https://github.com/noplanb/tbm-server"
 revision=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
-channel="#dev"
-username="Elastic Beanstalk"
 commit_url="${repo_url}/commit/${revision}"
 revision_short=${revision:0:8}
 
-# Slack
-
 common_text="branch \`${branch}\` <${commit_url}|${revision_short}> of ${application} to *${environment}* [${eb_environment}]"
-started_text="${USER} has started deploying ${common_text}"
-failed_text="${USER} failed to deploy ${common_text}"
-finished_text="${USER} has finished deploying ${common_text}"
+started_text="${local_user} has started deploying ${common_text}"
+failed_text="${local_user} failed to deploy ${common_text}"
+finished_text="${local_user} has finished deploying ${common_text}"
 
 # Deploy command
 
-deploy_cmd="eb deploy ${eb_environment}"
+if [ ${environment} == "test" ]; then
+  deploy_cmd="true"
+else
+  deploy_cmd="eb deploy ${eb_environment}"
+fi
 
 # Commands
 
-notify "${started_text}"
+notify_slack "${started_text}"
 echo ${deploy_cmd}
 if ${deploy_cmd}; then
-  bundle exec rake airbrake:deploy TO=${environment} REVISION=${revision} REPO=${repo_url}
-  notify "${finished_text}" good
+  notify_rollbar
+  notify_slack "${finished_text}" good
 else
-  notify "${failed_text}" danger
+  notify_slack "${failed_text}" danger
 fi

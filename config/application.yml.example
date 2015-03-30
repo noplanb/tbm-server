@@ -25,7 +25,8 @@ twilio_ssid:
 twilio_to_number: '+16502453537'
 twilio_token:
 
-airbrake_api_key:
+rollbar_access_token:
+client_rollbar_access_token:
 
 test:
   db_name: tbm_test
