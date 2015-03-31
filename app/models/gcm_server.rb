@@ -26,10 +26,14 @@ module GcmServer
 
     if response.body['failure'] != 0 || response.body['canonical_ids'] != 0
       Rails.logger.error JSON.pretty_generate(response.body)
+      error_messages = response.body['results'].map{ |r| r['error'] }.join(', ')
+      Rollbar.warning("GcmServer: GCM responded with errors: #{error_messages}", gcm_response: response.body)
     else
       Rails.logger.info "GcmServer: succesfully sent notification. #{payload.inspect}"
     end
     response
+  rescue Faraday::ClientError => error
+    Rollbar.error(error, original_payload: payload)
   end
 
   def make_payload(ids, data)
