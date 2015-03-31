@@ -33,22 +33,40 @@ RSpec.describe NotificationController, type: :controller do
                              target_mkey: target.mkey,
                              video_id: video_id)
     end
-    let(:payload) do
-      GcmServer.make_payload(
-        params[:push_token],
-        type: 'video_received',
-        from_mkey: params[:from_mkey],
-        video_id: params[:video_id])
+
+    context 'Android' do
+      let(:user) { create(:android_user) }
+      let(:payload) do
+        GcmServer.make_payload(
+          params[:push_token],
+          type: 'video_received',
+          from_mkey: params[:from_mkey],
+          video_id: params[:video_id])
+      end
+      before do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          VCR.use_cassette('gcm_send_with_error', erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
+            post :send_video_received, params
+          end
+        end
+      end
+
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
     end
-    before do
-      authenticate_with_http_digest(user.mkey, user.auth) do
-        VCR.use_cassette('gcm_send_with_error', erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
+
+    context 'iOS' do
+      let(:user) { create(:ios_user) }
+      before do
+        authenticate_with_http_digest(user.mkey, user.auth) do
           post :send_video_received, params
         end
       end
-    end
-    it 'returns http success' do
-      expect(response).to have_http_status(:success)
+
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
     end
   end
 
@@ -59,23 +77,39 @@ RSpec.describe NotificationController, type: :controller do
                              video_id: video_id,
                              status: 'viewed')
     end
-    let(:payload) do
-      GcmServer.make_payload(
-        params[:push_token],
-        type: 'video_status_update',
-        to_mkey: params[:to_mkey],
-        status: params[:status],
-        video_id: params[:video_id])
+
+    context 'Android' do
+      let(:user) { create(:android_user) }
+      let(:payload) do
+        GcmServer.make_payload(
+          params[:push_token],
+          type: 'video_status_update',
+          to_mkey: params[:to_mkey],
+          status: params[:status],
+          video_id: params[:video_id])
+      end
+      before do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          VCR.use_cassette('gcm_send_with_error', erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
+            post :send_video_status_update, params
+          end
+        end
+      end
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
     end
-    before do
-      authenticate_with_http_digest(user.mkey, user.auth) do
-        VCR.use_cassette('gcm_send_with_error', erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
+
+    context 'iOS' do
+      let(:user) { create(:ios_user) }
+      before do
+        authenticate_with_http_digest(user.mkey, user.auth) do
           post :send_video_status_update, params
         end
       end
-    end
-    it 'returns http success' do
-      expect(response).to have_http_status(:success)
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
     end
   end
 end
