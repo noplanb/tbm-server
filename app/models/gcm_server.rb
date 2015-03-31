@@ -20,33 +20,29 @@ module GcmServer
   def post_to_gcm(payload)
     Rails.logger.info "GcmServer: Attempting to send notification. #{payload.inspect}"
 
-    payload = payload.to_json unless payload.class == String
-
-    uri = URI(GCM_URI)
-    req = Net::HTTP::Post.new(uri.path)
-    req.body = payload
-    req['Authorization'] = "key=#{Figaro.env.gcm_api_key}"
-    req['Content-Type'] = 'application/json'
-
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-
-    res =  http.request(req)
-    if res.code != '200'
-      Rails.logger.error res.body.inspect
-    else
-      j = JSON.parse res.body
-      if j['failure'] != 0 || j['canonical_ids'] != 0
-        Rails.logger.error JSON.pretty_generate j
-      else
-        Rails.logger.info "GcmServer: succesfully sent notification. #{payload.inspect}"
-      end
+    response = connection.post do |req|
+      req.body = payload
     end
-    res
+
+    if response.body['failure'] != 0 || response.body['canonical_ids'] != 0
+      Rails.logger.error JSON.pretty_generate(response.body)
+    else
+      Rails.logger.info "GcmServer: succesfully sent notification. #{payload.inspect}"
+    end
+    response
   end
 
   def make_payload(ids, data)
-    ids = Array(ids)
-    { registration_ids: ids, data: data }
+    { registration_ids: Array(ids), data: data }
+  end
+
+  def connection
+    @connection ||= Faraday.new(GCM_URI) do |c|
+      c.request :json
+      c.response :json, content_type: /\bjson$/
+      c.response :raise_error
+      c.headers['Authorization'] = "key=#{Figaro.env.gcm_api_key}"
+      c.adapter Faraday.default_adapter
+    end
   end
 end

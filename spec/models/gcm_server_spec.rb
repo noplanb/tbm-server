@@ -14,6 +14,16 @@ RSpec.describe GcmServer, type: :model do
   describe '.send_notification' do
     subject { described_class.send_notification(ids, data) }
 
+    context 'with server error' do
+      specify do
+        expect do
+          VCR.use_cassette('gcm_send_with_server_error', erb: { key: 'gcmkey', payload: payload }) do
+            subject
+          end
+        end.to raise_error(Faraday::ClientError)
+      end
+    end
+
     context 'with wrong registration_ids' do
       before do
         VCR.use_cassette('gcm_send_with_error', erb: { key: 'gcmkey', payload: payload }) do
@@ -21,10 +31,10 @@ RSpec.describe GcmServer, type: :model do
         end
       end
 
-      it { is_expected.to be_a(Net::HTTPResponse) }
+      it { is_expected.to be_a(Faraday::Response) }
 
       context 'body' do
-        subject { JSON.parse(described_class.send_notification(ids, data).body) }
+        subject { described_class.send_notification(ids, data).body }
         let(:response_body) do
           { 'multicast_id' => 4_843_761_582_852_144_534,
             'success' => 0,
