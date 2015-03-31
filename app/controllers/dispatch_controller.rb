@@ -3,7 +3,7 @@ class DispatchController < ApplicationController
 
   def post_dispatch
     report = params[:msg]
-    error_message = report.match(/(^[a-z](.+)$)/i) do |m|
+    error_message = report.match(/(^[a-z]+(.+)$)/i) do |m|
       m[0]
     end
     notifier = Rollbar.scope(
@@ -12,7 +12,7 @@ class DispatchController < ApplicationController
         username: @user.name,
         email: @user.mobile_number })
     notifier.configuration.access_token = Figaro.env.send "#{@user.device_platform.to_s.downcase}_rollbar_access_token"
-    notifier.error(error_message, report: report)
+    notifier.error(error_message)
     render json: { status: 'success' }
   end
 end
