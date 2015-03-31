@@ -3,6 +3,8 @@ module GcmServer
   require 'json'
   include NpbNotification
 
+  GCM_URI = 'https://android.googleapis.com/gcm/send'
+
   # Key created at console.developers.google.com under project ThreeByMe.
   # currently tbm beta server and andrey server using this key for
 
@@ -20,7 +22,7 @@ module GcmServer
 
     payload = payload.to_json unless payload.class == String
 
-    uri = URI(Figaro.env.gcm_uri)
+    uri = URI(GCM_URI)
     req = Net::HTTP::Post.new(uri.path)
     req.body = payload
     req['Authorization'] = "key=#{Figaro.env.gcm_api_key}"
