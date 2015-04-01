@@ -23,6 +23,10 @@ class GenericPushNotification
     @platform == :ios ? send_ios : send_android
   end
 
+  def feedback
+    apns.feedback
+  end
+
   private
 
   def send_ios

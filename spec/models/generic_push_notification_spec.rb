@@ -18,37 +18,49 @@ RSpec.describe GenericPushNotification, type: :model do
   end
 
   let(:instance) { described_class.new(attributes) }
+  let(:ios_notification) do
+    n = APNS::Notification.new(attributes[:token], {})
+    n.alert = attributes[:alert]
+    n.badge = attributes[:badge]
+    n.sound = "NotificationTone.wav"
+    n.content_available = attributes[:content_available]
+    n.other = attributes[:payload]
+    n
+  end
 
-  context 'Android' do
-    let(:target_push_user) { build(:android_push_user) }
-    let(:payload) do
-      GcmServer.make_payload(attributes[:token], attributes[:payload])
+  describe '#send' do
+    subject { instance.send }
+
+    context 'Android' do
+      let(:target_push_user) { build(:android_push_user) }
+      let(:payload) do
+        GcmServer.make_payload(attributes[:token], attributes[:payload])
+      end
+
+      specify do
+        expect(GcmServer).to receive(:send_notification).with(attributes[:token], attributes[:payload])
+        VCR.use_cassette('gcm_send_with_error', erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
+          subject
+        end
+      end
     end
 
-    specify do
-      expect(GcmServer).to receive(:send_notification).with(attributes[:token], attributes[:payload])
-      VCR.use_cassette('gcm_send_with_error', erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
-        instance.send
+    context 'iOS' do
+      let(:target_push_user) { build(:ios_push_user) }
+
+      specify 'expects APNS::Server receives :send_notification' do
+        allow(instance).to receive(:ios_notification).and_return(ios_notification)
+        expect_any_instance_of(APNS::Server).to receive(:send_notifications).with([ios_notification])
+        subject
       end
     end
   end
 
-  context 'iOS' do
-    let(:target_push_user) { build(:ios_push_user) }
-    let(:ios_notification) do
-      n = APNS::Notification.new(attributes[:token], {})
-      n.alert = attributes[:alert]
-      n.badge = attributes[:badge]
-      n.sound = "NotificationTone.wav"
-      n.content_available = attributes[:content_available]
-      n.other = attributes[:payload]
-      n
-    end
-
-    specify do
-      allow(instance).to receive(:ios_notification).and_return(ios_notification)
-      expect_any_instance_of(APNS::Server).to receive(:send_notifications).with([ios_notification])
-      instance.send
+  describe '#feedback' do
+    context 'iOS' do
+      let(:target_push_user) { build(:ios_push_user) }
+      before { instance.send }
+      it { expect(instance.feedback).to eq([]) }
     end
   end
 end
