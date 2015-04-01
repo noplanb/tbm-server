@@ -66,4 +66,12 @@ RSpec.describe User, type: :model do
     subject { user.info }
     it { is_expected.to eq("#{user.name}[#{user.id}]") }
   end
+
+  describe '#mobile_number=' do
+    let(:mobile_number) { '983.703.3249' }
+    it 'normalizes mobile number' do
+      user.mobile_number = mobile_number
+      expect(user.mobile_number).to eq('+19837033249')
+    end
+  end
 end

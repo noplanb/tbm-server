@@ -24,6 +24,10 @@ class User < ActiveRecord::Base
     "#{name}[#{id}]"
   end
 
+  def mobile_number=(value)
+    super GlobalPhone.normalize(value)
+  end
+
   def connected_user_ids
     live_connections = Connection.for_user_id(id).live
     live_connections.map{|c| c.creator_id == id ? c.target_id : c.creator_id}
