@@ -118,7 +118,7 @@ class UsersController < ApplicationController
   end
 
   def send_video_received_notification(sender, receiver, video_id)
-    target_push_user = PushUser.find_by_mkey(receiver.mkey)
+    target_push_user = PushUser.find_by_mkey(receiver.mkey) || not_found
     gpn = GenericPushNotification.new(platform: target_push_user.device_platform,
                                       build: target_push_user.device_build,
                                       token: target_push_user.push_token,
