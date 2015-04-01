@@ -1,9 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe DispatchController, type: :controller do
+  let(:msg) { "\n#\n\nTestError: testing dispatch forwarding notification\n2015-03-30 Log1\n2015-03-30 Log2" }
+  let(:error_message) { 'TestError: testing dispatch forwarding notification' }
+
+  describe '#error_message' do
+    subject { controller.error_message(msg) }
+    it { is_expected.to eq(error_message) }
+
+    context 'when msg without title' do
+      let(:msg) { "| Friends |\n| Name     | ID       | Has app  | IV !v co | OV ID    | OV statu | Last eve | Has thum | Download |\n| ????? iO | 19       | true     | 0        |          | 0        | IN       | false    | false    |\n\n| ????? iOS |\n\n" }
+      it { is_expected.to eq('Dispatch Message') }
+    end
+  end
+
   describe 'POST #post_dispatch' do
-    let(:msg) { "\n#\n\nTestError: testing dispatch forwarding notification\n2015-03-30 Log1\n2015-03-30 Log2" }
-    let(:error_message) { 'TestError: testing dispatch forwarding notification' }
     let(:scope) { { person: {
           id: user.id,
           username: user.name,
