@@ -4,20 +4,23 @@ class ApplicationController < ActionController::Base
   # protect_from_forgery with: :exception
   REALM = 'zazo.com'
 
+  attr_reader :current_user
+  helper_method :current_user
+
   # ==================
   # = Before filters =
   # ==================
   def authenticate
     authenticate_or_request_with_http_digest(REALM) do |mkey|
       Rails.logger.info "[HTTP Digest] Trying authenticate with mkey: #{mkey.inspect}"
-      @user = User.find_by_mkey(mkey)
+      @user = @current_user = User.find_by_mkey(mkey)
       Rails.logger.info "[HTTP Digest] Found user #{@user.try :info} for mkey #{mkey.inspect}"
       @user && @user.auth
     end
   end
 
   def notify_error(error)
-    env['airbrake.error_id'] = notify_airbrake(error)
+    Rollbar.error(error)
   end
 
   def not_found
