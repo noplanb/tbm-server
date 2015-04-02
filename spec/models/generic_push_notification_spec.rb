@@ -19,12 +19,12 @@ RSpec.describe GenericPushNotification, type: :model do
 
   let(:instance) { described_class.new(attributes) }
   let(:ios_notification) do
-    n = APNS::Notification.new(attributes[:token], {})
-    n.alert = attributes[:alert]
-    n.badge = attributes[:badge]
-    n.sound = "NotificationTone.wav"
-    n.content_available = attributes[:content_available]
-    n.other = attributes[:payload]
+    n = Houston::Notification.new(attributes.slice(:token,
+                                                  :alert,
+                                                  :badge,
+                                                  :content_available))
+    n.custom_data = attributes[:payload]
+    n.sound = 'NotificationTone.wav'
     n
   end
 
@@ -38,8 +38,10 @@ RSpec.describe GenericPushNotification, type: :model do
       end
 
       specify do
-        expect(GcmServer).to receive(:send_notification).with(attributes[:token], attributes[:payload])
-        VCR.use_cassette('gcm_send_with_error', erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
+        expect(GcmServer).to receive(:send_notification).with(attributes[:token],
+                                                              attributes[:payload])
+        VCR.use_cassette('gcm_send_with_error',
+                         erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
           subject
         end
       end
@@ -48,12 +50,17 @@ RSpec.describe GenericPushNotification, type: :model do
     context 'iOS' do
       let(:target_push_user) { build(:ios_push_user) }
 
-      specify 'expects APNS::Server receives :send_notification' do
+      specify 'expects any instance of Houston::Client receives :push' do
         allow(instance).to receive(:ios_notification).and_return(ios_notification)
-        expect_any_instance_of(APNS::Server).to receive(:send_notifications).with([ios_notification])
+        expect_any_instance_of(Houston::Client).to receive(:push).with(ios_notification)
         subject
       end
     end
+  end
+
+  describe '#ios_notification' do
+    subject { instance.ios_notification }
+    it { is_expected.to be_valid }
   end
 
   describe '#feedback' do

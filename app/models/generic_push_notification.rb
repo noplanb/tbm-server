@@ -19,46 +19,42 @@ class GenericPushNotification
     @payload = attrs[:payload]
   end
 
+  def ios_notification
+    n = Houston::Notification.new(device: @token)
+    n.alert = @alert if @alert
+    n.badge = @badge if @badge
+    n.sound = @sound if @sound
+    n.content_available = @content_available
+    n.custom_data = @payload if @payload
+    n
+  end
+
   def send
     @platform == :ios ? send_ios : send_android
   end
 
   def feedback
-    apns.feedback
+    apns.devices
   end
 
   private
 
   def send_ios
-    apns.send_notifications [ios_notification]
+    apns.push ios_notification
   end
 
   def apns
-    params = if @build == :prod
-               {
-                 host: 'gateway.push.apple.com',
-                 pem: "#{Rails.root}/certs/zazo_aps_prod.pem"
-               }
-             else
-               {
-                 host: 'gateway.sandbox.push.apple.com',
-                 pem: "#{Rails.root}/certs/zazo_aps_dev.pem"
-               }
+    if @build == :prod
+      client = Houston::Client.production
+      client.certificate = File.read(Rails.root.join('certs/zazo_aps_prod.pem'))
+    else
+      client = Houston::Client.development
+      client.certificate = File.read(Rails.root.join('certs/zazo_aps_dev.pem'))
     end
-    APNS::Server.new(params)
+    client
   end
 
   def send_android
     GcmServer.send_notification(@token, @payload)
-  end
-
-  def ios_notification
-    n = APNS::Notification.new(@token, {})
-    n.alert = @alert if @alert
-    n.badge = @badge if @badge
-    n.sound = @sound if @sound
-    n.content_available = @content_available
-    n.other = @payload if @payload
-    n
   end
 end
