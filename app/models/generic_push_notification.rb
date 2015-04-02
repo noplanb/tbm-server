@@ -9,49 +9,51 @@ class GenericPushNotification
 
   def initialize(attrs = {})
     @build = attrs[:build] || :dev
-    @token = attrs[:token] or fail "#{self.class.name}: token required."
+    @token = attrs[:token] || fail("#{self.class.name}: token required.")
     @platform = attrs[:platform] || :android
     @type = attrs[:type] || :silent
     @alert = attrs[:alert] unless @type == :silent
     @badge = attrs[:badge] unless @type == :silent
     @sound = attrs[:sound] || (@type == :silent ? nil : 'NotificationTone.wav')
-    @content_available =  attrs[:content_available] == false ? nil : true  # In our app for ios this should
+    @content_available = attrs[:content_available].present?
     @payload = attrs[:payload]
   end
 
   def ios_notification
-    n = Houston::Notification.new(device: @token)
-    n.alert = @alert if @alert
-    n.badge = @badge if @badge
-    n.sound = @sound if @sound
-    n.content_available = @content_available
-    n.custom_data = @payload if @payload
-    n
+    @notification ||= Houston::Notification.new(device: @token).tap do |n|
+      n.alert = @alert if @alert
+      n.badge = @badge if @badge
+      n.sound = @sound if @sound
+      n.content_available = @content_available
+      n.custom_data = @payload if @payload
+    end
+  end
+
+  def apns
+    @client ||= begin
+      if @build == :prod
+        client = Houston::Client.production
+        client.certificate = File.read(Rails.root.join('certs/zazo_aps_prod.pem'))
+      else
+        client = Houston::Client.development
+        client.certificate = File.read(Rails.root.join('certs/zazo_aps_dev.pem'))
+      end
+      client
+    end
   end
 
   def send
-    @platform == :ios ? send_ios : send_android
+    __send__ :"send_#{platform}"
   end
 
-  def feedback
-    apns.devices
-  end
+  delegate :unregistered_devices, to: :apns
 
   private
 
   def send_ios
-    apns.push ios_notification
-  end
-
-  def apns
-    if @build == :prod
-      client = Houston::Client.production
-      client.certificate = File.read(Rails.root.join('certs/zazo_aps_prod.pem'))
-    else
-      client = Houston::Client.development
-      client.certificate = File.read(Rails.root.join('certs/zazo_aps_dev.pem'))
-    end
-    client
+    apns.push(ios_notification)
+    fail ios_notification.error if ios_notification.error
+    ios_notification.sent?
   end
 
   def send_android
