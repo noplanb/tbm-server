@@ -31,8 +31,17 @@ RSpec.describe GenericPushNotification do
     n
   end
 
-  describe '#send' do
-    subject { instance.send }
+  describe '.send_notification' do
+    subject { described_class.send_notification(attributes) }
+
+    specify do
+      expect_any_instance_of(described_class).to receive(:send_notification)
+      subject
+    end
+  end 
+
+  describe '#send_notification' do
+    subject { instance.send_notification }
 
     context 'Android' do
       let(:target_push_user) { build(:android_push_user, push_token: alex_android_token) }
@@ -103,7 +112,7 @@ RSpec.describe GenericPushNotification do
   describe '#unregistered_devices' do
     context 'iOS' do
       let(:target_push_user) { build(:ios_push_user) }
-      before { instance.send }
+      before { instance.send_notification }
       it { expect(instance.unregistered_devices).to eq([]) }
     end
   end

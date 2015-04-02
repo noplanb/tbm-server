@@ -88,26 +88,42 @@ RSpec.describe NotificationController, type: :controller do
           status: params[:status],
           video_id: params[:video_id])
       end
-      before do
+
+      specify do
+        expect(GenericPushNotification).to receive(:send_notification)
         authenticate_with_http_digest(user.mkey, user.auth) do
-          VCR.use_cassette('gcm_send_with_error', erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
+          VCR.use_cassette('gcm_send_with_error', erb: {
+                             key: Figaro.env.gcm_api_key, payload: payload }) do
             post :send_video_status_update, params
           end
         end
       end
+
       it 'returns http success' do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          VCR.use_cassette('gcm_send_with_error', erb: {
+                             key: Figaro.env.gcm_api_key, payload: payload }) do
+            post :send_video_status_update, params
+          end
+        end
         expect(response).to have_http_status(:success)
       end
     end
 
     context 'iOS' do
       let(:user) { create(:ios_user) }
-      before do
+
+      specify do
+        expect(GenericPushNotification).to receive(:send_notification)
         authenticate_with_http_digest(user.mkey, user.auth) do
           post :send_video_status_update, params
         end
       end
+
       it 'returns http success' do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          post :send_video_status_update, params
+        end
         expect(response).to have_http_status(:success)
       end
     end

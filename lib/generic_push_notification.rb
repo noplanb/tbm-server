@@ -7,6 +7,10 @@ class GenericPushNotification
   # define_enum :platform, [:ios,:android]
   # define_enum :type, [:alert, :silent] # Only relevant for ios
 
+  def self.send_notification(attributes = {})
+    new(attributes).send_notification
+  end
+
   def initialize(attrs = {})
     @build = attrs[:build] || :dev
     @token = attrs[:token] || fail("#{self.class.name}: token required.")
@@ -42,8 +46,8 @@ class GenericPushNotification
     end
   end
 
-  def send
-    __send__ :"send_#{platform}"
+  def send_notification
+    send :"send_#{platform}"
   end
 
   delegate :unregistered_devices, to: :apns
