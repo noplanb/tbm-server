@@ -1,6 +1,5 @@
 module GcmServer
   extend self
-  require 'json'
   include NpbNotification
 
   GCM_URI = 'https://android.googleapis.com/gcm/send'
@@ -19,11 +18,9 @@ module GcmServer
 
   def post_to_gcm(payload)
     Rails.logger.info "GcmServer: Attempting to send notification. #{payload.inspect}"
-
     response = connection.post do |req|
       req.body = payload
     end
-
     if response.body['failure'] != 0 || response.body['canonical_ids'] != 0
       Rails.logger.error JSON.pretty_generate(response.body)
       error_messages = response.body['results'].map{ |r| r['error'] }.join(', ')

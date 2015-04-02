@@ -7,27 +7,27 @@ http_interactions:
       encoding: UTF-8
       string: '<%= payload.as_json %>'
     headers:
+      Authorization:
+      - key=<% key %>
+      User-Agent:
+      - Faraday v0.9.1
+      Content-Type:
+      - application/json
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
-      User-Agent:
-      - Ruby
-      Authorization:
-      - key=<%= key %>
-      Content-Type:
-      - application/json
   response:
     status:
-      code: 400
-      message: Bad request
+      code: 200
+      message: OK
     headers:
       Content-Type:
-      - text/plain; charset=UTF-8
+      - application/json; charset=UTF-8
       Date:
-      - Tue, 31 Mar 2015 13:00:35 GMT
+      - Thu, 02 Apr 2015 19:31:10 GMT
       Expires:
-      - Tue, 31 Mar 2015 13:00:35 GMT
+      - Thu, 02 Apr 2015 19:31:10 GMT
       Cache-Control:
       - private, max-age=0
       X-Content-Type-Options:
@@ -48,7 +48,7 @@ http_interactions:
       - chunked
     body:
       encoding: UTF-8
-      string: 'Bad request'
+      string: '{"multicast_id":6548991881139788460,"success":1,"failure":0,"canonical_ids":0,"results":[{"message_id":"0:1428003070211543%7c7dc9e1f9fd7ecd"}]}'
     http_version:
-  recorded_at: Tue, 31 Mar 2015 13:00:34 GMT
+  recorded_at: Thu, 02 Apr 2015 19:31:10 GMT
 recorded_with: VCR 2.9.3

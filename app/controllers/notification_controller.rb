@@ -2,6 +2,8 @@ class NotificationController < ApplicationController
   before_action :authenticate
   before_action :send_notification_enabled, only: [:send_video_received,
                                                    :send_video_status_update]
+  before_action :find_target_push_user, only: [:send_video_received,
+                                                   :send_video_status_update]
 
   def set_push_token
     PushUser.create_or_update(push_user_params)
@@ -52,13 +54,15 @@ class NotificationController < ApplicationController
 
   private
 
-  def target_push_user
-    return @push_user if @push_user
+  def find_target_push_user
     @push_user = params[:target_mkey] && PushUser.find_by_mkey(params[:target_mkey])
     if @push_user.nil?
       logger.info("No PushUser found for mkey: #{params[:target_mkey]}")
       render json: { status: '404' }
     end
+  end
+
+  def target_push_user
     @push_user
   end
 
