@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SmsManager, type: :model do
+RSpec.describe SmsManager do
   let(:mobile_number) { Figaro.env.twilio_to_number }
   let(:user) { build(:user, mobile_number: mobile_number) }
   let(:instance) { described_class.new(user) }

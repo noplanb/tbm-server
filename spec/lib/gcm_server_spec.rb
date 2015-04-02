@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe GcmServer, type: :model do
+RSpec.describe GcmServer do
   subject { described_class }
   let(:ids) { 'push_token' }
   let(:data) { { foo: 'bar' } }

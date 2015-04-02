@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe GenericPushNotification, type: :model do
+RSpec.describe GenericPushNotification do
   let(:alex_ios_token) { '0d13491051bfe2f9395f92ca00b9ec6db28429d6b2bfd20680432c7ca7cf7979' }
   let(:alex_android_token) { 'APA91bHzjK1yDDt91cK3sVHbHq267Sv4ny2frCjdyd5eeYQkLGgVEW0UWSWiYpBvmuf-l3nOIGfCqnNhtOtHJGeVQYxCxiXrqtk2PUeMwrKPFzeJdCgYs4Q2kEx2HK-k6pN_wcThu-iPnIAEgyMeDZ1XDmp0G6zupQ' }
 
@@ -67,7 +67,7 @@ RSpec.describe GenericPushNotification, type: :model do
           allow(instance.ios_notification).to receive(:error)
             .and_return(Houston::Notification::APNSError.new(2))
         end
-        
+
         it 'notifies Rollbar with error' do
           expect(Rollbar).to receive(:error).with(instance.ios_notification.error,
                                                   notification: instance.ios_notification)
