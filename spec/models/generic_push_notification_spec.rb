@@ -23,9 +23,9 @@ RSpec.describe GenericPushNotification, type: :model do
   let(:instance) { described_class.new(attributes) }
   let(:ios_notification) do
     n = Houston::Notification.new(attributes.slice(:token,
-                                                  :alert,
-                                                  :badge,
-                                                  :content_available))
+                                                   :alert,
+                                                   :badge,
+                                                   :content_available))
     n.custom_data = attributes[:payload]
     n.sound = 'NotificationTone.wav'
     n
@@ -63,8 +63,17 @@ RSpec.describe GenericPushNotification, type: :model do
 
       context 'with empty token' do
         let(:target_push_user) { build(:ios_push_user, push_token: '') }
-        before { allow(instance.ios_notification).to receive(:error).and_return(Houston::Notification::APNSError.new(2)) }
-        it { expect{ subject }.to raise_error(Houston::Notification::APNSError) }
+        before do
+          allow(instance.ios_notification).to receive(:error)
+            .and_return(Houston::Notification::APNSError.new(2))
+        end
+        
+        it 'notifies Rollbar with error' do
+          expect(Rollbar).to receive(:error).with(instance.ios_notification.error,
+                                                  notification: instance.ios_notification)
+          subject
+        end
+        it { is_expected.to be_truthy }
       end
     end
   end

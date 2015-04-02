@@ -52,7 +52,9 @@ class GenericPushNotification
 
   def send_ios
     apns.push(ios_notification)
-    fail ios_notification.error if ios_notification.error
+    if ios_notification.error
+      Rollbar.error(ios_notification.error, notification: ios_notification)
+    end
     ios_notification.sent?
   end
 
