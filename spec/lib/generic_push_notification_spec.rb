@@ -38,7 +38,7 @@ RSpec.describe GenericPushNotification do
       expect_any_instance_of(described_class).to receive(:send_notification)
       subject
     end
-  end 
+  end
 
   describe '#send_notification' do
     subject { instance.send_notification }
@@ -83,6 +83,15 @@ RSpec.describe GenericPushNotification do
           subject
         end
         it { is_expected.to be_truthy }
+      end
+
+      context 'when unregistered_devices not empty', focus: true do
+        let(:unregistered_devices) { [{ token: 'push token', timestamp: 12345678 }] }
+        before { allow(instance).to receive(:unregistered_devices).and_return(unregistered_devices) }
+        specify do
+          expect(Rollbar).to receive(:info).with('APNS returned unregistered_devices: "push token" (12345678)')
+          subject
+        end
       end
     end
   end
