@@ -18,7 +18,7 @@ RSpec.describe SmsManager, type: :model do
   describe '#message' do
     subject { instance.message }
     let(:user) { build(:user, verification_code: 123456) }
-    it { is_expected.to eq("#{APP_CONFIG[:app_name]} access code: 123456") }
+    it { is_expected.to eq("#{Settings.app_name} access code: 123456") }
   end
 
   describe '#send_verification_sms' do

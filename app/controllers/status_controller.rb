@@ -1,6 +1,6 @@
 class StatusController < ApplicationController
 
   def heartbeat
-    render json: {version: APP_CONFIG[:version]}
+    render json: {version: Settings.version}
   end
 end

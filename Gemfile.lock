@@ -328,6 +328,7 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (~> 1.1)
+    settingslogic (2.0.9)
     shellany (0.0.1)
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
@@ -433,6 +434,7 @@ DEPENDENCIES
   rsense
   rspec-rails
   sass-rails
+  settingslogic
   shoulda-matchers
   simple_form
   simplecov

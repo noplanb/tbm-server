@@ -29,7 +29,7 @@ class InvitationController < ApplicationController
       Rails.logger.error("Invitation: invalid mobile number: #{raw_phone}")
       render json: { status: 'failure',
                      title: 'Bad Phone',
-                     msg: "Phone number: #{params[:mobile_number]} is not valid.\n\nPlease kill #{APP_CONFIG[:app_name]} then enter a valid phone number for this person in your address book.\n\nThen try again." }
+                     msg: "Phone number: #{params[:mobile_number]} is not valid.\n\nPlease kill #{Settings.app_name} then enter a valid phone number for this person in your address book.\n\nThen try again." }
       return false
     end
     true

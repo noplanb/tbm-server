@@ -35,7 +35,7 @@ class SmsManager
   end
 
   def message
-    "#{APP_CONFIG[:app_name]} access code: #{user.verification_code}"
+    "#{Settings.app_name} access code: #{user.verification_code}"
   end
 
   def twilio_invalid_number?(code)

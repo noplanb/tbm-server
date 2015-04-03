@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate
-    if APP_CONFIG[:allow_authentication_with_token]
+    if Settings.allow_authentication_with_token
       authenticate_with_token || authenticate_with_digest
     else
       authenticate_with_digest
@@ -58,11 +58,11 @@ class ApplicationController < ActionController::Base
   end
 
   def iphone_store_url
-    APP_CONFIG[:iphone_store_url]
+    Settings.iphone_store_url
   end
 
   def android_store_url
-    APP_CONFIG[:android_store_url]
+    Settings.android_store_url
   end
 
   def store_url
