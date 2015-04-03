@@ -3,7 +3,7 @@ class NotificationController < ApplicationController
   before_action :send_notification_enabled, only: [:send_video_received,
                                                    :send_video_status_update]
   before_action :find_target_push_user, only: [:send_video_received,
-                                                   :send_video_status_update]
+                                               :send_video_status_update]
 
   def set_push_token
     PushUser.create_or_update(push_user_params)
@@ -12,28 +12,20 @@ class NotificationController < ApplicationController
   end
 
   def send_video_received
-    GenericPushNotification.send_notification(platform: target_push_user.device_platform,
-                                              build: target_push_user.device_build,
-                                              token: target_push_user.push_token,
-                                              type: :alert,
-                                              payload: { type: 'video_received',
-                                                         from_mkey: params[:from_mkey],
-                                                         video_id: params[:video_id] },
-                                              alert: "New message from #{params[:sender_name]}",
-                                              content_available: true)
+    @push_user.send_notification(type: :alert,
+                                      alert: "New message from #{params[:sender_name]}",
+                                      payload: { type: 'video_received',
+                                                 from_mkey: params[:from_mkey],
+                                                 video_id: params[:video_id] })
     render json: { status: '200' }
   end
 
   def send_video_status_update
-    GenericPushNotification.send_notification(platform: target_push_user.device_platform,
-                                              build: target_push_user.device_build,
-                                              token: target_push_user.push_token,
-                                              type: :silent,
-                                              payload: { type: 'video_status_update',
-                                                         to_mkey: params[:to_mkey],
-                                                         status: params[:status],
-                                                         video_id: params[:video_id] },
-                                              content_available: true)
+    @push_user.send_notification(type: :silent,
+                                       payload: { type: 'video_status_update',
+                                                  to_mkey: params[:to_mkey],
+                                                  status: params[:status],
+                                                  video_id: params[:video_id] })
     render json: { status: '200' }
   end
 
@@ -60,10 +52,6 @@ class NotificationController < ApplicationController
       logger.info("No PushUser found for mkey: #{params[:target_mkey]}")
       render json: { status: '404' }
     end
-  end
-
-  def target_push_user
-    @push_user
   end
 
   def push_user_params
