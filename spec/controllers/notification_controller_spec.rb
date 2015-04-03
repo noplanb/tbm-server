@@ -34,6 +34,17 @@ RSpec.describe NotificationController, type: :controller do
                              video_id: video_id)
     end
 
+    context 'target_mkey not given' do
+      let(:params) { {} }
+      before do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          post :send_video_received, params
+        end
+      end
+      it { expect(response).to have_http_status(:success) }
+      it { expect(JSON.parse(response.body)).to eq('status' => '404') }
+    end
+
     context 'Android' do
       let(:user) { create(:android_user) }
       let(:payload) do
@@ -43,29 +54,51 @@ RSpec.describe NotificationController, type: :controller do
           from_mkey: params[:from_mkey],
           video_id: params[:video_id])
       end
-      before do
+
+      specify 'expects GenericPushNotification to receive :send_notification' do
+        expect(GenericPushNotification).to receive(:send_notification)
         authenticate_with_http_digest(user.mkey, user.auth) do
-          VCR.use_cassette('gcm_send_with_error', erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
+          VCR.use_cassette('gcm_send_with_error', erb: {
+                             key: Figaro.env.gcm_api_key, payload: payload }) do
             post :send_video_received, params
           end
         end
       end
 
-      it 'returns http success' do
-        expect(response).to have_http_status(:success)
+      context 'response' do
+        before do
+          authenticate_with_http_digest(user.mkey, user.auth) do
+            VCR.use_cassette('gcm_send_with_error', erb: {
+                               key: Figaro.env.gcm_api_key, payload: payload }) do
+              post :send_video_received, params
+            end
+          end
+        end
+
+        it { expect(response).to have_http_status(:success) }
+        it { expect(JSON.parse(response.body)).to eq('status' => '200') }
       end
     end
 
     context 'iOS' do
       let(:user) { create(:ios_user) }
-      before do
+
+      specify 'expects GenericPushNotification to receive :send_notification' do
+        expect(GenericPushNotification).to receive(:send_notification)
         authenticate_with_http_digest(user.mkey, user.auth) do
           post :send_video_received, params
         end
       end
 
-      it 'returns http success' do
-        expect(response).to have_http_status(:success)
+      context 'response' do
+        before do
+          authenticate_with_http_digest(user.mkey, user.auth) do
+            post :send_video_received, params
+          end
+        end
+
+        it { expect(response).to have_http_status(:success) }
+        it { expect(JSON.parse(response.body)).to eq('status' => '200') }
       end
     end
   end
@@ -78,6 +111,17 @@ RSpec.describe NotificationController, type: :controller do
                              status: 'viewed')
     end
 
+    context 'target_mkey not given' do
+      let(:params) { {} }
+      before do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          post :send_video_status_update, params
+        end
+      end
+      it { expect(response).to have_http_status(:success) }
+      it { expect(JSON.parse(response.body)).to eq('status' => '404') }
+    end
+
     context 'Android' do
       let(:user) { create(:android_user) }
       let(:payload) do
@@ -88,27 +132,49 @@ RSpec.describe NotificationController, type: :controller do
           status: params[:status],
           video_id: params[:video_id])
       end
-      before do
+
+      specify 'expects GenericPushNotification to receive :send_notification' do
+        expect(GenericPushNotification).to receive(:send_notification)
         authenticate_with_http_digest(user.mkey, user.auth) do
-          VCR.use_cassette('gcm_send_with_error', erb: { key: Figaro.env.gcm_api_key, payload: payload }) do
+          VCR.use_cassette('gcm_send_with_error', erb: {
+                             key: Figaro.env.gcm_api_key, payload: payload }) do
             post :send_video_status_update, params
           end
         end
       end
-      it 'returns http success' do
-        expect(response).to have_http_status(:success)
+
+      context 'response' do
+        before do
+          authenticate_with_http_digest(user.mkey, user.auth) do
+            VCR.use_cassette('gcm_send_with_error', erb: {
+                               key: Figaro.env.gcm_api_key, payload: payload }) do
+              post :send_video_status_update, params
+            end
+          end
+        end
+        it { expect(response).to have_http_status(:success) }
+        it { expect(JSON.parse(response.body)).to eq('status' => '200') }
       end
     end
 
     context 'iOS' do
       let(:user) { create(:ios_user) }
-      before do
+
+      specify 'expects GenericPushNotification to receive :send_notification' do
+        expect(GenericPushNotification).to receive(:send_notification)
         authenticate_with_http_digest(user.mkey, user.auth) do
           post :send_video_status_update, params
         end
       end
-      it 'returns http success' do
-        expect(response).to have_http_status(:success)
+
+      context 'response' do
+        before do
+          authenticate_with_http_digest(user.mkey, user.auth) do
+            post :send_video_status_update, params
+          end
+        end
+        it { expect(response).to have_http_status(:success) }
+        it { expect(JSON.parse(response.body)).to eq('status' => '200') }
       end
     end
   end

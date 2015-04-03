@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe GcmServer, type: :model do
+RSpec.describe GcmServer do
   subject { described_class }
   let(:ids) { 'push_token' }
   let(:data) { { foo: 'bar' } }
@@ -13,6 +13,17 @@ RSpec.describe GcmServer, type: :model do
 
   describe '.send_notification' do
     subject { described_class.send_notification(ids, data) }
+
+    context 'on success' do
+      let(:ids) { 'APA91bHzjK1yDDt91cK3sVHbHq267Sv4ny2frCjdyd5eeYQkLGgVEW0UWSWiYpBvmuf-l3nOIGfCqnNhtOtHJGeVQYxCxiXrqtk2PUeMwrKPFzeJdCgYs4Q2kEx2HK-k6pN_wcThu-iPnIAEgyMeDZ1XDmp0G6zupQ' }
+      specify do
+        VCR.use_cassette('gcm_send_with_success', erb: {
+                           key: 'gcmkey', payload: payload }) do
+          subject
+        end
+        is_expected.to be_success
+      end
+    end
 
     context 'with server error' do
       specify do

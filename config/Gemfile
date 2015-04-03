@@ -62,7 +62,7 @@ gem 'enum_handler', github: 'asux/enum_handler'
 
 # Push Notification servers
 gem 'gcm'
-gem 'apns', github: 'noplanb/APNS'
+gem 'houston'
 
 # Phone helpers
 gem 'twilio-ruby'

@@ -13,7 +13,7 @@ module SpecificCredential
         end
 
         define_method :"#{attr}=" do |value|
-          self.cred[attr] = value
+          cred[attr] = value
         end
       end
     end
@@ -46,12 +46,12 @@ module SpecificCredential
   end
 
   def only_app_attributes
-    self.cred.symbolize_keys
+    cred.symbolize_keys
   end
 
   def update_credentials(credentials)
-    raise TypeError, 'credentials must be a Hash' unless Hash === credentials
-    self.cred.update(credentials.slice(*self.class.credential_attributes))
+    fail TypeError, 'credentials must be a Hash' unless credentials.is_a?(Hash)
+    cred.update(credentials.slice(*self.class.credential_attributes))
     save
   end
 end
