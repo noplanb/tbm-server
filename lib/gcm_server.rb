@@ -1,5 +1,7 @@
 module GcmServer
-  extend self
+
+  module_function
+  
   include NpbNotification
 
   GCM_URI = 'https://android.googleapis.com/gcm/send'
@@ -23,7 +25,7 @@ module GcmServer
     end
     if response.body['failure'] != 0 || response.body['canonical_ids'] != 0
       Rails.logger.error JSON.pretty_generate(response.body)
-      error_messages = response.body['results'].map{ |r| r['error'] }.join(', ')
+      error_messages = response.body['results'].map { |r| r['error'] }.join(', ')
       Rollbar.warning("GcmServer: GCM responded with errors: #{error_messages}", gcm_response: response.body)
     else
       Rails.logger.info "GcmServer: succesfully sent notification. #{payload.inspect}"
