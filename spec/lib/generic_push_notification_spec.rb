@@ -89,7 +89,8 @@ RSpec.describe GenericPushNotification do
         let(:unregistered_devices) { [{ token: 'push token', timestamp: 12345678 }] }
         before { allow(instance).to receive(:unregistered_devices).and_return(unregistered_devices) }
         specify do
-          expect(Rollbar).to receive(:info).with('APNS returned unregistered_devices: "push token" (12345678)')
+          expect(Rollbar).to receive(:info).with('APNS returned unregistered_devices',
+                                                 unregistered_devices: unregistered_devices)
           subject
         end
       end

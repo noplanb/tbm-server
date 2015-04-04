@@ -60,8 +60,8 @@ class GenericPushNotification
       Rollbar.error(ios_notification.error, notification: ios_notification)
     end
     unless unregistered_devices.empty?
-      devices = unregistered_devices.map { |i| "#{i[:token].inspect} (#{i[:timestamp]})" }.join(', ')
-      Rollbar.info "APNS returned unregistered_devices: #{devices}"
+      Rollbar.info 'APNS returned unregistered_devices',
+                   unregistered_devices: unregistered_devices
     end
     ios_notification.sent?
   end
