@@ -60,7 +60,7 @@ class GenericPushNotification
       Rollbar.error(ios_notification.error, notification: ios_notification)
     end
     unless unregistered_devices.empty?
-      Rollbar.info 'APNS returned unregistered_devices',
+      Rollbar.info 'APNS returned non-empty unregistered devices',
                    unregistered_devices: unregistered_devices
     end
     ios_notification.sent?

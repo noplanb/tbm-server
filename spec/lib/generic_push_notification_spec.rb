@@ -85,11 +85,11 @@ RSpec.describe GenericPushNotification do
         it { is_expected.to be_truthy }
       end
 
-      context 'when unregistered_devices not empty', focus: true do
+      context 'when unregistered_devices not empty' do
         let(:unregistered_devices) { [{ token: 'push token', timestamp: 12345678 }] }
         before { allow(instance).to receive(:unregistered_devices).and_return(unregistered_devices) }
         specify do
-          expect(Rollbar).to receive(:info).with('APNS returned unregistered_devices',
+          expect(Rollbar).to receive(:info).with('APNS returned non-empty unregistered devices',
                                                  unregistered_devices: unregistered_devices)
           subject
         end
