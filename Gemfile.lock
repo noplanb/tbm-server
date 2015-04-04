@@ -391,6 +391,7 @@ GEM
       nokogiri (~> 1.3)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
