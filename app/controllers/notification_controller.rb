@@ -46,14 +46,6 @@ class NotificationController < ApplicationController
 
   private
 
-  def find_target_push_user
-    @push_user = params[:target_mkey] && PushUser.find_by_mkey(params[:target_mkey])
-    if @push_user.nil?
-      logger.info("No PushUser found for mkey: #{params[:target_mkey]}")
-      render json: { status: '404' }
-    end
-  end
-
   def push_user_params
     params.permit(:mkey, :push_token, :device_platform, :device_build)
   end
