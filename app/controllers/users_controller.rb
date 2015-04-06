@@ -4,9 +4,6 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy,
                                   :new_connection, :establish_connection,
                                   :receive_test_video, :receive_corrupt_video]
-  before_action :find_target_push_user,
-                only: [:receive_test_video, :receive_corrupt_video]
-
   # GET /users
   # GET /users.json
   def index
@@ -98,7 +95,7 @@ class UsersController < ApplicationController
     sender = User.find params[:sender_id]
     video_id = create_test_video(sender, @user, file_name)
     add_remote_key(sender, @user, video_id)
-    send_video_received_notification(sender, video_id)
+    send_video_received_notification(sender, @user, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
 
@@ -125,7 +122,8 @@ class UsersController < ApplicationController
     Video.find_by_filename 'test_video'
   end
 
-  def send_video_received_notification(sender, video_id)
+  def send_video_received_notification(sender, receiver, video_id)
+    @push_user = PushUser.find_by_mkey(receiver.mkey) || not_found
     @push_user.send_notification(type: :alert,
                                  payload: { type: 'video_received',
                                             from_mkey: sender.mkey,

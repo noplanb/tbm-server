@@ -36,13 +36,13 @@ RSpec.describe NotificationController, type: :controller do
 
     context 'target_mkey not given' do
       let(:params) { {} }
-      before do
-        authenticate_with_http_digest(user.mkey, user.auth) do
-          post :send_video_received, params
-        end
+      specify do
+        expect do
+          authenticate_with_http_digest(user.mkey, user.auth) do
+            post :send_video_status_update, params
+          end
+        end.to raise_error(ActionController::RoutingError)
       end
-      it { expect(response).to have_http_status(:success) }
-      it { expect(JSON.parse(response.body)).to eq('status' => '404') }
     end
 
     context 'Android' do
@@ -113,13 +113,13 @@ RSpec.describe NotificationController, type: :controller do
 
     context 'target_mkey not given' do
       let(:params) { {} }
-      before do
-        authenticate_with_http_digest(user.mkey, user.auth) do
-          post :send_video_status_update, params
-        end
+      specify do
+        expect do
+          authenticate_with_http_digest(user.mkey, user.auth) do
+            post :send_video_status_update, params
+          end
+        end.to raise_error(ActionController::RoutingError)
       end
-      it { expect(response).to have_http_status(:success) }
-      it { expect(JSON.parse(response.body)).to eq('status' => '404') }
     end
 
     context 'Android' do
