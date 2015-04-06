@@ -3,13 +3,13 @@ class InvitationController < ApplicationController
   before_action :authenticate, :validate_phone
 
   def invite
-    invitee = User.find_by_mobile_number(params[:mobile_number]) || User.create(invitee_params)
-    connection = Connection.find_or_create(@user.id, invitee.id)
+    invitee = User.find_by_mobile_number(normalized_mobile_number) || User.create(invitee_params)
+    Connection.find_or_create(@user.id, invitee.id)
     render json: invitee.only_app_attrs_for_friend_with_ckey(@user)
   end
 
   def has_app
-    friend = User.find_by_mobile_number(params[:mobile_number])
+    friend = User.find_by_mobile_number(normalized_mobile_number)
     if friend && friend.has_app?
       render json: { status: 'success', has_app: 'true' }
     else

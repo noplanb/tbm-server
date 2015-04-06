@@ -15,7 +15,7 @@ class RegController < ApplicationController
       return render json: { status: 'failure', title: 'No Platform', msg: 'No device_platform' }
     end
 
-    user = User.find_by_mobile_number(params[:mobile_number]) || User.create(user_params)
+    user = User.find_by_mobile_number(normalized_mobile_number) || User.create(user_params)
 
     unless user
       Rails.logger.error("ERROR: reg/reg: could not find or create user: #{params.inspect}")

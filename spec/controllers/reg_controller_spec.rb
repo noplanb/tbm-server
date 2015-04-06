@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe RegController, type: :controller do
   describe 'GET #reg' do
-    let(:mobile_number) { Figaro.env.twilio_to_number }
+    let(:mobile_number) { '+1 650 111-0000' }
     let(:params) do
       { 'device_platform' => 'ios',
         'first_name' => 'Egypt',
@@ -19,6 +19,21 @@ RSpec.describe RegController, type: :controller do
         get :reg, params
       end
       expect(response).to have_http_status(:success)
+    end
+
+    context 'when user already exists' do
+      let!(:user) { create(:user, params) }
+
+      it 'returns http success' do
+        VCR.use_cassette('twilio_success_response', erb: {
+                           twilio_ssid: Figaro.env.twilio_ssid,
+                           twilio_token: Figaro.env.twilio_token,
+                           from: Figaro.env.twilio_from_number,
+                           to: mobile_number }) do
+          get :reg, params
+        end
+        expect(response).to have_http_status(:success)
+      end
     end
 
     describe 'on success' do
