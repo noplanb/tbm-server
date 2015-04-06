@@ -26,6 +26,20 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_db_index(:mobile_number) }
   end
 
+  describe '.find_by_raw_mobile_number' do
+    let(:mobile_number) { '+1 650-111-0000' }
+    subject { described_class.find_by_raw_mobile_number(mobile_number) }
+
+    context 'when record not exists' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when record already exists' do
+      let!(:user) { create(:user, mobile_number: mobile_number) }
+      it { is_expected.to eq(user) }
+    end
+  end
+
   describe 'after_create' do
     let(:user) { create(:unknown_user) }
 

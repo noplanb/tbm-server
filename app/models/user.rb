@@ -17,6 +17,10 @@ class User < ActiveRecord::Base
   # in the key so I need to have after_create
   after_create :set_status_initialized, :ensure_names_not_null, :set_keys
 
+  def self.find_by_raw_mobile_number(value)
+    find_by_mobile_number GlobalPhone.normalize(value)
+  end
+
   def name
     [first_name, last_name].join(' ')
   end
@@ -112,13 +116,13 @@ class User < ActiveRecord::Base
   end
 
   def ensure_names_not_null
-    update_attribute(:first_name, '') if first_name.nil?
-    update_attribute(:last_name, '') if last_name.nil?
+    self.first_name = '' if first_name.nil?
+    self.last_name = '' if last_name.nil?
+    save
   end
 
   def set_keys
-    update_attribute(:auth, gen_key('auth'))
-    update_attribute(:mkey, gen_key('mkey'))
+    update_attributes(auth: gen_key('auth'), mkey: gen_key('mkey'))
   end
 
   def gen_key(type)

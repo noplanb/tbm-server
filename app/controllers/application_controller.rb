@@ -68,8 +68,4 @@ class ApplicationController < ActionController::Base
   def store_url
     ios? ? iphone_store_url : android_store_url
   end
-
-  def normalized_mobile_number
-    GlobalPhone.normalize(params[:mobile_number])
-  end
 end
