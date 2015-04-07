@@ -1,12 +1,75 @@
-#!/bin/sh
+#!/bin/bash
 
 # Functions
 
-notify() {
-  local text=$1
-  local color=$2
-  echo "${text}"
-  curl -s -X POST --data-urlencode "payload={\"channel\": \"${channel}\", \"username\": \"${username}\", \"attachments\": [{\"color\": \"${color}\", \"text\": \"${text}\", \"mrkdwn_in\": [\"text\"] }]}" https://hooks.slack.com/services/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
+notify_slack() {
+  local webhook_url="https://hooks.slack.com/services/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"
+  local username="Elastic Beanstalk"
+  local channel="#dev"
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  local commit_url="${repo_url}/commit/${revision}"
+  local revision_short=${revision:0:8}
+  local common_text="branch \`${branch}\` <${commit_url}|${revision_short}> of ${application} to *${environment}* [${eb_environment}]"
+  local started_text="${local_user} has started deploying ${common_text}"
+  local failed_text="${local_user} failed to deploy ${common_text}"
+  local finished_text="${local_user} has finished deploying ${common_text}"
+
+  local event=$1
+  local text
+  local color
+
+  case ${event} in
+    started)
+      text=${started_text}
+      ;;
+    finished)
+      text=${finished_text}
+      color=good
+      ;;
+    failed)
+      text=${failed_text}
+      color=danger
+      ;;
+    *)
+      echo "Unknown event ${event}, valid events are started, finished, failed"
+      exit 1
+      ;;
+  esac
+
+  local payload="payload={\"channel\": \"${channel}\", \"username\": \"${username}\", \"attachments\": [{\"color\": \"${color}\", \"text\": \"${text}\", \"mrkdwn_in\": [\"text\"] }]}"
+
+  echo -n "Notify slack for ${event} ... "
+  if [ ${environment} == "test" ]; then
+    echo "ok"
+    echo "${payload}"
+  else
+    curl -X POST --data-urlencode "${payload}" ${webhook_url}
+    echo
+  fi
+}
+
+notify_rollbar() {
+  local rollbar_username=${local_user}
+  local comment=$1
+  echo "Notify Rollbar: ${comment}"
+  if [ ${environment} == "test" ]; then
+    echo https://api.rollbar.com/api/1/deploy/ \
+      -F access_token=${rollbar_access_token} \
+      -F environment=${environment} \
+      -F revision=${revision} \
+      -F local_username=${local_user} \
+      -F rollbar_username=${rollbar_username} \
+      -F comment=${comment}
+  else
+    curl https://api.rollbar.com/api/1/deploy/ \
+      -F access_token=${rollbar_access_token} \
+      -F environment=${environment} \
+      -F revision=${revision} \
+      -F local_username=${local_user} \
+      -F rollbar_username=${rollbar_username} \
+      -F comment=${comment}
+  fi
+  echo
 }
 
 # Variables
@@ -14,42 +77,33 @@ notify() {
 application="zazo"
 environment=$1
 [ -z ${environment} ] && environment=${RACK_ENV}
-[ -z ${environment} ] && environment="staging"
+[ -z ${environment} ] && environment="playground"
 case ${environment} in
-  production) eb_environment="zazo-prod2-0-1"
+  production) eb_environment="${application}-prod2-0-1"
     ;;
-  *) eb_environment="zazo-${environment}"
+  *) eb_environment="${application}-${environment}"
     ;;
 esac
 
-# Git
-
+local_user=$(whoami)
 repo_url="https://github.com/noplanb/tbm-server"
 revision=$(git rev-parse HEAD)
-branch=$(git rev-parse --abbrev-ref HEAD)
-channel="#dev"
-username="Elastic Beanstalk"
-commit_url="${repo_url}/commit/${revision}"
-revision_short=${revision:0:8}
-
-# Slack
-
-common_text="branch \`${branch}\` <${commit_url}|${revision_short}> of ${application} to *${environment}* [${eb_environment}]"
-started_text="${USER} has started deploying ${common_text}"
-failed_text="${USER} failed to deploy ${common_text}"
-finished_text="${USER} has finished deploying ${common_text}"
 
 # Deploy command
 
-deploy_cmd="eb deploy ${eb_environment}"
+if [ ${environment} == "test" ]; then
+  deploy_cmd="true"
+else
+  deploy_cmd="eb deploy ${eb_environment}"
+fi
 
 # Commands
 
-notify "${started_text}"
-echo ${deploy_cmd}
+echo "Deploy command: ${deploy_cmd}"
+notify_slack started
 if ${deploy_cmd}; then
-  bundle exec rake airbrake:deploy TO=${environment} REVISION=${revision} REPO=${repo_url}
-  notify "${finished_text}" good
+  notify_slack finished
+  notify_rollbar $2
 else
-  notify "${failed_text}" danger
+  notify_slack failed
 fi
