@@ -2,8 +2,11 @@
 ENV['RAILS_ENV'] ||= 'test'
 require 'spec_helper'
 
-if ENV.key?('coverage')
+reports_dir = ENV['WERCKER_REPORT_ARTIFACTS_DIR'] || File.expand_path('../../tmp', __FILE__)
+
+if ENV.key?('coverage') || ENV.key?('CI')
   require 'simplecov'
+  SimpleCov.coverage_dir File.join(reports_dir, 'coverage')
   SimpleCov.start :rails
 end
 
@@ -53,4 +56,8 @@ RSpec.configure do |config|
   # The different available types are documented in the features, such as in
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
+
+  if ENV.key?('CI')
+    config.add_formatter :html, File.join(reports_dir, 'rspec', 'rspec.html')
+  end
 end
