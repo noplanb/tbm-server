@@ -37,7 +37,7 @@ build:
   after-steps:
     - slack-notifier:
         subdomain: zazo
-        url: $SLACK_URL
+        url: $slack_url
         channel: dev
         username: wercker
 deploy:
@@ -60,9 +60,9 @@ deploy:
           eb deploy "$EB_ENV"
   after-steps:
     - akelmanson/rollbar-notify:
-        access-token: $ROLLBAR_ACCESS_TOKEN
+        access-token: $rollbar_access_token
     - slack-notifier:
         subdomain: zazo
-        url: $SLACK_URL
+        url: $slack_url
         channel: dev
         username: wercker
