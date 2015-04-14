@@ -35,7 +35,7 @@ class SmsManager
   end
 
   def message
-    "#{APP_CONFIG[:app_name]} access code: #{user.verification_code}"
+    "#{Settings.app_name} access code: #{user.verification_code}"
   end
 
   def twilio_invalid_number?(code)
@@ -48,7 +48,7 @@ class SmsManager
     Rails.logger.info "send_verification_sms: to:#{to} msg:#{message}"
     :ok
   rescue Twilio::REST::RequestError => error
-    Airbrake.notify(error)
+    Rollbar.warning(error)
     Rails.logger.error "ERROR: reg/reg: #{error.class} ##{error.code}: #{error.message}"
     twilio_invalid_number?(error.code) ? :invalid_mobile_number : :other
   end

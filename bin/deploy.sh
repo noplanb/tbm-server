@@ -4,8 +4,6 @@
 
 notify_slack() {
   local webhook_url="https://hooks.slack.com/services/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"
-  local username="Elastic Beanstalk"
-  local channel="#dev"
   local branch=$(git rev-parse --abbrev-ref HEAD)
   local commit_url="${repo_url}/commit/${revision}"
   local revision_short=${revision:0:8}
@@ -36,7 +34,7 @@ notify_slack() {
       ;;
   esac
 
-  local payload="payload={\"channel\": \"${channel}\", \"username\": \"${username}\", \"attachments\": [{\"color\": \"${color}\", \"text\": \"${text}\", \"mrkdwn_in\": [\"text\"] }]}"
+  local payload="payload={\"attachments\": [{\"color\": \"${color}\", \"text\": \"${text}\", \"mrkdwn_in\": [\"text\"] }]}"
 
   echo -n "Notify slack for ${event} ... "
   if [ ${environment} == "test" ]; then

@@ -8,5 +8,13 @@ FactoryGirl.define do
       first_name nil
       last_name nil
     end
+
+    factory :ios_user do
+      device_platform :ios
+    end
+
+    factory :android_user do
+      device_platform :android
+    end
   end
 end

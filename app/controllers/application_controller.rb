@@ -4,20 +4,36 @@ class ApplicationController < ActionController::Base
   # protect_from_forgery with: :exception
   REALM = 'zazo.com'
 
+  attr_reader :current_user
+  helper_method :current_user
+
   # ==================
   # = Before filters =
   # ==================
-  def authenticate
+  def authenticate_with_digest
     authenticate_or_request_with_http_digest(REALM) do |mkey|
-      Rails.logger.info "[HTTP Digest] Trying authenticate with mkey: #{mkey.inspect}"
-      @user = User.find_by_mkey(mkey)
-      Rails.logger.info "[HTTP Digest] Found user #{@user.try :info} for mkey #{mkey.inspect}"
+      @user = @current_user = User.find_by_mkey(mkey)
       @user && @user.auth
     end
   end
 
+  def authenticate_with_token
+    authenticate_with_http_token do |token, options|
+      @user = @current_user = User.find_by_mkey(token)
+      @user && @user.auth
+    end
+  end
+
+  def authenticate
+    if Settings.allow_authentication_with_token
+      authenticate_with_token || authenticate_with_digest
+    else
+      authenticate_with_digest
+    end
+  end
+
   def notify_error(error)
-    env['airbrake.error_id'] = notify_airbrake(error)
+    Rollbar.error(error)
   end
 
   def not_found
@@ -42,11 +58,11 @@ class ApplicationController < ActionController::Base
   end
 
   def iphone_store_url
-    APP_CONFIG[:iphone_store_url]
+    Settings.iphone_store_url
   end
 
   def android_store_url
-    APP_CONFIG[:android_store_url]
+    Settings.android_store_url
   end
 
   def store_url

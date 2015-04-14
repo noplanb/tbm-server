@@ -1,5 +1,5 @@
 defaults: &settings
-  version: 2.1.6
+  version: 2.2.0
   android_store_url: https://play.google.com/store/apps/details?id=com.zazoapp.client
   iphone_store_url: https://itunes.apple.com/us/app/zazo/id922294638?mt=8
   domain_name: zazoapp.com
@@ -9,12 +9,18 @@ defaults: &settings
   support_email: support@zazoapp.com
   app_schema: zazo://
   use_s3: false
+  allow_authentication_with_token: false
 
 development:
   <<: *settings
+  allow_authentication_with_token: true
 
 test:
   <<: *settings
+
+playground:
+  <<: *settings
+  allow_authentication_with_token: true
 
 staging:
   <<: *settings

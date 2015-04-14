@@ -31,7 +31,7 @@ gem 'turbolinks'
 gem 'aws-sdk', '< 2.0'
 
 # Used in notifications
-gem 'httparty'
+gem 'faraday_middleware'
 
 # gem 'npb_logging', github: 'etcetc/npb_logging'
 gem 'console_candy', github: 'etcetc/console_candy'
@@ -62,7 +62,7 @@ gem 'enum_handler', github: 'asux/enum_handler'
 
 # Push Notification servers
 gem 'gcm'
-gem 'apns', github: 'noplanb/APNS'
+gem 'houston'
 
 # Phone helpers
 gem 'twilio-ruby'
@@ -75,7 +75,8 @@ gem 'slim-rails'
 
 gem 'bootstrap-sass'
 gem 'simple_form'
-gem 'airbrake'
+gem 'rollbar'
+gem 'settingslogic'
 
 group :development do
   gem 'better_errors'
@@ -91,6 +92,7 @@ group :development do
   gem 'rb-fsevent', require: false
   gem 'rb-inotify', require: false
   gem 'rails_layout'
+  gem 'rsense'
 end
 
 # Testing
