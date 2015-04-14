@@ -38,8 +38,6 @@ build:
     - slack-notifier:
         subdomain: zazo
         url: $slack_url
-        channel: dev
-        username: wercker
 deploy:
   steps:
     - pip-install:
@@ -64,5 +62,3 @@ deploy:
     - slack-notifier:
         subdomain: zazo
         url: $slack_url
-        channel: dev
-        username: wercker
