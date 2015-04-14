@@ -35,9 +35,8 @@ build:
         name: rspec
         code: bundle exec rspec
   after-steps:
-    - slack-notifier:
-        subdomain: zazo
-        url: $slack_url
+    - wantedly/pretty-slack-notify:
+        webhook_url: $slack_url
 deploy:
   steps:
     - pip-install:
@@ -59,6 +58,5 @@ deploy:
   after-steps:
     - akelmanson/rollbar-notify:
         access-token: $rollbar_access_token
-    - slack-notifier:
-        subdomain: zazo
-        url: $slack_url
+    - wantedly/pretty-slack-notify:
+        webhook_url: $slack_url
