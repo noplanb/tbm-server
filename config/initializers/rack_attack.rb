@@ -5,7 +5,7 @@ class Rack::Attack
   end
   blacklist('block non-allowed hosts') do |req|
     # Requests are blocked if the return value is truthy
-    ![Figaro.env.domain_name, '.xip.io', 'elasticbeanstalk.com', 'zazoapp.com'].any? { |d| req.host.ends_with?(d) }
+    ![Figaro.env.domain_name, '.xip.io', '.elasticbeanstalk.com', '.zazoapp.com'].any? { |d| req.host.ends_with?(d) }
   end
 end
 

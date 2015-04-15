@@ -22,6 +22,7 @@ module GcmServer
     response = connection.post do |req|
       req.body = payload
     end
+    # TODO: notify case when canonical_ids is non-zero
     if response.body['failure'].nonzero? || response.body['success'].zero?
       Rails.logger.error JSON.pretty_generate(response.body)
       error_messages = response.body['results'].map { |r| r['error'] }.join(', ')
