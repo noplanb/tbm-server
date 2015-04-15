@@ -23,6 +23,13 @@ RSpec.describe GcmServer do
         end
         is_expected.to be_success
       end
+      specify do
+        expect(Rollbar).to_not receive(:warning)
+        VCR.use_cassette('gcm_send_with_success', erb: {
+                           key: 'gcmkey', payload: payload }) do
+          subject
+        end
+      end
     end
 
     context 'with server error' do
