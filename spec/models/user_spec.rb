@@ -40,6 +40,28 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '.search', pending: 'Implement' do
+    subject { described_class.search(query) }
+    let!(:user1) { create(:user, first_name: 'Alex') }
+    let!(:user2) { create(:user, last_name: 'Ulinaytskyi') }
+    let!(:user3) { create(:user, mobile_number: '+380939523746') }
+
+    context 'Alex' do
+      let(:query) { 'Alex' }
+      it { is_expected.to eq([user1]) }
+    end
+
+    context 'Ulinaytskyi' do
+      let(:query) { 'Ulinaytskyi' }
+      it { is_expected.to eq([user2]) }
+    end
+
+    context '+380939523746' do
+      let(:query) { '+380939523746' }
+      it { is_expected.to eq([user3]) }
+    end
+  end
+
   describe 'after_create' do
     let(:user) { create(:unknown_user) }
 

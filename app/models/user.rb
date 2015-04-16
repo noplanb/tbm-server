@@ -21,6 +21,10 @@ class User < ActiveRecord::Base
     find_by_mobile_number GlobalPhone.normalize(value)
   end
 
+  def self.search(query)
+    limit(10)
+  end
+
   def name
     [first_name, last_name].join(' ')
   end

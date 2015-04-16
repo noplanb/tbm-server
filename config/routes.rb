@@ -53,5 +53,4 @@ ThreebymeServer::Application.routes.draw do
   get 'invitation/invite'
   get 'invitation/has_app'
   get 'status', to: 'status#heartbeat'
-
 end

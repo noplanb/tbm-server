@@ -1,0 +1,34 @@
+h1 Mechanical Turk Dashboard
+
+section
+  .col-md-12
+    = form_tag mechanical_turk_path, method: :get, id: 'mechanical-turk-form', class: 'form-inline' do
+      .form-group
+        = search_field_tag :query, params[:query], class: 'form-control', placeholder: 'enter query'
+        = submit_tag 'Search users'
+    br
+
+    - if @users.present?
+      table.table
+        thead
+          tr
+            th ID
+            th Name
+            th Mobile number
+            th Device platform
+            th Status
+            th Connections
+            th
+        tbody
+          - @users.each do |user|
+            tr class=([user.status, user.device_platform])
+              td = user.id
+              td = user.name
+              td = user.mobile_number
+              td = user.device_platform
+              td = status_tag user.status
+              td = user.connections_as_creator.count + user.connections_as_target.count
+              td = link_to 'View in admin', user_path(user)
+    - else
+      - if params[:query].present?
+        p.well No users found
