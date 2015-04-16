@@ -51,6 +51,13 @@ RSpec.describe GcmServer do
           'results' =>
             [{ 'error' => 'InvalidRegistration' }] }
       end
+      let(:response_body_with_canonical_ids) do
+        { 'multicast_id' => 6_548_991_881_139_788_460,
+          'success' => 1,
+          'failure' => 0,
+          'canonical_ids' => 1,
+          'results' => [{ 'message_id' => '0:1428003070211543%7c7dc9e1f9fd7ecd' }] }
+      end
 
       specify do
         VCR.use_cassette('gcm_send_with_error', erb: {
@@ -65,6 +72,16 @@ RSpec.describe GcmServer do
           'GcmServer: GCM responded with errors: InvalidRegistration',
           gcm_response: response_body)
         VCR.use_cassette('gcm_send_with_error', erb: {
+                           key: 'gcmkey', payload: payload }) do
+          subject
+        end
+      end
+
+      specify do
+        expect(Rollbar).to receive(:warning).with(
+          'GcmServer: GCM responded non-zero canonical_ids',
+          gcm_response: response_body_with_canonical_ids)
+        VCR.use_cassette('gcm_send_with_canonical_ids', erb: {
                            key: 'gcmkey', payload: payload }) do
           subject
         end
