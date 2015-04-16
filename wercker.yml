@@ -48,5 +48,8 @@ deploy:
   after-steps:
     - akelmanson/rollbar-notify:
         access-token: $rollbar_access_token
+    - rafaelverger/newrelic-deployment:
+        api_key: $newrelic_license_key
+        app_name: $app_name ($WERCKER_DEPLOYTARGET_NAME)
     - wantedly/pretty-slack-notify:
         webhook_url: $slack_url
