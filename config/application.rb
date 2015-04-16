@@ -37,7 +37,7 @@ module ThreebymeServer
       g.template_engine :slim
       g.stylesheet_engine :sass
     end
-
+    config.sass.preferred_syntax = :sass
     config.middleware.insert 0, Rack::Attack
   end
 end
