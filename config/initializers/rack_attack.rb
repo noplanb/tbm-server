@@ -14,5 +14,8 @@ class Rack::Attack
 end
 
 ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, req|
-  Rails.logger.warn "[Rack::Attack] Prevented attack:\n#{req.inspect}"
+  match_type = req.env['rack.attack.match_type']
+  if match_type.present? && match_type != :whitelist
+    Rails.logger.info "[#{name} #{match_type}] (#{start} - #{finish}) #{req.inspect}"
+  end
 end
