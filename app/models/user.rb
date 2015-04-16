@@ -22,7 +22,8 @@ class User < ActiveRecord::Base
   end
 
   def self.search(query)
-    limit(10)
+    query_param = "%#{query}%"
+    where('first_name LIKE ? OR last_name LIKE ? OR mobile_number LIKE ?', query_param, query_param, query_param)
   end
 
   def name

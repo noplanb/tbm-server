@@ -40,10 +40,10 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.search', pending: 'Implement' do
+  describe '.search' do
     subject { described_class.search(query) }
     let!(:user1) { create(:user, first_name: 'Alex') }
-    let!(:user2) { create(:user, last_name: 'Ulinaytskyi') }
+    let!(:user2) { create(:user, last_name: 'Ulianytskyi') }
     let!(:user3) { create(:user, mobile_number: '+380939523746') }
 
     context 'Alex' do
@@ -51,8 +51,18 @@ RSpec.describe User, type: :model do
       it { is_expected.to eq([user1]) }
     end
 
-    context 'Ulinaytskyi' do
-      let(:query) { 'Ulinaytskyi' }
+    context 'alex' do
+      let(:query) { 'alex' }
+      it { is_expected.to eq([user1]) }
+    end
+
+    context 'Ulian' do
+      let(:query) { 'Ulian' }
+      it { is_expected.to eq([user2]) }
+    end
+
+    context 'ulian' do
+      let(:query) { 'ulian' }
       it { is_expected.to eq([user2]) }
     end
 

@@ -9,6 +9,7 @@ section
     br
 
     - if @users.present?
+      p.text-success Found #{@users.count} users
       table.table
         thead
           tr
@@ -31,4 +32,4 @@ section
               td = link_to 'View in admin', user_path(user)
     - else
       - if params[:query].present?
-        p.well No users found
+        p.text-info No users found
