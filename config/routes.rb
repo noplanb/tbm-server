@@ -53,6 +53,8 @@ ThreebymeServer::Application.routes.draw do
   get 'invitation/invite'
   get 'invitation/has_app'
 
+  get 'twiml/verification_code'
+
   get 'status', to:'status#heartbeat'
 
   # The priority is based upon order of creation: first created -> highest priority.
