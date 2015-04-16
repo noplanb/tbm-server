@@ -1,29 +1,46 @@
 h1 Listing users
-table.table
-  thead
-    tr
-      th ID
-      th Name
-      th Mobile number
-      th Device platform
-      th Status
-      th Verification code
-      th Verification code sent at
-      th
-      th
-      th
-  tbody
-    - @users.each do |user|
-      tr class=([user.status, user.device_platform])
-        td = user.id
-        td = user.name
-        td = user.mobile_number
-        td = user.device_platform
-        td = status_tag user.status
-        td = user.verification_code
-        td = user.verification_date_time
-        td = link_to 'Show', user
-        td = link_to 'Edit', edit_user_path(user)
-        td = link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
-br
-= link_to 'New User', new_user_path, class: 'btn btn-default'
+
+section
+  .col-md-12
+    = form_tag users_path, method: :get, id: 'users-filter-form', class: 'form-inline' do
+      .form-group
+        = search_field_tag :query, params[:query], class: 'form-control', placeholder: 'enter part of first_name, last_name or mobile_number'
+        = submit_tag 'Filter'
+    br
+  .col-md-12
+    - if @users.present?
+      p.text-success Listed #{@users.count} users
+      table.table
+        thead
+          tr
+            th ID
+            th Name
+            th Mobile number
+            th Device platform
+            th Status
+            th Live connections
+            th Verification code
+            th Verification code sent at
+            th
+            th
+            th
+        tbody
+          - @users.each do |user|
+            tr class=([user.status, user.device_platform])
+              td = user.id
+              td = user.name
+              td = user.mobile_number
+              td = user.device_platform
+              td = status_tag user.status
+              td = user.live_connection_count
+              td = user.verification_code
+              td = user.verification_date_time
+              td = link_to 'Show', user
+              td = link_to 'Edit', edit_user_path(user)
+              td = link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
+      br
+    - else
+      - if params[:query].present?
+        p.text-info No users found
+
+    = link_to 'New User', new_user_path, class: 'btn btn-default'

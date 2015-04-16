@@ -5,7 +5,7 @@ class UsersController < AdminController
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    @users = User.search(params[:query])
   end
 
   # GET /users/1

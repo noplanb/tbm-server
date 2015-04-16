@@ -11,7 +11,6 @@
 // file per style scope.
 //
 //= require_self
-//= require mechanical_turk
 
 @import framework_and_overrides
 
@@ -29,3 +28,9 @@
 input[type='submit']
   @extend .btn
   @extend .btn-primary
+
+#users-filter-form
+  label, input
+    margin-right: 1em
+  #query
+    width: 50em

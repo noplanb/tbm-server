@@ -70,6 +70,16 @@ RSpec.describe User, type: :model do
       let(:query) { '+380939523746' }
       it { is_expected.to eq([user3]) }
     end
+
+    context 'empty string' do
+      let(:query) { '' }
+      it { is_expected.to eq([user1, user2, user3]) }
+    end
+
+    context 'nil' do
+      let(:query) { }
+      it { is_expected.to eq([user1, user2, user3]) }
+    end
   end
 
   describe 'after_create' do
