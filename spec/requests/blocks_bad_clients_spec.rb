@@ -6,13 +6,27 @@ RSpec.describe 'BlocksBadClients', type: :request do
   context 'from 10.0.1.5' do
     context 'example.com' do
       specify 'blocks request' do
-        get '/admin', nil, 'HTTP_HOST' => 'example.com', 'REMOTE_ADDR' => '10.0.1.5'
+        get '/admin', nil, 'HTTP_HOST' => 'example.com',
+                           'REMOTE_ADDR' => '10.0.1.5'
         expect(response).to have_http_status(403)
       end
     end
+
     context 'zazo-test.10.0.1.5.xip.io' do
       specify 'allows request' do
-        get '/', nil, 'HTTP_HOST' => 'zazo-test.10.0.1.5.xip.io', 'REMOTE_ADDR' => '10.0.1.5'
+        get '/', nil, 'HTTP_HOST' => 'zazo-test.10.0.1.5.xip.io',
+                      'REMOTE_ADDR' => '10.0.1.5'
+        expect(response).to have_http_status(200)
+      end
+    end
+  end
+
+  context 'for 172.31.22.56' do
+    context 'ELB health checker' do
+      specify 'allows request' do
+        get '/status', nil, 'HTTP_HOST' => '172.31.2.177',
+                            'REMOTE_ADDR' => '172.31.22.56',
+                            'HTTP_USER_AGENT' => 'ELB-HealthChecker/1.0'
         expect(response).to have_http_status(200)
       end
     end
