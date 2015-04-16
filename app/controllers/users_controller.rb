@@ -1,6 +1,4 @@
-class UsersController < ApplicationController
-  http_basic_authenticate_with name: Figaro.env.http_basic_username, password: Figaro.env.http_basic_password
-
+class UsersController < AdminController
   before_action :set_user, only: [:show, :edit, :update, :destroy,
                                   :new_connection, :establish_connection,
                                   :receive_test_video, :receive_corrupt_video]

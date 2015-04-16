@@ -1,6 +1,4 @@
-class ConnectionsController < ApplicationController
-  http_basic_authenticate_with name: Figaro.env.http_basic_username, password: Figaro.env.http_basic_password
-
+class ConnectionsController < AdminController
   before_action :set_connection, only: [:show, :edit, :update, :destroy]
 
   # GET /connections
