@@ -41,7 +41,7 @@ RSpec.describe DispatchController, type: :controller do
         end
       end
 
-      it 'rceives correct scope' do
+      it 'receives correct scope' do
         expect(Rollbar).to receive(:scope).with(scope).and_return(Rollbar.scope(scope))
         authenticate_with_http_digest(user.mkey, user.auth) do
           post :post_dispatch, msg: msg
@@ -68,7 +68,7 @@ RSpec.describe DispatchController, type: :controller do
         end
       end
 
-      it 'rceives correct scope' do
+      it 'receives correct scope' do
         expect(Rollbar).to receive(:scope).with(scope).and_return(Rollbar.scope(scope))
         authenticate_with_http_digest(user.mkey, user.auth) do
           post :post_dispatch, msg: msg
