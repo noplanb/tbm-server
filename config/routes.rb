@@ -53,8 +53,7 @@ ThreebymeServer::Application.routes.draw do
   get 'invitation/invite'
   get 'invitation/has_app'
 
-  get 'twiml/verification_code'
-  post 'twiml/verification_code'
+  get 'verification_code/say_code'
 
   get 'status', to:'status#heartbeat'
 

@@ -1,4 +1,4 @@
-class SmsManager
+class VerificationCodeSender
   TWILIO_INVALID_NUMBER_ERRORS = {
     21211 => "Invalid 'To' Phone Number",
     21214 => "'To' phone number cannot be reached",
@@ -22,7 +22,6 @@ class SmsManager
   end
 
   def send_verification_sms
-    user.reset_verification_code
     send_sms(to, message)
   end
 
@@ -35,7 +34,7 @@ class SmsManager
   end
 
   def message
-    "#{Settings.app_name} access code: #{user.verification_code}"
+    "#{Settings.app_name} access code: #{user.get_verification_code}"
   end
 
   def twilio_invalid_number?(code)

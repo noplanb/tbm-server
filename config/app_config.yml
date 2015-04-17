@@ -10,6 +10,8 @@ defaults: &settings
   app_schema: zazo://
   use_s3: false
   allow_authentication_with_token: false
+  verification_code_length: 4
+  verification_code_lifetime_minutes: 120
 
 development:
   <<: *settings
