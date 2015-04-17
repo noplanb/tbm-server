@@ -1,7 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Connection, type: :model do
-  let(:video_id) { (Time.now.to_f * 1000).to_i.to_s }
+  let(:video_id) { '1426622544176' }
+  let(:creator) { create(:user, mkey: 'smRug5xj8J469qX5XvGk') }
+  let(:target) { create(:user, mkey: 'IUed5vP9n4qzW6jY8wSu') }
+  let(:attributes) do
+    { creator: creator,
+      target: target,
+      ckey: '19_21_XxInqAeDqnoS6BlP1M5S' }
+  end
 
   describe 'columns' do
     it { is_expected.to have_db_column(:creator_id).of_type(:integer) }
@@ -16,18 +23,22 @@ RSpec.describe Connection, type: :model do
     it { is_expected.to validate_presence_of(:status) }
   end
 
-  describe '#video_filename' do
-    let(:video_id) { '1426622544176' }
-    let(:creator) { create(:user, mkey: 'smRug5xj8J469qX5XvGk') }
-    let(:target) { create(:user, mkey: 'IUed5vP9n4qzW6jY8wSu') }
-    let(:instance) do
-      create(:connection,
-             creator: creator,
-             target: target,
-             ckey: '19_21_XxInqAeDqnoS6BlP1M5S')
-    end
-    subject { instance.video_filename(video_id) }
+  describe '.video_filename' do
+    let!(:instance) { create(:connection, attributes) }
+    subject { described_class.video_filename(creator, target, video_id) }
     it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-8045bfdc02bcc27c87be785c5ffc3b62') }
+  end
+
+  describe '.kvstore_key' do
+    let!(:instance) { create(:connection, attributes) }
+    subject { described_class.kvstore_key(creator, target, instance) }
+    it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-19_21_XxInqAeDqnoS6BlP1M5S-VideoIdKVKey') }
+  end
+
+  describe '.add_remote_key' do
+    let!(:instance) { create(:connection, attributes) }
+    subject { described_class.add_remote_key(creator, target, video_id) }
+    it { is_expected.to be_valid }
   end
 
   describe '#active?', pending: 'TODO: implement' do

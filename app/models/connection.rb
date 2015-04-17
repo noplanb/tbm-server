@@ -48,7 +48,21 @@ class Connection < ActiveRecord::Base
     fail 'not implemented'
   end
 
-  def video_filename(video_id)
-    "#{creator.mkey}-#{target.mkey}-#{Digest::MD5.new.update(ckey + video_id).hexdigest}"
+  def self.kvstore_key(sender, receiver, connection)
+    "#{sender.mkey}-#{receiver.mkey}-#{connection.ckey}-VideoIdKVKey"
+  end
+
+  def self.add_remote_key(sender, receiver, video_id)
+    connection = live_between(sender.id, receiver.id).first
+    params = {}
+    params[:key1] = kvstore_key(sender, receiver, connection)
+    params[:key2] = video_id
+    params[:value] = { 'videoId' => video_id }.to_json
+    Kvstore.create_or_update(params)
+  end
+
+  def self.video_filename(sender, receiver, video_id)
+    connection = live_between(sender.id, receiver.id).first
+    "#{sender.mkey}-#{receiver.mkey}-#{Digest::MD5.new.update(connection.ckey + video_id).hexdigest}"
   end
 end

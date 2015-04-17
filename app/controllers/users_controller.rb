@@ -92,7 +92,7 @@ class UsersController < AdminController
   def receive_video(file_name)
     sender = User.find params[:sender_id]
     video_id = create_test_video(sender, @user, file_name)
-    add_remote_key(sender, @user, video_id)
+    Connection.add_remote_key(sender, @user, video_id)
     send_video_received_notification(sender, @user, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
@@ -107,13 +107,8 @@ class UsersController < AdminController
     creds = S3Credential.instance
     s3 = AWS::S3.new(access_key_id: creds.access_key, secret_access_key: creds.secret_key, region: creds.region)
     b = s3.buckets[creds.bucket]
-    o = b.objects[video_filename(sender, receiver, video_id)]
+    o = b.objects[Connection.video_filename(sender, receiver, video_id)]
     o
-  end
-
-  def video_filename(sender, receiver, video_id)
-    c = Connection.live_between(sender.id, receiver.id).first
-    "#{sender.mkey}-#{receiver.mkey}-#{Digest::MD5.new.update(c.ckey + video_id).hexdigest}"
   end
 
   def test_video
@@ -129,14 +124,6 @@ class UsersController < AdminController
                                  alert: "New message from #{sender.first_name}")
   end
 
-  def add_remote_key(sender, receiver, video_id)
-    conn = Connection.live_between(sender.id, receiver.id).first
-    params = {}
-    params[:key1] = "#{sender.mkey}-#{receiver.mkey}-#{conn.ckey}-VideoIdKVKey"
-    params[:key2] = video_id
-    params[:value] = { 'videoId' => video_id }.to_json
-    Kvstore.create_or_update params
-  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user
