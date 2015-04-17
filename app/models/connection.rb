@@ -40,6 +40,15 @@ class Connection < ActiveRecord::Base
   end
 
   def set_ckey
-    update_attribute(:ckey, "#{creator_id}_#{target_id}_#{NoPlanB::TextUtils.random_string(20)}")
+    self.ckey = "#{creator_id}_#{target_id}_#{NoPlanB::TextUtils.random_string(20)}" if ckey.blank?
+    save
+  end
+
+  def active?
+    fail 'not implemented'
+  end
+
+  def video_filename(video_id)
+    "#{creator.mkey}-#{target.mkey}-#{Digest::MD5.new.update(ckey + video_id).hexdigest}"
   end
 end

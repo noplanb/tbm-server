@@ -134,7 +134,9 @@ class User < ActiveRecord::Base
   end
 
   def set_keys
-    update_attributes(auth: gen_key('auth'), mkey: gen_key('mkey'))
+    self.auth = gen_key('auth') if auth.blank?
+    self.mkey = gen_key('mkey') if mkey.blank?
+    save
   end
 
   def gen_key(type)
