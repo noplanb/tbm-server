@@ -51,6 +51,11 @@ RSpec.describe VerificationCodeSender do
     end
   end
 
+  describe '#twilio_call_url' do
+    subject { instance.twilio_call_url }
+    it { is_expected.to eq('http://zazo.test/verification_code/say_code') }
+  end
+
   describe '#send_verification_sms' do
     subject { instance.send_verification_sms }
 
@@ -105,7 +110,7 @@ RSpec.describe VerificationCodeSender do
                          twilio_token: Figaro.env.twilio_token,
                          from: Figaro.env.twilio_from_number,
                          to: mobile_number,
-                         url: Settings.twilio_call_callback_url
+                         url: instance.twilio_call_url
                        }) do
         is_expected.to eq(:ok)
       end
@@ -120,7 +125,7 @@ RSpec.describe VerificationCodeSender do
           twilio_token: Figaro.env.twilio_token,
           from: Figaro.env.twilio_from_number,
           to: mobile_number,
-          url: Settings.twilio_call_callback_url
+          url: instance.twilio_call_url
         }.merge(error)) do
           is_expected.to eq(:invalid_mobile_number)
         end
@@ -136,7 +141,7 @@ RSpec.describe VerificationCodeSender do
           twilio_token: Figaro.env.twilio_token,
           from: Figaro.env.twilio_from_number,
           to: mobile_number,
-          url: Settings.twilio_call_callback_url
+          url: instance.twilio_call_url
         }.merge(error)) do
           is_expected.to eq(:other)
         end

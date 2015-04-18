@@ -50,6 +50,11 @@ class VerificationCodeSender
     Twilio::REST::Client.new Figaro.env.twilio_ssid, Figaro.env.twilio_token
   end
 
+  def twilio_call_url
+    Rails.application.routes.url_helpers.verification_code_say_code_url
+    # 'http://54.67.7.124:44392/verification_code/say_code'
+  end
+
   def send_verification_sms
     twilio.messages.create(from: from, to: to, body: message)
     Rails.logger.info "send_verification_sms: to:#{to} msg:#{message}"
@@ -62,7 +67,7 @@ class VerificationCodeSender
     twilio.calls.create(
       from: from,
       to: to,
-      url: Settings.twilio_call_callback_url,
+      url: twilio_call_url,
       method: 'GET'
     )
     Rails.logger.info "make_verification_call: to:#{to}"
