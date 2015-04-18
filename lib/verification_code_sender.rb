@@ -52,7 +52,6 @@ class VerificationCodeSender
 
   def twilio_call_url
     Rails.application.routes.url_helpers.verification_code_say_code_url
-    # 'http://54.67.7.124:44392/verification_code/say_code'
   end
 
   def send_verification_sms

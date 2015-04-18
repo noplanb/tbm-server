@@ -48,9 +48,4 @@ RSpec.describe VerificationCodeController, type: :controller do
       end
     end
   end
-
-  describe '#spaced_code' do
-    subject { controller.instance_eval { spaced_code('1234') } }
-    it { is_expected.to eq(' 1 2 3 4 ') }
-  end
 end
