@@ -1,5 +1,4 @@
 require 'rails_helper'
-RSpec.configure { |c| c.include PhoneNumberHelpers }
 
 RSpec.describe VerificationCodeSender do
   MESSAGE_PREFIX = "#{Settings.app_name} access code:"
@@ -13,16 +12,20 @@ RSpec.describe VerificationCodeSender do
       allow_any_instance_of(described_class).to receive(:make_verification_call).and_return(:call)
     end
 
-    it 'sends sms to countries in Settings.verification_code_sms_countries' do
-      Settings.verification_code_sms_countries.each do |cc_iso|
-        user.mobile_number = sample_number(cc_iso.to_sym)
-        expect(described_class.new(user).send_code).to eq :sms
+    Settings.verification_code_sms_countries.each do |cc_iso|
+      context cc_iso do
+        let(:mobile_number) { sample_number(cc_iso.to_sym) }
+        it 'sends sms' do
+          expect(instance.send_code).to eq(:sms)
+        end
       end
     end
 
-    it 'calls countries not in Settings.verification_code_sms_countries' do
-      user.mobile_number = "+919833695651"
-      expect(described_class.new(user).send_code).to be :call
+    context 'in' do
+      let(:mobile_number) { sample_number(:in) }
+      it 'makes call' do
+        expect(instance.send_code).to eq(:call)
+      end
     end
   end
 
@@ -42,7 +45,7 @@ RSpec.describe VerificationCodeSender do
       expect(instance.message.match /^#{MESSAGE_PREFIX}/)
     end
 
-    it "ends with access code" do
+    it 'ends with access code' do
       code = instance.message.match(/\d+$/).to_s
       expect(code.length).to eq Settings.verification_code_length
     end
@@ -52,8 +55,8 @@ RSpec.describe VerificationCodeSender do
     subject { instance.send_verification_sms }
 
     context 'on success' do
-      it do
-        VCR.use_cassette('twilio_success_response', erb: {
+      specify do
+        VCR.use_cassette('twilio_message_with_success', erb: {
                            twilio_ssid: Figaro.env.twilio_ssid,
                            twilio_token: Figaro.env.twilio_token,
                            from: Figaro.env.twilio_from_number,
@@ -66,8 +69,8 @@ RSpec.describe VerificationCodeSender do
     context 'on invalid number' do
       let(:mobile_number) { '+20227368296' }
       let(:error) { { code: 21_614, message: "'To' number is not a valid mobile number" } }
-      it do
-        VCR.use_cassette('twilio_error_response', erb: {
+      specify do
+        VCR.use_cassette('twilio_message_with_error', erb: {
           twilio_ssid: Figaro.env.twilio_ssid,
           twilio_token: Figaro.env.twilio_token,
           from: Figaro.env.twilio_from_number,
@@ -80,8 +83,8 @@ RSpec.describe VerificationCodeSender do
     context 'other error' do
       let(:mobile_number) { '+20227368296' }
       let(:error) { { code: 14_101, message: "'To' Attribute is Invalid" } }
-      it do
-        VCR.use_cassette('twilio_error_response', erb: {
+      specify do
+        VCR.use_cassette('twilio_message_with_error', erb: {
           twilio_ssid: Figaro.env.twilio_ssid,
           twilio_token: Figaro.env.twilio_token,
           from: Figaro.env.twilio_from_number,
@@ -95,17 +98,32 @@ RSpec.describe VerificationCodeSender do
   describe '#make_verification_call' do
     subject { instance.make_verification_call }
 
+    let(:mobile_number) { '+16502453537' }
     it 'makes a call to a valid number' do
-      # FIXME: Alex, Note I set VCR.allow_http_connections_when_no_cassette=true for my own live testing you may wish to remove
-      # instance.make_verification_call('+16502453537')
-      pending('FIXME: Alex, please create cassette for valid outgoing call')
+      VCR.use_cassette('twilio_call_with_success', erb: {
+                         twilio_ssid: Figaro.env.twilio_ssid,
+                         twilio_token: Figaro.env.twilio_token,
+                         from: Figaro.env.twilio_from_number,
+                         to: mobile_number,
+                         url: Settings.twilio_call_callback_url
+                       }) do
+        is_expected.to eq(:ok)
+      end
     end
 
     context 'on invalid number' do
       let(:mobile_number) { '+20227368296' }
       let(:error) { { code: 21_614, message: "'To' number is not a valid mobile number" } }
       it 'returns invalid number error' do
-        pending('FIXME: Alex, please create a cassette for call to invalid number')
+        VCR.use_cassette('twilio_call_with_error', erb: {
+          twilio_ssid: Figaro.env.twilio_ssid,
+          twilio_token: Figaro.env.twilio_token,
+          from: Figaro.env.twilio_from_number,
+          to: mobile_number,
+          url: Settings.twilio_call_callback_url
+        }.merge(error)) do
+          is_expected.to eq(:invalid_mobile_number)
+        end
       end
     end
 
@@ -113,7 +131,15 @@ RSpec.describe VerificationCodeSender do
       let(:mobile_number) { '+20227368296' }
       let(:error) { { code: 14_101, message: "'To' Attribute is Invalid" } }
       it 'returns other error' do
-        pending('FIXME: Alex, please create a cassette for call to invalid number')
+        VCR.use_cassette('twilio_call_with_error', erb: {
+          twilio_ssid: Figaro.env.twilio_ssid,
+          twilio_token: Figaro.env.twilio_token,
+          from: Figaro.env.twilio_from_number,
+          to: mobile_number,
+          url: Settings.twilio_call_callback_url
+        }.merge(error)) do
+          is_expected.to eq(:other)
+        end
       end
     end
   end

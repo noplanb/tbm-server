@@ -29,6 +29,7 @@ defaults: &settings
     - nl
     - nz
     - se
+  twilio_call_callback_url: http://54.67.7.124:44392/verification_code/say_code
 
 development:
   <<: *settings

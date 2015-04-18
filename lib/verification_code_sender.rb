@@ -2,17 +2,17 @@ class VerificationCodeSender
   TWILIO_INVALID_NUMBER_ERRORS = {
     21211 => "Invalid 'To' Phone Number",
     21214 => "'To' phone number cannot be reached",
-    21217 => "Phone number does not appear to be valid",
+    21217 => 'Phone number does not appear to be valid',
     21219 => "'To' phone number not verified",
-    21401 => "Invalid Phone Number",
-    21407 => "This Phone Number type does not support SMS or MMS",
-    21421 => "PhoneNumber is invalid",
-    21601 => "Phone number is not a valid SMS-capable/MMS-capable inbound phone number",
+    21401 => 'Invalid Phone Number',
+    21407 => 'This Phone Number type does not support SMS or MMS',
+    21421 => 'PhoneNumber is invalid',
+    21601 => 'Phone number is not a valid SMS-capable/MMS-capable inbound phone number',
     21604 => "'To' phone number is required to send a Message",
     21612 => "The 'To' phone number is not currently reachable via SMS",
     21614 => "'To' number is not a valid mobile number",
-    21615 => "PhoneNumber Requires a Local Address",
-    21624 => "PhoneNumber Requires a Foreign Address",
+    21615 => 'PhoneNumber Requires a Local Address',
+    21624 => 'PhoneNumber Requires a Foreign Address'
   }
 
   attr_reader :user
@@ -23,8 +23,7 @@ class VerificationCodeSender
 
   def send_code
     cc_iso = GlobalPhone.parse(user.mobile_number).territory.name
-    # sms_country?(cc_iso) ? send_verification_sms : make_verification_call
-    sms_country?(cc_iso) ? send_verification_sms : send_verification_sms
+    sms_country?(cc_iso) ? send_verification_sms : make_verification_call
   end
 
   def sms_country?(cc_iso)
@@ -63,7 +62,7 @@ class VerificationCodeSender
     twilio.calls.create(
       from: from,
       to: to,
-      url: 'http://54.67.7.124:44392/verification_code/say_code',
+      url: Settings.twilio_call_callback_url,
       method: 'GET'
     )
     Rails.logger.info "make_verification_call: to:#{to}"
