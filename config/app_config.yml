@@ -12,6 +12,23 @@ defaults: &settings
   allow_authentication_with_token: false
   verification_code_length: 4
   verification_code_lifetime_minutes: 120
+  verification_code_sms_countries:
+    - us
+    - ch
+    - cn
+    - de
+    - dk
+    - es
+    - fi
+    - fr
+    - gb
+    - hk
+    - il
+    - it
+    - jp
+    - nl
+    - nz
+    - se
 
 development:
   <<: *settings

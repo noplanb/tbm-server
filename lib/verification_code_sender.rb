@@ -21,8 +21,13 @@ class VerificationCodeSender
     @user = user
   end
 
-  def send_verification_sms
-    send_sms(to, message)
+  def send_code
+    cc_iso = GlobalPhone.parse(user.mobile_number).territory.name
+    is_sms_country?(cc_iso) ? send_verification_sms : make_verification_call
+  end
+
+  def is_sms_country?(cc_iso)
+    Settings.verification_code_sms_countries.include? cc_iso.downcase
   end
 
   def from
@@ -41,14 +46,34 @@ class VerificationCodeSender
     TWILIO_INVALID_NUMBER_ERRORS.keys.include?(code.to_i)
   end
 
-  def send_sms(to, message)
-    twilio = Twilio::REST::Client.new Figaro.env.twilio_ssid, Figaro.env.twilio_token
+  def twilio
+    Twilio::REST::Client.new Figaro.env.twilio_ssid, Figaro.env.twilio_token
+  end
+
+  def send_verification_sms
     twilio.messages.create(from: from, to: to, body: message)
     Rails.logger.info "send_verification_sms: to:#{to} msg:#{message}"
     :ok
   rescue Twilio::REST::RequestError => error
+    handle_twilio_error(error)
+  end
+
+  def make_verification_call
+    twilio.calls.create(
+      from: from,
+      to: to,
+      url: 'http://54.67.7.124:44392/verification_code/say_code',
+      method: 'GET'
+    )
+    Rails.logger.info "make_verification_call: to:#{to}"
+    :ok
+  rescue Twilio::REST::RequestError => error
+    handle_twilio_error(error)
+  end
+
+  def handle_twilio_error(error)
     Rollbar.warning(error)
-    Rails.logger.error "ERROR: reg/reg: #{error.class} ##{error.code}: #{error.message}"
+    Rails.logger.error "ERROR: make_verification_call: #{error.class} ##{error.code}: #{error.message}"
     twilio_invalid_number?(error.code) ? :invalid_mobile_number : :other
   end
 end

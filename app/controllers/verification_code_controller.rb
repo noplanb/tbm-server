@@ -1,11 +1,14 @@
 class VerificationCodeController < ApplicationController
 
   def say_code
-    user = params[:To] && User.find_by_raw_number(params[:To])
+    user = params[:To] && User.find_by_raw_mobile_number(params[:To])
     code = user && user.get_verification_code
-    if !code.nil?
+    if code
       render :xml => code_twml(code)
     else
+      err = "VerificationCodeController#say_code user or code not found. For to:#{params[:To]} This should never happen."
+      Rollbar.error err
+      Rails.logger.error err
       render :xml => error_twml
     end
   end
@@ -21,8 +24,10 @@ class VerificationCodeController < ApplicationController
         xml.Say(sc)
         xml.Pause(length: 2)
         xml.Say("repeat #{sc}")
-        xml.Pause(length: 4)
+        xml.Pause(length: 3)
         xml.Say("repeat #{sc}")
+        xml.Pause
+        xml.Say('goodbye')
       }
     end
   end
@@ -36,7 +41,7 @@ class VerificationCodeController < ApplicationController
   end
 
   def spaced_code(code)
-    code.each_char.to_a.join(" ")
+    " #{code.each_char.to_a.join(" ")} "
   end
 
 end
