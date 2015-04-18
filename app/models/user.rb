@@ -137,14 +137,4 @@ class User < ActiveRecord::Base
     k += NoPlanB::TextUtils.random_string(20)
     k.gsub(' ', '')
   end
-
-  def is_connection_creator(connected_user, con)
-    if connected_user.id == con.creator_id
-      return true
-    elsif connected_user.id == con.target_id
-      return false
-    else
-      fail "connection_status: Connection does not belong to connected_user #{connected_user.id}"
-    end
-  end
 end
