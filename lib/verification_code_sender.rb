@@ -23,7 +23,8 @@ class VerificationCodeSender
 
   def send_code
     cc_iso = GlobalPhone.parse(user.mobile_number).territory.name
-    is_sms_country?(cc_iso) ? send_verification_sms : make_verification_call
+    # is_sms_country?(cc_iso) ? send_verification_sms : make_verification_call
+    is_sms_country?(cc_iso) ? send_verification_sms : send_verification_sms
   end
 
   def is_sms_country?(cc_iso)

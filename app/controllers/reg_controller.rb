@@ -22,7 +22,7 @@ class RegController < ApplicationController
       return render json: { status: 'failure', title: "Can't Add", msg: 'Unable to create user' }
     end
 
-    opts = case VerificationCodeSender.new(user).send_verification_sms
+    opts = case VerificationCodeSender.new(user).send_code
     when :ok
       { status: 'success', auth: user.auth, mkey: user.mkey }
     when :invalid_mobile_number

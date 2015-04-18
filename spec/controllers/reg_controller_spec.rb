@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe RegController, type: :controller do
   describe 'GET #reg' do
-    let(:mobile_number) { '+1 650 111-0000' }
+    let(:mobile_number) { '+1 650 245 3537' }
     let(:params) do
       { 'device_platform' => 'ios',
         'first_name' => 'Egypt',
