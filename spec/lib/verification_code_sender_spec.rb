@@ -96,16 +96,16 @@ RSpec.describe VerificationCodeSender do
     subject { instance.make_verification_call }
 
     it 'makes a call to a valid number' do
-      # Alex: Note I set VCR.allow_http_connections_when_no_cassette=true for my own live testing you may wish to remove
+      # FIXME: Alex, Note I set VCR.allow_http_connections_when_no_cassette=true for my own live testing you may wish to remove
       # instance.make_verification_call('+16502453537')
-      pending('Alex please create cassette for valid outgoing call')
+      pending('FIXME: Alex, please create cassette for valid outgoing call')
     end
 
     context 'on invalid number' do
       let(:mobile_number) { '+20227368296' }
       let(:error) { { code: 21_614, message: "'To' number is not a valid mobile number" } }
       it 'returns invalid number error' do
-        pending('Alex please create a cassette for call to invalid number')
+        pending('FIXME: Alex, please create a cassette for call to invalid number')
       end
     end
 
@@ -113,7 +113,7 @@ RSpec.describe VerificationCodeSender do
       let(:mobile_number) { '+20227368296' }
       let(:error) { { code: 14_101, message: "'To' Attribute is Invalid" } }
       it 'returns other error' do
-        pending('Alex please create a cassette for call to invalid number')
+        pending('FIXME: Alex, please create a cassette for call to invalid number')
       end
     end
   end

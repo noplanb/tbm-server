@@ -22,7 +22,7 @@ RSpec.describe VerificationCodeController, type: :controller do
 
     context 'to: not in params' do
       it('says error') do
-        pending('Alex: why doesnt expect rollbar error work')
+        pending('FIXME: Alex, why doesnt expect rollbar error work')
         # expect(Rollbar).to receive(:error)
         expect(twiml_says_error? response.body)
       end
@@ -31,7 +31,7 @@ RSpec.describe VerificationCodeController, type: :controller do
     context 'no user found for to: number' do
       let(:params){ { To: '+6505551212' } }
       it('says error') do
-        pending('Alex: why doesnt expect rollbar error work')
+        pending('FIXME: Alex, why doesnt expect rollbar error work')
         # expect(Rollbar).to receive(:error)
         expect(twiml_says_error? response.body)
       end
@@ -39,7 +39,7 @@ RSpec.describe VerificationCodeController, type: :controller do
 
     context 'no user found for to: number' do
       it('says error') do
-        pending('Alex: why doesnt expect rollbar error work')
+        pending('FIXME: Alex, why doesnt expect rollbar error work')
         # expect(Rollbar).to receive(:error)
         expect(twiml_says_error? response.body)
       end
