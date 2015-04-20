@@ -56,6 +56,11 @@ RSpec.describe VerificationCodeSender do
     it { is_expected.to eq('http://zazo.test/verification_code/say_code') }
   end
 
+  describe '#twilio_call_fallback_url' do
+    subject { instance.twilio_call_fallback_url }
+    it { is_expected.to eq('http://zazo.test/verification_code/call_fallback') }
+  end
+
   describe '#send_verification_sms' do
     subject { instance.send_verification_sms }
 
@@ -102,15 +107,16 @@ RSpec.describe VerificationCodeSender do
 
   describe '#make_verification_call' do
     subject { instance.make_verification_call }
+    let(:mobile_number) { Figaro.env.twilio_to_number }
 
-    let(:mobile_number) { '+16502453537' }
     it 'makes a call to a valid number' do
       VCR.use_cassette('twilio_call_with_success', erb: {
                          twilio_ssid: Figaro.env.twilio_ssid,
                          twilio_token: Figaro.env.twilio_token,
                          from: Figaro.env.twilio_from_number,
                          to: mobile_number,
-                         url: instance.twilio_call_url
+                         url: instance.twilio_call_url,
+                         fallback_url: instance.twilio_call_fallback_url
                        }) do
         is_expected.to eq(:ok)
       end
@@ -125,7 +131,8 @@ RSpec.describe VerificationCodeSender do
           twilio_token: Figaro.env.twilio_token,
           from: Figaro.env.twilio_from_number,
           to: mobile_number,
-          url: instance.twilio_call_url
+          url: instance.twilio_call_url,
+          fallback_url: instance.twilio_call_fallback_url
         }.merge(error)) do
           is_expected.to eq(:invalid_mobile_number)
         end
@@ -141,7 +148,8 @@ RSpec.describe VerificationCodeSender do
           twilio_token: Figaro.env.twilio_token,
           from: Figaro.env.twilio_from_number,
           to: mobile_number,
-          url: instance.twilio_call_url
+          url: instance.twilio_call_url,
+          fallback_url: instance.twilio_call_fallback_url
         }.merge(error)) do
           is_expected.to eq(:other)
         end

@@ -5,7 +5,7 @@ http_interactions:
     uri: https://<%= twilio_ssid %>:<%= twilio_token %>@api.twilio.com/2010-04-01/Accounts/<%= twilio_ssid %>/Calls.json
     body:
       encoding: US-ASCII
-      string: From=<%= CGI.escape from %>&To=<%= CGI.escape to %>&Url=<%= CGI.escape url %>&Method=GET
+      string: From=<%= CGI.escape from %>&To=<%= CGI.escape to %>&Url=<%= CGI.escape url %>&Method=GET&FallbackUrl=<%= CGI.escape fallback_url %>
     headers:
       Accept:
       - application/json

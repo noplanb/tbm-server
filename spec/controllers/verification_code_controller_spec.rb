@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe VerificationCodeController, type: :controller do
   describe 'GET #say_code' do
-    let(:valid_mobile) { '+16507800144' }
+    let(:valid_mobile) { Figaro.env.twilio_to_number }
     let(:params) { {} }
     let!(:user) { create(:user, mobile_number: valid_mobile) }
 
@@ -46,6 +46,14 @@ RSpec.describe VerificationCodeController, type: :controller do
         expect(Rollbar).to receive(:error)
         get :say_code, params
       end
+    end
+  end
+
+  describe 'POST #call_fallback' do
+    specify do
+      expect(Rollbar).to receive(:error)
+      post :call_fallback
+      expect(response).to be_success
     end
   end
 end

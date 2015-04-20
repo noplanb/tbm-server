@@ -54,6 +54,10 @@ class VerificationCodeSender
     Rails.application.routes.url_helpers.verification_code_say_code_url
   end
 
+  def twilio_call_fallback_url
+    Rails.application.routes.url_helpers.verification_code_call_fallback_url
+  end
+
   def send_verification_sms
     twilio.messages.create(from: from, to: to, body: message)
     Rails.logger.info "send_verification_sms: to:#{to} msg:#{message}"
@@ -67,7 +71,8 @@ class VerificationCodeSender
       from: from,
       to: to,
       url: twilio_call_url,
-      method: 'GET'
+      method: 'GET',
+      fallback_url: twilio_call_fallback_url
     )
     Rails.logger.info "make_verification_call: to:#{to}"
     :ok
