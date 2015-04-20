@@ -13,6 +13,9 @@ table.table
   tr
     td Status
     td = status_tag @connection.status
+  tr
+    td Active?
+    td = @connection.active?
 
 = link_to 'Edit', edit_connection_path(@connection), class: 'btn btn-default'
 ' &nbsp;
