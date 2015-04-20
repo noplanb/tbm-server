@@ -41,12 +41,24 @@ RSpec.describe Connection, type: :model do
     it { is_expected.to be_valid }
   end
 
-  describe '#active?', pending: 'TODO: implement' do
-    let(:instance) { create(:connection) }
+  describe '#active?' do
+    let(:instance) { create(:connection, attributes) }
     subject { instance.active? }
 
-    context 'when no KV store records' do
+    context 'when connection is not established' do
       it { is_expected.to be_falsey }
+    end
+
+    context 'when connection is established' do
+      let!(:instance) { create(:connection, attributes.merge(status: :established)) }
+      context 'when no KV store records' do
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when only one direction videos in KV store' do
+        before { described_class.add_remote_key(creator, target, video_id) }
+        it { is_expected.to be_falsey }
+      end
     end
   end
 end

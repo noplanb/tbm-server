@@ -45,7 +45,9 @@ class Connection < ActiveRecord::Base
   end
 
   def active?
-    fail 'not implemented'
+    return false if status != :established
+    Kvstore.where(key1: self.class.kvstore_key(creator, target, self)).count > 0 &&
+      Kvstore.where(key1: self.class.kvstore_key(target, creator, self)).count > 0
   end
 
   def self.kvstore_key(sender, receiver, connection)
@@ -54,6 +56,7 @@ class Connection < ActiveRecord::Base
 
   def self.add_remote_key(sender, receiver, video_id)
     connection = live_between(sender.id, receiver.id).first
+    fail 'no live connections found' if connection.nil?
     params = {}
     params[:key1] = kvstore_key(sender, receiver, connection)
     params[:key2] = video_id
