@@ -7,15 +7,18 @@ table.table
   tr
     td Creator
     td = link_to "#{@connection.creator.name} [#{@connection.creator_id}]", user_path(@connection.creator)
+    td = @connection.creator.mobile_number
   tr
     td Target
     td = link_to "#{@connection.target.name} [#{@connection.target_id}]", user_path(@connection.target)
+    td = @connection.target.mobile_number
   tr
     td Status
     td = status_tag @connection.status
   tr
     td Active?
-    td = @connection.active?
+    td
+      sapn class="#{@connection.active?}-value"
 
 = link_to 'Edit', edit_connection_path(@connection), class: 'btn btn-default'
 ' &nbsp;

@@ -51,12 +51,16 @@ class User < ActiveRecord::Base
     Connection.for_user_id(id).select(&:active?)
   end
 
+  def connections
+    Connection.for_user_id(id)
+  end
+
   def live_connection_count
-    Connection.for_user_id(id).live.count
+    connections.live.count
   end
 
   def connection_count
-    Connection.for_user_id(id).count
+    connections.count
   end
 
   def has_app?
