@@ -18,7 +18,9 @@ section
             th Mobile number
             th Device platform
             th Status
-            th Live connections
+            - if params[:query].present?
+              th Live connections
+              th Active connections
             th Verification code
             th Verification code sent at
             th
@@ -32,7 +34,9 @@ section
               td = user.mobile_number
               td = user.device_platform
               td = status_tag user.status
-              td = user.live_connection_count
+              - if params[:query].present?
+                td = user.live_connection_count
+                td = user.active_connections.count
               td = user.verification_code
               td = user.verification_date_time
               td = link_to 'Show', user

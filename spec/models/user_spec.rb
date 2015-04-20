@@ -222,4 +222,79 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#active_connections' do
+    let(:video_id) { '1426622544176' }
+    let(:user) { create(:user) }
+    subject { user.active_connections }
+
+    context 'when is no connections for user' do
+      it { is_expected.to eq([]) }
+    end
+
+    context 'when 1 connection as a creator' do
+      let!(:connection) { create(:connection, creator: user) }
+      context 'and 1 ongoing video' do
+        before { Connection.add_remote_key(connection.creator, connection.target, video_id) }
+        it { is_expected.to eq([]) }
+      end
+      context 'and 1 incoming video' do
+        before { Connection.add_remote_key(connection.target, connection.creator, video_id) }
+        it { is_expected.to eq([]) }
+      end
+      context 'and ongoing & incoming videos' do
+        before { Connection.add_remote_key(connection.creator, connection.target, video_id) }
+        before { Connection.add_remote_key(connection.target, connection.creator, video_id) }
+        it { is_expected.to eq([connection]) }
+      end
+    end
+
+    context 'when 1 connection as a target' do
+      let!(:connection) { create(:connection, target: user) }
+      context 'and 1 ongoing video' do
+        before { Connection.add_remote_key(connection.creator, connection.target, video_id) }
+        it { is_expected.to eq([]) }
+      end
+      context 'and 1 incoming video' do
+        before { Connection.add_remote_key(connection.target, connection.creator, video_id) }
+        it { is_expected.to eq([]) }
+      end
+      context 'and ongoing & incoming videos' do
+        before { Connection.add_remote_key(connection.creator, connection.target, video_id) }
+        before { Connection.add_remote_key(connection.target, connection.creator, video_id) }
+        it { is_expected.to eq([connection]) }
+      end
+    end
+
+    context 'when 1 connection as a creator & 1 as a target' do
+      let!(:connection1) { create(:connection, creator: user) }
+      let!(:connection2) { create(:connection, target: user) }
+
+      context 'for first connection' do
+        context 'and 1 ongoing video' do
+          before { Connection.add_remote_key(connection1.creator, connection1.target, video_id) }
+          it { is_expected.to eq([]) }
+        end
+        context 'and 1 incoming video' do
+          before { Connection.add_remote_key(connection1.target, connection1.creator, video_id) }
+          it { is_expected.to eq([]) }
+        end
+        context 'and ongoing & incoming videos' do
+          before { Connection.add_remote_key(connection1.creator, connection1.target, video_id) }
+          before { Connection.add_remote_key(connection1.target, connection1.creator, video_id) }
+          it { is_expected.to eq([connection1]) }
+        end
+      end
+
+      context 'for both connections' do
+        context 'and ongoing & incoming videos' do
+          before { Connection.add_remote_key(connection1.creator, connection1.target, video_id) }
+          before { Connection.add_remote_key(connection2.creator, connection2.target, video_id) }
+          before { Connection.add_remote_key(connection1.target, connection1.creator, video_id) }
+          before { Connection.add_remote_key(connection2.target, connection2.creator, video_id) }
+          it { is_expected.to eq([connection1, connection2]) }
+        end
+      end
+    end
+  end
+  
 end

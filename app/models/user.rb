@@ -47,6 +47,10 @@ class User < ActiveRecord::Base
     User.where ['id IN ?', connected_user_ids]
   end
 
+  def active_connections
+    Connection.for_user_id(id).select(&:active?)
+  end
+
   def live_connection_count
     Connection.for_user_id(id).live.count
   end
