@@ -15,10 +15,12 @@ RSpec.describe DispatchController, type: :controller do
   end
 
   describe 'POST #post_dispatch' do
-    let(:scope) { { person: {
-          id: user.id,
-          username: user.name,
-          email: user.mobile_number }} }
+    let(:scope) do
+      { person: {
+        id: user.id,
+        username: user.name,
+        email: user.mobile_number } }
+    end
 
     context 'iOS' do
       let(:user) { create(:ios_user) }
@@ -31,10 +33,16 @@ RSpec.describe DispatchController, type: :controller do
         expect(response).to be_success
       end
 
-      it 'notifies Rollbar', pending: 'FIXME: Rollbar.scope returns nil' do
-        expect(Rollbar).to receive(:scope).with(scope)
-        expect_any_instance_of(Rollbar::Configuration).to receive(:access_token).with(access_token)
+      it 'notifies Rollbar' do
+        expect_any_instance_of(Rollbar::Configuration).to receive(:access_token=).with(access_token)
         expect_any_instance_of(Rollbar::Notifier).to receive(:error).with(error_message)
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          post :post_dispatch, msg: msg
+        end
+      end
+
+      it 'receives correct scope' do
+        expect(Rollbar).to receive(:scope).with(scope).and_return(Rollbar.scope(scope))
         authenticate_with_http_digest(user.mkey, user.auth) do
           post :post_dispatch, msg: msg
         end
@@ -52,10 +60,16 @@ RSpec.describe DispatchController, type: :controller do
         expect(response).to be_success
       end
 
-      it 'notifies Rollbar', pending: 'FIXME: Rollbar.scope returns nil' do
-        expect(Rollbar).to receive(:scope).with(scope)
-        expect_any_instance_of(Rollbar::Configuration).to receive(:access_token).with(access_token)
+      it 'notifies Rollbar' do
+        expect_any_instance_of(Rollbar::Configuration).to receive(:access_token=).with(access_token)
         expect_any_instance_of(Rollbar::Notifier).to receive(:error).with(error_message)
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          post :post_dispatch, msg: msg
+        end
+      end
+
+      it 'receives correct scope' do
+        expect(Rollbar).to receive(:scope).with(scope).and_return(Rollbar.scope(scope))
         authenticate_with_http_digest(user.mkey, user.auth) do
           post :post_dispatch, msg: msg
         end

@@ -91,6 +91,12 @@ guard :rspec, cmd: 'bundle exec rspec' do
   watch(%r{^spec/acceptance/steps/(.+)_steps\.rb$}) do |m|
     Dir[File.join("**/#{m[1]}.feature")][0] || 'spec/acceptance'
   end
+
+  watch('config/application.rb') { rspec.spec_dir }
+  watch('config/application.yml') { rspec.spec_dir }
+  watch('config/environment.rb') { rspec.spec_dir }
+  watch(%r{^config/environments/.*\.rb$}) { rspec.spec_dir }
+  watch(%r{^config/initializers/.*\.rb$}) { rspec.spec_dir }
 end
 
 guard :pow do
@@ -101,6 +107,7 @@ guard :pow do
   watch('Gemfile')
   watch('Gemfile.lock')
   watch('config/application.rb')
+  watch('config/application.yml')
   watch('config/environment.rb')
   watch(%r{^config/environments/.*\.rb$})
   watch(%r{^config/initializers/.*\.rb$})
