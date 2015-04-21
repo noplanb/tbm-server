@@ -10,7 +10,7 @@ class InvitationController < ApplicationController
 
   def has_app
     friend = User.find_by_raw_mobile_number(params[:mobile_number])
-    if friend && friend.has_app?
+    if friend && friend.app?
       render json: { status: 'success', has_app: 'true' }
     else
       render json: { status: 'success', has_app: 'false' }

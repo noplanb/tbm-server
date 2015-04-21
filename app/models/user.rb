@@ -47,10 +47,6 @@ class User < ActiveRecord::Base
     User.where ['id IN ?', connected_user_ids]
   end
 
-  def active_connections
-    Connection.for_user_id(id).select(&:active?)
-  end
-
   def connections
     Connection.for_user_id(id)
   end
@@ -63,7 +59,11 @@ class User < ActiveRecord::Base
     connections.count
   end
 
-  def has_app?
+  def active_connections
+    connections.select(&:active?)
+  end
+
+  def app?
     device_platform.blank? ? false : true
   end
 
@@ -80,7 +80,7 @@ class User < ActiveRecord::Base
   def only_app_attrs_for_friend
     r = attributes.symbolize_keys.slice(:id, :mkey, :first_name, :last_name, :mobile_number, :device_platform)
     r[:id] = r[:id].to_s
-    r[:has_app] = has_app?.to_s
+    r[:has_app] = app?.to_s
     r
   end
 
