@@ -78,6 +78,7 @@ gem 'simple_form'
 gem 'rollbar'
 gem 'settingslogic'
 gem 'rack-attack'
+gem 'newrelic_rpm'
 
 group :development do
   gem 'better_errors'
