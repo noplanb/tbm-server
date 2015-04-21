@@ -69,7 +69,8 @@ class UsersController < AdminController
 
   def establish_connection
     respond_to do |format|
-      if connection = Connection.find_or_create(@user.id, params[:target_id])
+      connection = Connection.find_or_create(@user.id, params[:target_id])
+      if connection
         connection.update_attribute(:status, :established)
         format.html { redirect_to @user, notice: 'Connection was successfully created.' }
       else
@@ -92,7 +93,7 @@ class UsersController < AdminController
   def receive_video(file_name)
     sender = User.find params[:sender_id]
     video_id = create_test_video(sender, @user, file_name)
-    Connection.add_remote_key(sender, @user, video_id)
+    Kvstore.add_remote_key(sender, @user, video_id)
     send_video_received_notification(sender, @user, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
@@ -107,7 +108,7 @@ class UsersController < AdminController
     creds = S3Credential.instance
     s3 = AWS::S3.new(access_key_id: creds.access_key, secret_access_key: creds.secret_key, region: creds.region)
     b = s3.buckets[creds.bucket]
-    o = b.objects[Connection.video_filename(sender, receiver, video_id)]
+    o = b.objects[Kvstore.video_filename(sender, receiver, video_id)]
     o
   end
 

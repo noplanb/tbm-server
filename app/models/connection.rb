@@ -46,26 +46,7 @@ class Connection < ActiveRecord::Base
 
   def active?
     return false if status != :established
-    Kvstore.where(key1: self.class.kvstore_key(creator, target, self)).count > 0 &&
-      Kvstore.where(key1: self.class.kvstore_key(target, creator, self)).count > 0
-  end
-
-  def self.kvstore_key(sender, receiver, connection)
-    "#{sender.mkey}-#{receiver.mkey}-#{connection.ckey}-VideoIdKVKey"
-  end
-
-  def self.add_remote_key(sender, receiver, video_id)
-    connection = live_between(sender.id, receiver.id).first
-    fail 'no live connections found' if connection.nil?
-    params = {}
-    params[:key1] = kvstore_key(sender, receiver, connection)
-    params[:key2] = video_id
-    params[:value] = { 'videoId' => video_id }.to_json
-    Kvstore.create_or_update(params)
-  end
-
-  def self.video_filename(sender, receiver, video_id)
-    connection = live_between(sender.id, receiver.id).first
-    "#{sender.mkey}-#{receiver.mkey}-#{Digest::MD5.new.update(connection.ckey + video_id).hexdigest}"
+    Kvstore.where(key1: Kvstore.generate_key(creator, target, self)).count > 0 &&
+      Kvstore.where(key1: Kvstore.generate_key(target, creator, self)).count > 0
   end
 end

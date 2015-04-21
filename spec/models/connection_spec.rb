@@ -23,24 +23,6 @@ RSpec.describe Connection, type: :model do
     it { is_expected.to validate_presence_of(:status) }
   end
 
-  describe '.video_filename' do
-    let!(:instance) { create(:connection, attributes) }
-    subject { described_class.video_filename(creator, target, video_id) }
-    it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-8045bfdc02bcc27c87be785c5ffc3b62') }
-  end
-
-  describe '.kvstore_key' do
-    let!(:instance) { create(:connection, attributes) }
-    subject { described_class.kvstore_key(creator, target, instance) }
-    it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-19_21_XxInqAeDqnoS6BlP1M5S-VideoIdKVKey') }
-  end
-
-  describe '.add_remote_key' do
-    let!(:instance) { create(:connection, attributes) }
-    subject { described_class.add_remote_key(creator, target, video_id) }
-    it { is_expected.to be_valid }
-  end
-
   describe '#active?' do
     let(:instance) { create(:connection, attributes) }
     subject { instance.active? }
@@ -56,7 +38,7 @@ RSpec.describe Connection, type: :model do
       end
 
       context 'when only one direction videos in KV store' do
-        before { described_class.add_remote_key(creator, target, video_id) }
+        before { Kvstore.add_remote_key(creator, target, video_id) }
         it { is_expected.to be_falsey }
       end
     end
