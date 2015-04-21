@@ -10,7 +10,7 @@ RSpec.describe VerificationCodeController, type: :controller do
       let(:params) { { To: valid_mobile } }
       specify do
         get :say_code, params
-        expect(response.body).to say_twiml_verification_code
+        expect(response.body).to say_twiml_verification_code(user.reload.verification_code)
       end
     end
 

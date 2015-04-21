@@ -22,16 +22,20 @@ class VerificationCodeController < ApplicationController
   private
 
   def code_twml(code)
-    sc = spaced_code code
     Twilio::TwiML::Response.new do |r|
       r.Say 'zah-zo code', voice: 'man', language: 'en'
       r.Pause
-      r.Say sc
+      code.each_char do |char|
+        r.Pause
+        r.Say char
+      end
       r.Pause length: 2
-      r.Say "repeat #{sc}"
-      r.Pause length: 3
-      r.Say "repeat #{sc}"
-      r.Pause
+      r.Say 'repeating'
+      code.each_char do |char|
+        r.Pause
+        r.Say char
+      end
+      r.Pause length: 2
       r.Say 'goodbye'
     end
   end
@@ -40,9 +44,5 @@ class VerificationCodeController < ApplicationController
     Twilio::TwiML::Response.new do |r|
       r.Say 'zah-zo error while retrieving your verification code', voice: 'man', language: 'en'
     end
-  end
-
-  def spaced_code(code)
-    " #{code.each_char.to_a.join(' ')} "
   end
 end
