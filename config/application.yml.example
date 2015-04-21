@@ -31,6 +31,8 @@ client_rollbar_access_token:
 ios_rollbar_access_token:
 android_rollbar_access_token:
 
+newrelic_license_key:
+
 test:
   db_name: tbm_test
 

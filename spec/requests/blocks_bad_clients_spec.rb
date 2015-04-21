@@ -32,6 +32,16 @@ RSpec.describe 'BlocksBadClients', type: :request do
     end
   end
 
+  context 'for 172.31.22.56' do
+    context 'zazoapp.com' do
+      specify 'allows request' do
+        get '/status', nil, 'HTTP_HOST' => 'zazoapp.com',
+                            'REMOTE_ADDR' => '172.31.22.56'
+        expect(response).to have_http_status(200)
+      end
+    end
+  end
+
   context 'from 127.0.0.1' do
     ['example.com', 'zazo.dev', 'zazo-test.elasticbeanstalk.com', 'test.zazoapp.com'].each do |host|
       context host do
@@ -47,4 +57,5 @@ RSpec.describe 'BlocksBadClients', type: :request do
       end
     end
   end
+
 end
