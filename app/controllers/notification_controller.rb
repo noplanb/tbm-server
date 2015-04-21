@@ -13,19 +13,21 @@ class NotificationController < ApplicationController
 
   def send_video_received
     @push_user.send_notification(type: :alert,
-                                      alert: "New message from #{params[:sender_name]}",
-                                      payload: { type: 'video_received',
-                                                 from_mkey: params[:from_mkey],
-                                                 video_id: params[:video_id] })
+                                 alert: "New message from #{params[:sender_name]}",
+                                 payload: { type: 'video_received',
+                                            from_mkey: params[:from_mkey],
+                                            video_id: params[:video_id],
+                                            host: request.host })
     render json: { status: '200' }
   end
 
   def send_video_status_update
     @push_user.send_notification(type: :silent,
-                                       payload: { type: 'video_status_update',
-                                                  to_mkey: params[:to_mkey],
-                                                  status: params[:status],
-                                                  video_id: params[:video_id] })
+                                 payload: { type: 'video_status_update',
+                                            to_mkey: params[:to_mkey],
+                                            status: params[:status],
+                                            video_id: params[:video_id],
+                                            host: request.host })
     render json: { status: '200' }
   end
 

@@ -14,7 +14,8 @@ RSpec.describe GenericPushNotification do
        type: :alert,
        payload: { type: 'video_received',
                   from_mkey: user.mkey,
-                  video_id: video_id },
+                  video_id: video_id,
+                  host: 'zazo.test' },
        alert: "New message from #{user.name}",
        content_available: true
      }
@@ -100,6 +101,10 @@ RSpec.describe GenericPushNotification do
   describe '#ios_notification' do
     subject { instance.ios_notification }
     it { is_expected.to be_valid }
+    context 'custom_data' do
+      subject { instance.ios_notification.custom_data }
+      it { is_expected.to eq(attributes[:payload]) }
+    end
   end
 
   describe '#apns' do
