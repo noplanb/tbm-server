@@ -45,3 +45,6 @@ staging:
 
 production:
   <<: *settings
+
+statistics:
+  <<: *settings
