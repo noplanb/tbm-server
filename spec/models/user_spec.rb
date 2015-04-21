@@ -88,4 +88,96 @@ RSpec.describe User, type: :model do
       expect(user.mobile_number).to eq('+19837033249')
     end
   end
+
+  describe 'Verification Code Methods' do
+    let(:user) { create(:user) }
+
+    describe '#verification_code_will_expire_in?' do
+      it 'is true when verification_code is blank' do
+        user.verification_date_time = 24.hours.from_now
+        expect(user.verification_code_will_expire_in?(0))
+      end
+
+      it 'is true when verification_date_time blank' do
+        user.verification_code = '1234'
+        expect(user.verification_code_will_expire_in?(0))
+      end
+
+      it 'is true if verification will have expired' do
+        user.verification_code = '1234'
+        user.verification_date_time = 10.minutes.from_now
+        expect(user.verification_code_will_expire_in?(11.minutes))
+      end
+
+      it 'is false if verification will have expired' do
+        user.verification_code = '1234'
+        user.verification_date_time = 10.minutes.from_now
+        expect(!user.verification_code_will_expire_in?(9.minutes))
+      end
+    end
+
+    describe '#reset_verification_code' do
+      it 'resets if code is blank' do
+        expect(user.verification_code_expired?)
+        user.reset_verification_code
+        expect(!user.verification_code_expired?)
+      end
+
+      it 'resets if code will expire less than 2 minutes' do
+        expect(user.verification_code_expired?)
+        user.set_verification_code
+        user.verification_date_time = 2.minutes.from_now
+        expect(user.verification_code_will_expire_in?(2))
+        user.reset_verification_code
+        expect(!user.verification_code_will_expire_in?(Settings.verification_code_lifetime_minutes - 1))
+      end
+
+    end
+
+    describe '#get_verification_code' do
+      it 'gets a fresh code if blank' do
+        expect(user.get_verification_code)
+      end
+
+      it 'resets verification code if code will expire in less than 2 minutes' do
+        user.set_verification_code
+        user.verification_date_time = 2.minutes.from_now
+        v1 = user.verification_code
+        expect(v1)
+        v2 = user.get_verification_code
+        expect(v2)
+        expect(v1).not_to  eq v2
+      end
+    end
+
+    describe '#passes_verification(code)' do
+      it 'passes with a fresh code' do
+        code = user.get_verification_code
+        expect(user.passes_verification(code))
+      end
+    end
+
+    describe '#set_verification_code' do
+      it 'sets code of length Settings.verification_code_length' do
+        user.set_verification_code
+        expect(user.verification_code.length).to eq(Settings.verification_code_length)
+      end
+
+      it 'sets verification_date_time to Settings.verification_code_lifetime_minutes from now' do
+        user.set_verification_code
+        expect((user.verification_date_time - Time.now - Settings.verification_code_lifetime_minutes.minutes).abs).to be < 1
+      end
+    end
+
+    describe '#random_number(n)' do
+      it 'is expected to have length n' do
+        expect(user.random_number(10).size).to eq(10)
+      end
+
+      it 'is expected to be composed of digits' do
+        expect(user.random_number(10).match(/^\d+$/))
+      end
+    end
+  end
+
 end
