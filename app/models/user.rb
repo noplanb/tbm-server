@@ -64,7 +64,7 @@ class User < ActiveRecord::Base
   end
 
   def app?
-    device_platform.blank? ? false : true
+    device_platform.present?
   end
 
   # ==================
@@ -107,8 +107,8 @@ class User < ActiveRecord::Base
   end
 
   def set_verification_code
-    update_attributes({ verification_code: random_number(Settings.verification_code_length),
-                        verification_date_time: (Settings.verification_code_lifetime_minutes.minutes.from_now) })
+    update_attributes(verification_code: random_number(Settings.verification_code_length),
+                      verification_date_time: (Settings.verification_code_lifetime_minutes.minutes.from_now))
   end
 
   def random_number(n)
@@ -124,7 +124,6 @@ class User < ActiveRecord::Base
     return true if verification_date_time < n.minutes.from_now
     false
   end
-
 
   private
 
