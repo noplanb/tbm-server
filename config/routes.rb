@@ -52,5 +52,9 @@ ThreebymeServer::Application.routes.draw do
 
   get 'invitation/invite'
   get 'invitation/has_app'
+
+  get 'verification_code/say_code'
+  get 'verification_code/call_fallback'
+
   get 'status', to: 'status#heartbeat'
 end

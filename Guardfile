@@ -106,7 +106,6 @@ guard :pow do
   watch('.ruby-version')
   watch('Gemfile')
   watch('Gemfile.lock')
-  watch('config/application.yml')
   watch('config/application.rb')
   watch(%r{^config/.+\.yml$})
   watch('config/environment.rb')
