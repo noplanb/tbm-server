@@ -121,7 +121,8 @@ class UsersController < AdminController
     @push_user.send_notification(type: :alert,
                                  payload: { type: 'video_received',
                                             from_mkey: sender.mkey,
-                                            video_id: video_id },
+                                            video_id: video_id,
+                                            host: request.host },
                                  alert: "New message from #{sender.first_name}")
   end
 

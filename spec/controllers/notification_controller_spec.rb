@@ -33,6 +33,21 @@ RSpec.describe NotificationController, type: :controller do
                              target_mkey: target.mkey,
                              video_id: video_id)
     end
+    let(:attributes) do
+      { type: :alert,
+        alert: "New message from #{params[:sender_name]}",
+        payload: { type: 'video_received',
+                   from_mkey: params[:from_mkey],
+                   video_id: params[:video_id],
+                   host: 'test.host' } }
+    end
+
+    it 'expects any instance of PushUser receives :send_notification with valid attributes' do
+      expect_any_instance_of(PushUser).to receive(:send_notification).with(attributes)
+      authenticate_with_http_digest(user.mkey, user.auth) do
+        post :send_video_received, params
+      end
+    end
 
     context 'target_mkey not given' do
       let(:params) { {} }
@@ -109,6 +124,21 @@ RSpec.describe NotificationController, type: :controller do
                              target_mkey: target.mkey,
                              video_id: video_id,
                              status: 'viewed')
+    end
+    let(:attributes) do
+      { type: :silent,
+        payload: { type: 'video_status_update',
+                   to_mkey: params[:to_mkey],
+                   status: params[:status],
+                   video_id: params[:video_id],
+                   host: 'test.host' } }
+    end
+
+    it 'expects any instance of PushUser receives :send_notification with valid attributes' do
+      expect_any_instance_of(PushUser).to receive(:send_notification).with(attributes)
+      authenticate_with_http_digest(user.mkey, user.auth) do
+        post :send_video_status_update, params
+      end
     end
 
     context 'target_mkey not given' do
