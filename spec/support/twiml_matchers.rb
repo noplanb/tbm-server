@@ -8,9 +8,9 @@ end
 
 RSpec::Matchers.define :say_twiml_verification_code do |expected|
   match do |actual|
-    m = actual.scan(/>(\d)</m)
+    m = actual.scan(/\d/m)
     return false unless m
-    digits = m.map(&:first).join('')
+    digits = m.join('')
     digits.include?(expected)
   end
 

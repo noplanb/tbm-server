@@ -25,17 +25,13 @@ class VerificationCodeController < ApplicationController
     Twilio::TwiML::Response.new do |r|
       r.Say 'zah-zo code', voice: 'man', language: 'en'
       r.Pause
-      code.each_char do |char|
-        r.Pause
-        r.Say char
-      end
-      r.Pause length: 2
+      r.Say spaced_code(code)
+      r.Pause
       r.Say 'repeating'
-      code.each_char do |char|
-        r.Pause
-        r.Say char
-      end
-      r.Pause length: 2
+      r.Say spaced_code(code)
+      r.Say 'repeating last time'
+      r.Say spaced_code(code)
+      r.Pause
       r.Say 'goodbye'
     end
   end
@@ -44,5 +40,9 @@ class VerificationCodeController < ApplicationController
     Twilio::TwiML::Response.new do |r|
       r.Say 'zah-zo error while retrieving your verification code', voice: 'man', language: 'en'
     end
+  end
+
+  def spaced_code(code)
+    code.to_s.chars.join(' ')
   end
 end
