@@ -23,3 +23,6 @@ staging:
 
 production:
   <<: *default
+
+statistics:
+  <<: *default

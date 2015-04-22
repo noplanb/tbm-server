@@ -40,6 +40,48 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '.search' do
+    subject { described_class.search(query) }
+    let!(:user1) { create(:user, first_name: 'Alex') }
+    let!(:user2) { create(:user, last_name: 'Ulianytskyi') }
+    let!(:user3) { create(:user, mobile_number: '+380939523746') }
+
+    context 'Alex' do
+      let(:query) { 'Alex' }
+      it { is_expected.to eq([user1]) }
+    end
+
+    context 'alex' do
+      let(:query) { 'alex' }
+      it { is_expected.to eq([user1]) }
+    end
+
+    context 'Ulian' do
+      let(:query) { 'Ulian' }
+      it { is_expected.to eq([user2]) }
+    end
+
+    context 'ulian' do
+      let(:query) { 'ulian' }
+      it { is_expected.to eq([user2]) }
+    end
+
+    context '+380939523746' do
+      let(:query) { '+380939523746' }
+      it { is_expected.to eq([user3]) }
+    end
+
+    context 'empty string' do
+      let(:query) { '' }
+      it { is_expected.to eq([user1, user2, user3]) }
+    end
+
+    context 'nil' do
+      let(:query) { }
+      it { is_expected.to eq([user1, user2, user3]) }
+    end
+  end
+
   describe 'after_create' do
     let(:user) { create(:unknown_user) }
 
@@ -86,6 +128,177 @@ RSpec.describe User, type: :model do
     it 'normalizes mobile number' do
       user.mobile_number = mobile_number
       expect(user.mobile_number).to eq('+19837033249')
+    end
+  end
+
+  describe 'Verification Code Methods' do
+    let(:user) { create(:user) }
+
+    describe '#verification_code_will_expire_in?' do
+      it 'is true when verification_code is blank' do
+        user.verification_date_time = 24.hours.from_now
+        expect(user.verification_code_will_expire_in?(0))
+      end
+
+      it 'is true when verification_date_time blank' do
+        user.verification_code = '1234'
+        expect(user.verification_code_will_expire_in?(0))
+      end
+
+      it 'is true if verification will have expired' do
+        user.verification_code = '1234'
+        user.verification_date_time = 10.minutes.from_now
+        expect(user.verification_code_will_expire_in?(11.minutes))
+      end
+
+      it 'is false if verification will have expired' do
+        user.verification_code = '1234'
+        user.verification_date_time = 10.minutes.from_now
+        expect(!user.verification_code_will_expire_in?(9.minutes))
+      end
+    end
+
+    describe '#reset_verification_code' do
+      it 'resets if code is blank' do
+        expect(user.verification_code_expired?)
+        user.reset_verification_code
+        expect(!user.verification_code_expired?)
+      end
+
+      it 'resets if code will expire less than 2 minutes' do
+        expect(user.verification_code_expired?)
+        user.set_verification_code
+        user.verification_date_time = 2.minutes.from_now
+        expect(user.verification_code_will_expire_in?(2))
+        user.reset_verification_code
+        expect(!user.verification_code_will_expire_in?(Settings.verification_code_lifetime_minutes - 1))
+      end
+
+    end
+
+    describe '#get_verification_code' do
+      it 'gets a fresh code if blank' do
+        expect(user.get_verification_code)
+      end
+
+      it 'resets verification code if code will expire in less than 2 minutes' do
+        user.set_verification_code
+        user.verification_date_time = 2.minutes.from_now
+        v1 = user.verification_code
+        expect(v1)
+        v2 = user.get_verification_code
+        expect(v2)
+        expect(v1).not_to  eq v2
+      end
+    end
+
+    describe '#passes_verification(code)' do
+      it 'passes with a fresh code' do
+        code = user.get_verification_code
+        expect(user.passes_verification(code))
+      end
+    end
+
+    describe '#set_verification_code' do
+      it 'sets code of length Settings.verification_code_length' do
+        user.set_verification_code
+        expect(user.verification_code.length).to eq(Settings.verification_code_length)
+      end
+
+      it 'sets verification_date_time to Settings.verification_code_lifetime_minutes from now' do
+        user.set_verification_code
+        expect((user.verification_date_time - Time.now - Settings.verification_code_lifetime_minutes.minutes).abs).to be < 1
+      end
+    end
+
+    describe '#random_number(n)' do
+      it 'is expected to have length n' do
+        expect(user.random_number(10).size).to eq(10)
+      end
+
+      it 'is expected to be composed of digits' do
+        expect(user.random_number(10).match(/^\d+$/))
+      end
+    end
+  end
+
+  describe '#active_connections' do
+    let(:video_id) { '1426622544176' }
+    let(:user) { create(:user) }
+    subject { user.active_connections }
+
+    context 'when is no connections for user' do
+      it { is_expected.to eq([]) }
+    end
+
+    context 'when 1 connection as a creator' do
+      let!(:connection) { create(:connection, creator: user) }
+      context 'and 1 ongoing video' do
+        before { Kvstore.add_id_key(connection.creator, connection.target, video_id) }
+        it { is_expected.to eq([]) }
+      end
+      context 'and 1 incoming video' do
+        before { Kvstore.add_id_key(connection.target, connection.creator, video_id) }
+        it { is_expected.to eq([]) }
+      end
+      context 'and ongoing & incoming videos' do
+        before { Kvstore.add_id_key(connection.creator, connection.target, video_id) }
+        before { Kvstore.add_id_key(connection.target, connection.creator, video_id) }
+        it { is_expected.to eq([connection]) }
+      end
+    end
+
+    context 'when 1 connection as a target' do
+      let!(:connection) { create(:connection, target: user) }
+      context 'and 1 ongoing video' do
+        before { Kvstore.add_id_key(connection.creator, connection.target, video_id) }
+        it { is_expected.to eq([]) }
+      end
+      context 'and 1 incoming video' do
+        before { Kvstore.add_id_key(connection.target, connection.creator, video_id) }
+        it { is_expected.to eq([]) }
+      end
+      context 'and ongoing & incoming videos' do
+        before { Kvstore.add_id_key(connection.creator, connection.target, video_id) }
+        before { Kvstore.add_id_key(connection.target, connection.creator, video_id) }
+        it { is_expected.to eq([connection]) }
+      end
+    end
+
+    context 'when 1 connection as a creator & 1 as a target' do
+      let!(:connection1) { create(:connection, creator: user) }
+      let!(:connection2) { create(:connection, target: user) }
+
+      context 'for first connection' do
+        context 'and 1 ongoing video' do
+          before { Kvstore.add_id_key(connection1.creator, connection1.target, video_id) }
+          it { is_expected.to eq([]) }
+        end
+        context 'and 1 incoming video' do
+          before { Kvstore.add_id_key(connection1.target, connection1.creator, video_id) }
+          it { is_expected.to eq([]) }
+        end
+        context 'and ongoing & incoming videos' do
+          before { Kvstore.add_id_key(connection1.creator, connection1.target, video_id) }
+          before { Kvstore.add_id_key(connection1.target, connection1.creator, video_id) }
+          it { is_expected.to eq([connection1]) }
+        end
+        context 'and ongoing status & incoming videos' do
+          before { Kvstore.add_status_key(connection1.creator, connection1.target, video_id, :downloaded) }
+          before { Kvstore.add_id_key(connection1.target, connection1.creator, video_id) }
+          it { is_expected.to eq([connection1]) }
+        end
+      end
+
+      context 'for both connections' do
+        context 'and ongoing & incoming videos' do
+          before { Kvstore.add_id_key(connection1.creator, connection1.target, video_id) }
+          before { Kvstore.add_id_key(connection2.creator, connection2.target, video_id) }
+          before { Kvstore.add_id_key(connection1.target, connection1.creator, video_id) }
+          before { Kvstore.add_id_key(connection2.target, connection2.creator, video_id) }
+          it { is_expected.to eq([connection1, connection2]) }
+        end
+      end
     end
   end
 end

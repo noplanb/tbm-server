@@ -224,3 +224,7 @@ staging:
 playground:
   <<: *default_settings
   monitor_mode: true
+
+statistics:
+  <<: *default_settings
+  monitor_mode: true

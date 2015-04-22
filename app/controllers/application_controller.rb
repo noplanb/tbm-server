@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
     fail ActionController::RoutingError.new('Not Found')
   end
 
-  # TODO: Alex this is ugly cuz it is redundant with landing helper. Please fix. Isnt there a way to make the methods in
+  # FIXME: Alex, this is ugly cuz it is redundant with landing helper. Please fix. Isnt there a way to make the methods in
   # controller be available to views automatically. Anyway the ones related to type of request are pretty broadly useful
   # methods so probably shouldnt be down in landingHelper. Please clean as you see fit. I just wanted to make it work
   # since iphone is now in the store.

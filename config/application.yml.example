@@ -41,14 +41,13 @@ staging:
   db_host:
   db_name:
   db_password:
-  db_port: '3306'
   db_username:
 
 playground:
+  domain_name: playground.zazoapp.com
   db_host:
   db_name:
   db_password:
-  db_port: '3306'
   db_username:
 
 production:
@@ -56,5 +55,11 @@ production:
   db_host:
   db_name:
   db_password:
-  db_port: '3306'
+  db_username:
+
+statistics:
+  domain_name: statistics.zazoapp.com
+  db_host:
+  db_name:
+  db_password:
   db_username:

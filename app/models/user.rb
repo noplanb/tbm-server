@@ -21,6 +21,11 @@ class User < ActiveRecord::Base
     find_by_mobile_number GlobalPhone.normalize(value)
   end
 
+  def self.search(query)
+    query_param = "%#{query}%"
+    where('first_name LIKE ? OR last_name LIKE ? OR mobile_number LIKE ?', query_param, query_param, query_param)
+  end
+
   def name
     [first_name, last_name].join(' ')
   end
@@ -42,16 +47,24 @@ class User < ActiveRecord::Base
     User.where ['id IN ?', connected_user_ids]
   end
 
+  def connections
+    Connection.for_user_id(id)
+  end
+
   def live_connection_count
-    Connection.for_user_id(id).live.count
+    connections.live.count
   end
 
   def connection_count
-    Connection.for_user_id(id).count
+    connections.count
   end
 
-  def has_app?
-    device_platform.blank? ? false : true
+  def active_connections
+    connections.select(&:active?)
+  end
+
+  def app?
+    device_platform.present?
   end
 
   # ==================
@@ -67,7 +80,7 @@ class User < ActiveRecord::Base
   def only_app_attrs_for_friend
     r = attributes.symbolize_keys.slice(:id, :mkey, :first_name, :last_name, :mobile_number, :device_platform)
     r[:id] = r[:id].to_s
-    r[:has_app] = has_app?.to_s
+    r[:has_app] = app?.to_s
     r
   end
 
@@ -84,12 +97,18 @@ class User < ActiveRecord::Base
     set_verification_code if verification_code.blank? || verification_code_will_expire_in?(2)
   end
 
+  def get_verification_code
+    reset_verification_code
+    verification_code
+  end
+
   def passes_verification(code)
     !verification_code_expired? && verification_code == code.gsub(/\s/, '')
   end
 
   def set_verification_code
-    update_attributes verification_code: random_number(6), verification_date_time: (5.minutes.from_now)
+    update_attributes(verification_code: random_number(Settings.verification_code_length),
+                      verification_date_time: (Settings.verification_code_lifetime_minutes.minutes.from_now))
   end
 
   def random_number(n)
@@ -122,22 +141,14 @@ class User < ActiveRecord::Base
   end
 
   def set_keys
-    update_attributes(auth: gen_key('auth'), mkey: gen_key('mkey'))
+    self.auth = gen_key('auth') if auth.blank?
+    self.mkey = gen_key('mkey') if mkey.blank?
+    save
   end
 
   def gen_key(type)
     k = Figaro.env.user_debuggable_keys? ? "#{first_name}_#{last_name}_#{id}_#{type}_" : ''
     k += NoPlanB::TextUtils.random_string(20)
     k.gsub(' ', '')
-  end
-
-  def is_connection_creator(connected_user, con)
-    if connected_user.id == con.creator_id
-      return true
-    elsif connected_user.id == con.target_id
-      return false
-    else
-      fail "connection_status: Connection does not belong to connected_user #{connected_user.id}"
-    end
   end
 end
