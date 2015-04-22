@@ -38,7 +38,7 @@ RSpec.describe Connection, type: :model do
       end
 
       context 'when only one direction videos in KV store' do
-        before { Kvstore.add_remote_key(creator, target, video_id) }
+        before { Kvstore.add_id_key(creator, target, video_id) }
         it { is_expected.to be_falsey }
       end
     end

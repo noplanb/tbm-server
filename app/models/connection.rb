@@ -46,7 +46,13 @@ class Connection < ActiveRecord::Base
 
   def active?
     return false if status != :established
-    Kvstore.where(key1: Kvstore.generate_key(creator, target, self)).count > 0 &&
-      Kvstore.where(key1: Kvstore.generate_key(target, creator, self)).count > 0
+    Kvstore.where('key1 LIKE ?', "#{key_search(creator, target)}%").count > 0 &&
+      Kvstore.where('key1 LIKE ?', "#{key_search(target, creator)}%").count > 0
+  end
+
+  private
+
+  def key_search(sender, receiver)
+    "#{sender.mkey}-#{receiver.mkey}"
   end
 end

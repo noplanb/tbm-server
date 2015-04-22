@@ -93,7 +93,7 @@ class UsersController < AdminController
   def receive_video(file_name)
     sender = User.find params[:sender_id]
     video_id = create_test_video(sender, @user, file_name)
-    Kvstore.add_remote_key(sender, @user, video_id)
+    Kvstore.add_id_key(sender, @user, video_id)
     send_video_received_notification(sender, @user, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end

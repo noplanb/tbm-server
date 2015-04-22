@@ -16,21 +16,38 @@ RSpec.describe Kvstore, type: :model do
     it { is_expected.to have_db_column(:value).of_type(:string) }
   end
 
+  describe '.digest' do
+    subject { described_class.digest('foo') }
+    it { is_expected.to eq('acbd18db4cc2f85cedef654fccc4a4d8') }
+  end
+
   describe '.video_filename' do
     let!(:connection) { create(:connection, connection_attributes) }
     subject { described_class.video_filename(sender, receiver, video_id) }
     it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-8045bfdc02bcc27c87be785c5ffc3b62') }
   end
 
-  describe '.generate_key' do
+  describe '.generate_id_key' do
     let!(:connection) { create(:connection, connection_attributes) }
-    subject { described_class.generate_key(sender, receiver, connection) }
+    subject { described_class.generate_id_key(sender, receiver, connection) }
     it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-19_21_XxInqAeDqnoS6BlP1M5S-VideoIdKVKey') }
   end
 
-  describe '.add_remote_key' do
+  describe '.generate_status_key' do
     let!(:connection) { create(:connection, connection_attributes) }
-    subject { described_class.add_remote_key(sender, receiver, video_id) }
+    subject { described_class.generate_status_key(sender, receiver, connection) }
+    it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-d8b49aa0143e0cc66ee154fab6538083-VideoStatusKVKey') }
+  end
+
+  describe '.add_id_key' do
+    let!(:connection) { create(:connection, connection_attributes) }
+    subject { described_class.add_id_key(sender, receiver, video_id) }
+    it { is_expected.to be_valid }
+  end
+
+  describe '.add_status_key' do
+    let!(:connection) { create(:connection, connection_attributes) }
+    subject { described_class.add_status_key(sender, receiver, video_id, :downloaded) }
     it { is_expected.to be_valid }
   end
 
