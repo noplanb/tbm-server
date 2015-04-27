@@ -80,6 +80,7 @@ gem 'settingslogic'
 gem 'rack-attack'
 gem 'newrelic_rpm'
 gem 'kaminari'
+gem 'aasm'
 
 group :development do
   gem 'better_errors'

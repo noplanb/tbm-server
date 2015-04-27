@@ -10,9 +10,10 @@ RSpec.describe InvitationController, type: :controller do
       }
     end
     let(:user) { create(:user) }
-    let(:invitee) { User.find_by_raw_mobile_number(params[:mobile_number]) }
 
     context 'when invitee not exists with given mobile_number' do
+      let(:invitee) { User.find_by_raw_mobile_number(params[:mobile_number]) }
+
       it 'returns http success' do
         authenticate_with_http_digest(user.mkey, user.auth) do
           get :invite, params
@@ -25,13 +26,13 @@ RSpec.describe InvitationController, type: :controller do
           authenticate_with_http_digest(user.mkey, user.auth) do
             get :invite, params
           end
-          expect(invitee.status).to eq(:initialized)
+          expect(invitee.status).to eq('invited')
         end
       end
     end
 
     context 'when invitee already exists with given mobile_number' do
-      let!(:invitee) { create(:user, params) }
+      let(:invitee) { create(:user, params) }
 
       it 'returns http success' do
         authenticate_with_http_digest(user.mkey, user.auth) do
@@ -42,10 +43,25 @@ RSpec.describe InvitationController, type: :controller do
 
       context 'invitee status' do
         specify do
-          authenticate_with_http_digest(user.mkey, user.auth) do
-            get :invite, params
+          expect do
+            authenticate_with_http_digest(user.mkey, user.auth) do
+              get :invite, params
+            end
+          end.to change { invitee.reload.status }.from('initialized').to('invited')
+        end
+      end
+
+      context 'when registered or verified' do
+        let!(:invitee) { create(:user, params.merge(status: :verified)) }
+
+        context 'invitee status' do
+          specify do
+            expect do
+              authenticate_with_http_digest(user.mkey, user.auth) do
+                get :invite, params
+              end
+            end.to_not change { invitee.status }
           end
-          expect(invitee.status).to eq(:initialized)
         end
       end
     end

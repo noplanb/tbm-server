@@ -87,6 +87,11 @@ RSpec.describe User, type: :model do
 
     context '#status' do
       subject { user.status }
+      it { is_expected.to eq('initialized') }
+    end
+
+    context '#aasm.current_state' do
+      subject { user.aasm.current_state }
       it { is_expected.to eq(:initialized) }
     end
 
