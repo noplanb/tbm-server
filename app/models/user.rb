@@ -16,12 +16,17 @@ class User < ActiveRecord::Base
 
   aasm column: :status do
     state :initialized, initial: true
-    state :registred
+    state :registered
+    state :failed_to_register
     state :invited
     state :verified
 
     event :register do
-      transitions from: :initialized, to: :registred
+      transitions from: [:initialized, :invited], to: :registered
+    end
+
+    event :fail_to_register do
+      transitions from: [:initialized, :invited], to: :failed_to_register
     end
 
     event :invite do
@@ -29,7 +34,7 @@ class User < ActiveRecord::Base
     end
 
     event :verify do
-      transitions from: [:registered, :invited], to: :verified
+      transitions from: :registered, to: :verified
     end
   end
 

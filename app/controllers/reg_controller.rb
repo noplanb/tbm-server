@@ -24,10 +24,13 @@ class RegController < ApplicationController
 
     opts = case VerificationCodeSender.new(user).send_code
            when :ok
+             user.register!
              { status: 'success', auth: user.auth, mkey: user.mkey }
            when :invalid_mobile_number
+             user.fail_to_register!
              { status: 'failure', title: 'Bad mobile number', msg: 'Please enter a valid country code and mobile number' }
            else
+             user.fail_to_register!
              { status: 'failure', title: 'Sorry!', msg:  'We encountered a problem on our end. We will fix shortly. Please try again later.' }
            end
     render json: opts
@@ -40,7 +43,7 @@ class RegController < ApplicationController
   end
 
   def verify_code
-    if @user && @user.passes_verification(params[:verification_code])
+    if @user && @user.passes_verification(params.delete(:verification_code))
 
       if params[:device_platform].blank?
         Rails.logger.error("ERROR: reg/reg: no device_platform: #{params.inspect}")
@@ -49,7 +52,12 @@ class RegController < ApplicationController
 
       # Update first and last here in case user decided to change his name to correct it
       # or something when logging in again.
-      @user.update_attributes first_name: params[:first_name], last_name: params[:last_name], status: :verified, device_platform: params[:device_platform]
+      @user.attributes = user_params
+      if @user.may_verify?
+        @user.verify!
+      else
+        @user.save
+      end
       render json: { status: 'success' }.merge(@user.only_app_attrs_for_user)
     else
       render json: { status: 'failure' }
