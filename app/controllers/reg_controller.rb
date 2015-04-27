@@ -23,13 +23,13 @@ class RegController < ApplicationController
     end
 
     opts = case VerificationCodeSender.new(user).send_code
-    when :ok
-      { status: 'success', auth: user.auth, mkey: user.mkey }
-    when :invalid_mobile_number
-      { status: 'failure', title: 'Bad mobile number', msg: 'Please enter a valid country code and mobile number' }
-    else
-      { status: 'failure', title: 'Sorry!', msg:  'We encountered a problem on our end. We will fix shortly. Please try again later.' }
-    end
+           when :ok
+             { status: 'success', auth: user.auth, mkey: user.mkey }
+           when :invalid_mobile_number
+             { status: 'failure', title: 'Bad mobile number', msg: 'Please enter a valid country code and mobile number' }
+           else
+             { status: 'failure', title: 'Sorry!', msg:  'We encountered a problem on our end. We will fix shortly. Please try again later.' }
+           end
     render json: opts
   end
 

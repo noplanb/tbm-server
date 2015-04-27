@@ -95,4 +95,28 @@ RSpec.describe RegController, type: :controller do
       end
     end
   end
+
+  describe 'GET #verify_code', focus: true do
+    let(:user) { create(:ios_user) }
+    let(:params) do
+      user.attributes.slice('first_name', 'last_name',
+                            'device_platform', 'verification_code')
+    end
+    before { user.reset_verification_code }
+
+    specify do
+      expect do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          get :verify_code, params
+        end
+      end.to change { user.reload.status }.from(:initialized).to(:verified)
+    end
+
+    specify do
+      authenticate_with_http_digest(user.mkey, user.auth) do
+        get :verify_code, params
+      end
+      expect(response).to have_http_status(:success)
+    end
+  end
 end
