@@ -81,7 +81,7 @@ class User < ActiveRecord::Base
   end
 
   def live_connection_count
-    connections.live.count
+    connections.established.count
   end
 
   def connection_count
