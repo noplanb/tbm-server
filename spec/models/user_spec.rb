@@ -321,4 +321,12 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#connected_user_ids' do
+    let(:instance) { create(:user) }
+    let!(:other) { create(:connection, creator: instance).target }
+    subject { instance.connected_user_ids }
+
+    it { is_expected.to eq([other.id]) }
+  end
 end
