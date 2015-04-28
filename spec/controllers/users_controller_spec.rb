@@ -52,4 +52,18 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe 'GET #establish_connection' do
+    let(:creator) { create(:user) }
+    let(:target) { create(:user) }
+    let(:params) { { id: creator.to_param, target_id: target.to_param } }
+
+    context 'connection status' do
+      specify do
+        get :establish_connection, params
+        connection = Connection.between(creator.id, target.id).first
+        expect(connection.status).to eq('established')
+      end
+    end
+  end
 end
