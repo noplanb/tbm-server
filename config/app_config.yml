@@ -29,6 +29,7 @@ defaults: &settings
     - nl
     - nz
     - se
+  default_per_page: 100
 
 development:
   <<: *settings

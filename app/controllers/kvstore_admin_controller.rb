@@ -2,7 +2,7 @@ class KvstoreAdminController < AdminController
   http_basic_authenticate_with name: Figaro.env.http_basic_username, password: Figaro.env.http_basic_password
 
   def index
-    @kvstores = Kvstore.all
+    @kvstores = Kvstore.all.page(params[:page])
   end
 
   def delete_all
