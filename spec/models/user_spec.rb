@@ -252,7 +252,7 @@ RSpec.describe User, type: :model do
     end
 
     context 'when 1 connection as a creator' do
-      let!(:connection) { create(:connection, creator: user) }
+      let!(:connection) { create(:connection, :established, creator: user) }
       context 'and 1 ongoing video' do
         before { Kvstore.add_id_key(connection.creator, connection.target, video_id) }
         it { is_expected.to eq([]) }
@@ -269,7 +269,7 @@ RSpec.describe User, type: :model do
     end
 
     context 'when 1 connection as a target' do
-      let!(:connection) { create(:connection, target: user) }
+      let!(:connection) { create(:connection, :established, target: user) }
       context 'and 1 ongoing video' do
         before { Kvstore.add_id_key(connection.creator, connection.target, video_id) }
         it { is_expected.to eq([]) }
@@ -286,8 +286,8 @@ RSpec.describe User, type: :model do
     end
 
     context 'when 1 connection as a creator & 1 as a target' do
-      let!(:connection1) { create(:connection, creator: user) }
-      let!(:connection2) { create(:connection, target: user) }
+      let!(:connection1) { create(:connection, :established, creator: user) }
+      let!(:connection2) { create(:connection, :established, target: user) }
 
       context 'for first connection' do
         context 'and 1 ongoing video' do
@@ -324,7 +324,7 @@ RSpec.describe User, type: :model do
 
   describe '#connected_user_ids' do
     let(:instance) { create(:user) }
-    let!(:other) { create(:connection, creator: instance).target }
+    let!(:other) { create(:connection, :established, creator: instance).target }
     subject { instance.connected_user_ids }
 
     it { is_expected.to eq([other.id]) }

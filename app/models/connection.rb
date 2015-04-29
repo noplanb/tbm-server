@@ -37,7 +37,9 @@ class Connection < ActiveRecord::Base
   end
 
   def self.find_or_create(creator_id, target_id)
-    between(creator_id, target_id).first || create(creator_id: creator_id, target_id: target_id, status: :established)
+    connection = between(creator_id, target_id).first || create(creator_id: creator_id, target_id: target_id)
+    connection.establish! if connection.may_establish?
+    connection
   end
 
   def check_for_dups
