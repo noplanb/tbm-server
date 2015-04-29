@@ -79,6 +79,7 @@ gem 'rollbar'
 gem 'settingslogic'
 gem 'rack-attack'
 gem 'newrelic_rpm'
+gem 'kaminari'
 
 group :development do
   gem 'better_errors'

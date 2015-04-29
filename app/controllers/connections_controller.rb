@@ -4,7 +4,7 @@ class ConnectionsController < AdminController
   # GET /connections
   # GET /connections.json
   def index
-    @connections = Connection.all
+    @connections = Connection.all.page(params[:page])
   end
 
   # GET /connections/1

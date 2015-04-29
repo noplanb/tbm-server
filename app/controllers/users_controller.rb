@@ -5,7 +5,7 @@ class UsersController < AdminController
   # GET /users
   # GET /users.json
   def index
-    @users = User.search(params[:query])
+    @users = User.search(params[:query]).page(params[:page])
   end
 
   # GET /users/1
