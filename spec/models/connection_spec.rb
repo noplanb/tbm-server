@@ -23,6 +23,28 @@ RSpec.describe Connection, type: :model do
     it { is_expected.to validate_presence_of(:status) }
   end
 
+  describe '.find_or_create' do
+    let(:creator) { create(:user) }
+    let(:target) { create(:user) }
+    subject { described_class.find_or_create(creator.id, target.id) }
+
+    context 'when connection not exists' do
+      it { is_expected.to be_established }
+    end
+
+    context 'when connection already exists' do
+      context 'and voided' do
+        let!(:connection) { create(:connection, creator: creator, target: target) }
+        it { is_expected.to be_established }
+      end
+
+      context 'and established' do
+        let!(:connection) { create(:connection, :established, creator: creator, target: target) }
+        it { is_expected.to be_established }
+      end
+    end
+  end
+
   describe '#active?' do
     let(:instance) { create(:connection, attributes) }
     subject { instance.active? }

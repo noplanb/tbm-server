@@ -5,6 +5,7 @@ class InvitationController < ApplicationController
   def invite
     invitee = User.find_by_raw_mobile_number(params[:mobile_number]) || User.create(invitee_params)
     Connection.find_or_create(@user.id, invitee.id)
+    invitee.invite! if invitee.may_invite?
     render json: invitee.only_app_attrs_for_friend_with_ckey(@user)
   end
 

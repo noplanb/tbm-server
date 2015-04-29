@@ -59,7 +59,9 @@ class VerificationCodeSender
   end
 
   def send_verification_sms
+    user.pend! if user.may_pend?
     twilio.messages.create(from: from, to: to, body: message)
+    user.register!
     Rails.logger.info "send_verification_sms: to:#{to} msg:#{message}"
     :ok
   rescue Twilio::REST::RequestError => error
@@ -67,6 +69,7 @@ class VerificationCodeSender
   end
 
   def make_verification_call
+    user.pend! if user.may_pend?
     twilio.calls.create(
       from: from,
       to: to,
@@ -74,6 +77,7 @@ class VerificationCodeSender
       method: 'GET',
       fallback_url: twilio_call_fallback_url
     )
+    user.register!
     Rails.logger.info "make_verification_call: to:#{to}"
     :ok
   rescue Twilio::REST::RequestError => error
@@ -81,6 +85,7 @@ class VerificationCodeSender
   end
 
   def handle_twilio_error(error)
+    user.fail_to_register!
     Rollbar.warning(error)
     Rails.logger.error "ERROR: make_verification_call: #{error.class} ##{error.code}: #{error.message}"
     twilio_invalid_number?(error.code) ? :invalid_mobile_number : :other

@@ -71,7 +71,7 @@ class UsersController < AdminController
     respond_to do |format|
       connection = Connection.find_or_create(@user.id, params[:target_id])
       if connection
-        connection.update_attribute(:status, :established)
+        connection.establish! if connection.may_establish?
         format.html { redirect_to @user, notice: 'Connection was successfully created.' }
       else
         format.html { redirect_to @user, notice: 'Connection could not be created.' }

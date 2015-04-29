@@ -18,8 +18,14 @@
   @extend .label
   &.initialized
     @extend .label-default
-  &.verified
+  &.invited
+    @extend .label-info
+  &.registered
     @extend .label-primary
+  &.verified
+    @extend .label-success
+  &.failed_to_register
+    @extend .label-danger
   &.established
     @extend .label-primary
   &.voided
