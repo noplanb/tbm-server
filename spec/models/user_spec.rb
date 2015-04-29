@@ -82,7 +82,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe 'after_create' do
+  describe 'before_save' do
     let(:user) { create(:unknown_user) }
 
     context '#status' do
@@ -108,6 +108,21 @@ RSpec.describe User, type: :model do
     context '#last_name' do
       subject { user.last_name }
       it { is_expected.to eq('') }
+    end
+
+    context 'strips emoji' do
+      let(:attributes) { { first_name: 'Justin Michael 🐔💚', last_name: 'Justin Michael 🐔💚', device_platform: :ios } }
+      let(:instance) { described_class.create(attributes) }
+
+      context 'first_name' do
+        subject { instance.first_name }
+        it { is_expected.to eq('Justin Michael') }
+      end
+
+      context 'last_name' do
+        subject { instance.last_name }
+        it { is_expected.to eq('Justin Michael') }
+      end
     end
   end
 

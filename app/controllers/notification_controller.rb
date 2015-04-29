@@ -60,8 +60,9 @@ class NotificationController < ApplicationController
   def find_target_push_user
     @push_user = params[:target_mkey] && PushUser.find_by_mkey(params[:target_mkey])
     if @push_user.nil?
-      logger.info("No PushUser found for mkey: #{params[:target_mkey]}")
-      not_found
+      msg = "No PushUser found for mkey: #{params[:target_mkey]}"
+      logger.info(msg)
+      render json: { status: '404', title: 'Not found', msg: "No PushUser found for mkey: #{params[:target_mkey]}" }, status: :not_found
     end
   end
 end
