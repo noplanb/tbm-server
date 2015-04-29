@@ -51,12 +51,13 @@ RSpec.describe NotificationController, type: :controller do
 
     context 'target_mkey not given' do
       let(:params) { {} }
-      specify do
-        expect do
-          authenticate_with_http_digest(user.mkey, user.auth) do
-            post :send_video_status_update, params
-          end
-        end.to raise_error(ActionController::RoutingError)
+      before do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          post :send_video_received, params
+        end
+      end
+      it 'returns http not_found' do
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -143,12 +144,13 @@ RSpec.describe NotificationController, type: :controller do
 
     context 'target_mkey not given' do
       let(:params) { {} }
-      specify do
-        expect do
-          authenticate_with_http_digest(user.mkey, user.auth) do
-            post :send_video_status_update, params
-          end
-        end.to raise_error(ActionController::RoutingError)
+      before do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          post :send_video_status_update, params
+        end
+      end
+      it 'returns http not_found' do
+        expect(response).to have_http_status(:not_found)
       end
     end
 
