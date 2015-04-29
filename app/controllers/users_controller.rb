@@ -98,18 +98,21 @@ class UsersController < AdminController
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
 
+  def test_video_id
+    (Time.now.to_f * 1000).to_i.to_s
+  end
+
   def create_test_video(sender, receiver, file_name)
-    video_id = (Time.now.to_f * 1000).to_i.to_s
-    s3_object(sender, receiver, video_id).write(file: file_name)
+    video_id = test_video_id
+    put_s3_object(sender, receiver, video_id, file_name)
     video_id
   end
 
-  def s3_object(sender, receiver, video_id)
-    creds = S3Credential.instance
-    s3 = AWS::S3.new(access_key_id: creds.access_key, secret_access_key: creds.secret_key, region: creds.region)
-    b = s3.buckets[creds.bucket]
-    o = b.objects[Kvstore.video_filename(sender, receiver, video_id)]
-    o
+  def put_s3_object(sender, receiver, video_id, file_name)
+    cred = S3Credential.instance
+    cred.s3_client.put_object(bucket: cred.bucket,
+                              key: Kvstore.video_filename(sender, receiver, video_id),
+                              body: File.read(file_name))
   end
 
   def test_video
@@ -126,7 +129,6 @@ class UsersController < AdminController
                                  badge:1,
                                  alert: "New message from #{sender.first_name}")
   end
-
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user
