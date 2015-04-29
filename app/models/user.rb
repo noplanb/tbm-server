@@ -2,6 +2,7 @@ require 'no_plan_b/utils/text_utils'
 
 class User < ActiveRecord::Base
   DEVICE_PLATFORMS = [:ios, :android]
+  EMOJI_REGEXP = /[\u{203C}\u{2049}\u{20E3}\u{2122}\u{2139}\u{2194}-\u{2199}\u{21A9}-\u{21AA}\u{231A}-\u{231B}\u{23E9}-\u{23EC}\u{23F0}\u{23F3}\u{24C2}\u{25AA}-\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{2600}-\u{2601}\u{260E}\u{2611}\u{2614}-\u{2615}\u{261D}\u{263A}\u{2648}-\u{2653}\u{2660}\u{2663}\u{2665}-\u{2666}\u{2668}\u{267B}\u{267F}\u{2693}\u{26A0}-\u{26A1}\u{26AA}-\u{26AB}\u{26BD}-\u{26BE}\u{26C4}-\u{26C5}\u{26CE}\u{26D4}\u{26EA}\u{26F2}-\u{26F3}\u{26F5}\u{26FA}\u{26FD}\u{2702}\u{2705}\u{2708}-\u{270C}\u{270F}\u{2712}\u{2714}\u{2716}\u{2728}\u{2733}-\u{2734}\u{2744}\u{2747}\u{274C}\u{274E}\u{2753}-\u{2755}\u{2757}\u{2764}\u{2795}-\u{2797}\u{27A1}\u{27B0}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{2B50}\u{2B55}\u{3030}\u{303D}\u{3297}\u{3299}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{1F191}-\u{1F19A}\u{1F1E7}-\u{1F1EC}\u{1F1EE}-\u{1F1F0}\u{1F1F3}\u{1F1F5}\u{1F1F7}-\u{1F1FA}\u{1F201}-\u{1F202}\u{1F21A}\u{1F22F}\u{1F232}-\u{1F23A}\u{1F250}-\u{1F251}\u{1F300}-\u{1F320}\u{1F330}-\u{1F335}\u{1F337}-\u{1F37C}\u{1F380}-\u{1F393}\u{1F3A0}-\u{1F3C4}\u{1F3C6}-\u{1F3CA}\u{1F3E0}-\u{1F3F0}\u{1F400}-\u{1F43E}\u{1F440}\u{1F442}-\u{1F4F7}\u{1F4F9}-\u{1F4FC}\u{1F500}-\u{1F507}\u{1F509}-\u{1F53D}\u{1F550}-\u{1F567}\u{1F5FB}-\u{1F640}\u{1F645}-\u{1F64F}\u{1F680}-\u{1F68A}]/
 
   include EnumHandler
 
@@ -15,7 +16,7 @@ class User < ActiveRecord::Base
 
   # GARF: Change this to before_create when we finalize the algorithm for creating keys. Right now I incorporate id
   # in the key so I need to have after_create
-  after_create :set_status_initialized, :ensure_names_not_null, :set_keys
+  before_save :set_status_initialized, :set_keys, :strip_emoji
 
   def self.find_by_raw_mobile_number(value)
     find_by_mobile_number GlobalPhone.normalize(value)
@@ -131,24 +132,22 @@ class User < ActiveRecord::Base
   # = Filter Actions =
   # ==================
   def set_status_initialized
-    update_attribute(:status, :initialized)
-  end
-
-  def ensure_names_not_null
-    self.first_name = '' if first_name.nil?
-    self.last_name = '' if last_name.nil?
-    save
+    self.status = :initialized if status.blank?
   end
 
   def set_keys
     self.auth = gen_key('auth') if auth.blank?
     self.mkey = gen_key('mkey') if mkey.blank?
-    save
   end
 
   def gen_key(type)
     k = Figaro.env.user_debuggable_keys? ? "#{first_name}_#{last_name}_#{id}_#{type}_" : ''
     k += NoPlanB::TextUtils.random_string(20)
     k.gsub(' ', '')
+  end
+
+  def strip_emoji
+    self.first_name = first_name.to_s.gsub(EMOJI_REGEXP, '').strip
+    self.last_name = last_name.to_s.gsub(EMOJI_REGEXP, '').strip
   end
 end
