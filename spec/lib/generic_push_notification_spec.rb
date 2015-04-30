@@ -24,7 +24,6 @@ RSpec.describe GenericPushNotification do
 
   let(:instance) { described_class.new(attributes) }
   let(:ios_notification) do
-    #TODO: Alex I dont understand how this tests both the case where badge is specifed and badge is not specified. Or for exampe the case where if no type is specified it defaults to alert.
     n = Houston::Notification.new(attributes.slice(:token,
                                                    :alert,
                                                    :badge,
