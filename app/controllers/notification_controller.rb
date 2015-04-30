@@ -12,6 +12,7 @@ class NotificationController < ApplicationController
   end
 
   def send_video_received
+    notify_video_received(@push_user)
     @push_user.send_notification(type: :alert,
                                  alert: "New message from #{params[:sender_name]}",
                                  badge: 1,
@@ -23,6 +24,7 @@ class NotificationController < ApplicationController
   end
 
   def send_video_status_update
+    notify_video_status_updated(@push_user)
     @push_user.send_notification(type: :silent,
                                  payload: { type: 'video_status_update',
                                             to_mkey: params[:to_mkey],
@@ -65,5 +67,23 @@ class NotificationController < ApplicationController
       logger.info(msg)
       render json: { status: '404', title: 'Not found', msg: "No PushUser found for mkey: #{params[:target_mkey]}" }, status: :not_found
     end
+  end
+
+  def notify_video_received(push_user)
+    EventDispatcher.emit('video:received',
+                         initiator: 'user',
+                         initiator_id: push_user.mkey,
+                         target: 'user',
+                         target_id: params[:from_mkey],
+                         data: params.except(:controller, :action))
+  end
+
+  def notify_video_status_updated(push_user)
+    EventDispatcher.emit('video:status_updated',
+                         initiator: 'user',
+                         initiator_id: push_user.mkey,
+                         target: 'user',
+                         target_id: params[:to_mkey],
+                         data: params.except(:controller, :action))
   end
 end

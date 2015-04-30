@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe NotificationController, type: :controller do
   let(:video_id) { (Time.now.to_f * 1000).to_i.to_s }
+  let(:other_user) { create(:user) }
   let(:user) { create(:user) }
   let(:target) do
     create(:push_user,
@@ -12,7 +13,7 @@ RSpec.describe NotificationController, type: :controller do
     { mkey: user.mkey,
       push_token: 'push_token',
       device_platform: user.device_platform,
-      device_build: :dev }
+      device_build: 'dev' }
   end
 
   describe 'POST #set_push_token' do
@@ -29,7 +30,7 @@ RSpec.describe NotificationController, type: :controller do
 
   describe 'POST #send_video_received' do
     let(:params) do
-      push_user_params.merge(from_mkey: user.mkey,
+      push_user_params.merge(from_mkey: other_user.mkey,
                              target_mkey: target.mkey,
                              video_id: video_id)
     end
@@ -60,6 +61,23 @@ RSpec.describe NotificationController, type: :controller do
       it 'returns http not_found' do
         expect(response).to have_http_status(:not_found)
       end
+    end
+
+    describe 'event notification' do
+      let(:event_params) do
+        { initiator: 'user',
+          initiator_id: target.mkey,
+          target: 'user',
+          target_id: other_user.mkey,
+          data: params.stringify_keys }
+      end
+      subject do
+        allow(GenericPushNotification).to receive(:send_notification)
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          post :send_video_received, params
+        end
+      end
+      it_behaves_like 'event dispatchable', 'video:received'
     end
 
     context 'Android' do
@@ -122,7 +140,7 @@ RSpec.describe NotificationController, type: :controller do
 
   describe 'POST #send_video_status_update' do
     let(:params) do
-      push_user_params.merge(to_mkey: user.mkey,
+      push_user_params.merge(to_mkey: other_user.mkey,
                              target_mkey: target.mkey,
                              video_id: video_id,
                              status: 'viewed')
@@ -154,6 +172,24 @@ RSpec.describe NotificationController, type: :controller do
         expect(response).to have_http_status(:not_found)
       end
     end
+
+    describe 'event notification' do
+      let(:event_params) do
+        { initiator: 'user',
+          initiator_id: target.mkey,
+          target: 'user',
+          target_id: other_user.mkey,
+          data: params.stringify_keys }
+      end
+      subject do
+        allow(GenericPushNotification).to receive(:send_notification)
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          post :send_video_status_update, params
+        end
+      end
+      it_behaves_like 'event dispatchable', 'video:status_updated'
+    end
+
 
     context 'Android' do
       let(:user) { create(:android_user) }
