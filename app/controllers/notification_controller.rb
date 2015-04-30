@@ -14,6 +14,7 @@ class NotificationController < ApplicationController
   def send_video_received
     @push_user.send_notification(type: :alert,
                                  alert: "New message from #{params[:sender_name]}",
+                                 badge: 1,
                                  payload: { type: 'video_received',
                                             from_mkey: params[:from_mkey],
                                             video_id: params[:video_id],

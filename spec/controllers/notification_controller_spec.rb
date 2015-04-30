@@ -36,10 +36,11 @@ RSpec.describe NotificationController, type: :controller do
     let(:attributes) do
       { type: :alert,
         alert: "New message from #{params[:sender_name]}",
+        badge: 1,
         payload: { type: 'video_received',
                    from_mkey: params[:from_mkey],
                    video_id: params[:video_id],
-                   host: 'test.host' } }
+                   host: 'test.host'} }
     end
 
     it 'expects any instance of PushUser receives :send_notification with valid attributes' do
