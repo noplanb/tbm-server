@@ -5,8 +5,7 @@ RSpec.describe VerificationCodeSender do
   let(:mobile_number) { Figaro.env.twilio_to_number }
   let(:user) { create(:user, mobile_number: mobile_number) }
   let(:instance) { described_class.new(user) }
-  before { allow(EventDispatcher.sqs_client).to receive(:send_message) }
-  
+
   describe '#send_code' do
     subject { instance.send_code }
 

@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
   before { authenticate_with_http_basic }
-  # before { allow(subject).to receive(:put_s3_object).and_return(double('AWS::S3::Object')) }
 
   describe 'GET #receive_test_video' do
     let(:video_id) { '1429630398758' }
@@ -51,7 +50,7 @@ RSpec.describe UsersController, type: :controller do
 
       before { allow_any_instance_of(GenericPushNotification).to receive(:send_notification).and_return(true) }
 
-      it 'expects any instance of PushUser receives :send_notification with valid attributes' do
+      specify do
         expect_any_instance_of(PushUser).to receive(:send_notification).with(attributes)
         get :receive_test_video, params
       end

@@ -1,4 +1,6 @@
 class EventDispatcher
+  @send_message_enabled = true
+
   def self.queue_url
     Figaro.env.sqs_queue_url
   end
@@ -7,12 +9,24 @@ class EventDispatcher
     @sqs_client ||= Aws::SQS::Client.new
   end
 
+  def self.enable_send_message!
+    @send_message_enabled = true
+  end
+
+  def self.disable_send_message!
+    @send_message_enabled = false
+  end
+
+  def self.send_message_enabled?
+    @send_message_enabled
+  end
+
   def self.emit(name, params = {})
     message_body = params.reverse_merge(
       name: name,
       triggered_by: 'zazo:api',
       triggered_at: DateTime.now.utc).to_json
     Rails.logger.info "[#{self}] Attemt to sent message to SQS queue #{queue_url}: #{message_body}"
-    sqs_client.send_message(queue_url: queue_url, message_body: message_body)
+    sqs_client.send_message(queue_url: queue_url, message_body: message_body) if send_message_enabled?
   end
 end

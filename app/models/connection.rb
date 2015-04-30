@@ -2,6 +2,7 @@ require 'no_plan_b/utils/text_utils'
 
 class Connection < ActiveRecord::Base
   include AASM
+  include EventNotifiable
 
   belongs_to :creator, class_name: 'User'
   belongs_to :target, class_name: 'User'
@@ -16,11 +17,11 @@ class Connection < ActiveRecord::Base
     state :voided, initial: true
     state :established
 
-    event :establish do
+    event :establish, after: :notify_state_changed do
       transitions from: :voided, to: :established
     end
 
-    event :void do
+    event :void, after: :notify_state_changed do
       transitions from: :established, to: :voided
     end
   end
@@ -57,6 +58,10 @@ class Connection < ActiveRecord::Base
     return false unless established?
     Kvstore.where('key1 LIKE ?', "#{key_search(creator, target)}%").count > 0 &&
       Kvstore.where('key1 LIKE ?', "#{key_search(target, creator)}%").count > 0
+  end
+
+  def event_id
+    ckey
   end
 
   private

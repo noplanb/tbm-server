@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe InvitationController, type: :controller do
-  before { allow(EventDispatcher.sqs_client).to receive(:send_message) }
-
   describe 'GET #invite' do
     let(:params) do
       {

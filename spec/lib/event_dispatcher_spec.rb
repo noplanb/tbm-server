@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe EventDispatcher do
-  describe '.emit' do
+  describe '.emit', event_dispatcher_enabled: true do
     let(:name) { 'zazo:test' }
     let(:params) do
       { initiator: 'user',
@@ -19,6 +19,20 @@ RSpec.describe EventDispatcher do
 
     specify do
       is_expected.to be_a(Aws::PageableResponse)
+    end
+  end
+
+  describe '.disable_send_message!', event_dispatcher_enabled: true do
+    subject { described_class.disable_send_message! }
+    specify do
+      expect { subject }.to change { described_class.send_message_enabled? }.from(true).to(false)
+    end
+  end
+
+  describe '.enable_send_message!' do
+    subject { described_class.enable_send_message! }
+    specify do
+      expect { subject }.to change { described_class.send_message_enabled? }.from(false).to(true)
     end
   end
 end

@@ -65,4 +65,37 @@ RSpec.describe Connection, type: :model do
       end
     end
   end
+
+  describe 'states' do
+    let(:instance) { create(:connection) }
+    describe '#establish' do
+      subject { instance.establish }
+      let(:params) do
+         { initiator: 'connection',
+           initiator_id: instance.ckey,
+           data: { event: :establish,
+                   from_state: :voided,
+                   to_state: :established } }
+      end
+
+      it_behaves_like 'event dispatchable', 'connection:established'
+    end
+
+    describe '#void' do
+      subject { instance.void }
+      before do
+        allow(EventDispatcher.sqs_client).to receive(:send_message)
+        instance.establish!
+      end
+      let(:params) do
+         { initiator: 'connection',
+           initiator_id: instance.ckey,
+           data: { event: :void,
+                   from_state: :established,
+                   to_state: :voided } }
+      end
+
+      it_behaves_like 'event dispatchable', 'connection:voided'
+    end
+  end
 end
