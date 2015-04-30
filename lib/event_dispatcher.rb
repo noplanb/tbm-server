@@ -8,10 +8,11 @@ class EventDispatcher
   end
 
   def self.emit(name, params = {})
-    message = params.reverse_merge(
+    message_body = params.reverse_merge(
       name: name,
       triggered_by: 'zazo:api',
-      triggered_at: Time.now.utc)
-    sqs_client.send_message(queue_url: queue_url, message_body: message.to_json)
+      triggered_at: DateTime.now.utc).to_json
+    Rails.logger.info "[#{self}] Attemt to sent message to SQS queue #{queue_url}: #{message_body}"
+    sqs_client.send_message(queue_url: queue_url, message_body: message_body)
   end
 end

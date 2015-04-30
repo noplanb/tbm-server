@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe RegController, type: :controller do
+  before { allow(EventDispatcher.sqs_client).to receive(:send_message) }
+  
   describe 'GET #reg' do
     let(:mobile_number) { sample_number(:us) }
     let(:params) do

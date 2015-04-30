@@ -77,7 +77,7 @@ RSpec.describe User, type: :model do
     end
 
     context 'nil' do
-      let(:query) { }
+      let(:query) {}
       it { is_expected.to eq([user1, user2, user3]) }
     end
   end
@@ -193,7 +193,6 @@ RSpec.describe User, type: :model do
         user.reset_verification_code
         expect(!user.verification_code_will_expire_in?(Settings.verification_code_lifetime_minutes - 1))
       end
-
     end
 
     describe '#get_verification_code' do
@@ -208,7 +207,7 @@ RSpec.describe User, type: :model do
         expect(v1)
         v2 = user.get_verification_code
         expect(v2)
-        expect(v1).not_to  eq v2
+        expect(v1).not_to eq v2
       end
     end
 
@@ -328,5 +327,60 @@ RSpec.describe User, type: :model do
     subject { instance.connected_user_ids }
 
     it { is_expected.to eq([other.id]) }
+  end
+
+  describe 'state chanages' do
+    let!(:instance) { create(:user) }
+
+    [
+      { event: :invite, from_state: :initialized, to_state: :invited },
+      { event: :register, from_state: :initialized, to_state: :registered },
+      { event: :fail_to_register, from_state: :initialized, to_state: :failed_to_register }
+    ].each do |options|
+      describe "##{options[:event]}" do
+        subject { instance.send options[:event] }
+        let(:params) do
+           { initiator: :user,
+             initiator_id: instance.mkey,
+             data: options }
+        end
+
+        it_behaves_like 'event dispatchable', "user:#{options[:to_state]}"
+      end
+    end
+
+    describe '#verify' do
+      subject { instance.verify }
+      before do
+        allow(EventDispatcher.sqs_client).to receive(:send_message)
+        instance.register!
+      end
+      let(:params) do
+         { initiator: :user,
+           initiator_id: instance.mkey,
+           data: { event: :verify,
+                   from_state: :registered,
+                   to_state: :verified } }
+      end
+
+      it_behaves_like 'event dispatchable', 'user:verified'
+    end
+
+    describe '#pend' do
+      subject { instance.pend }
+      before do
+        allow(EventDispatcher.sqs_client).to receive(:send_message)
+        instance.register!
+      end
+      let(:params) do
+         { initiator: :user,
+           initiator_id: instance.mkey,
+           data: { event: :pend,
+                   from_state: :registered,
+                   to_state: :initialized } }
+      end
+
+      it_behaves_like 'event dispatchable', 'user:initialized'
+    end
   end
 end

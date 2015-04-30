@@ -21,23 +21,23 @@ class User < ActiveRecord::Base
     state :failed_to_register
     state :verified
 
-    event :register do
-      transitions from: [:initialized, :invited], to: :registered
-    end
-
-    event :fail_to_register do
-      transitions from: [:initialized, :invited], to: :failed_to_register
-    end
-
-    event :invite do
+    event :invite, after: :notify_state_changed do
       transitions from: :initialized, to: :invited
     end
 
-    event :verify do
+    event :register, after: :notify_state_changed do
+      transitions from: [:initialized, :invited], to: :registered
+    end
+
+    event :fail_to_register, after: :notify_state_changed do
+      transitions from: [:initialized, :invited], to: :failed_to_register
+    end
+
+    event :verify, after: :notify_state_changed do
       transitions from: :registered, to: :verified
     end
 
-    event :pend do
+    event :pend, after: :notify_state_changed do
       transitions from: [:registered, :failed_to_register, :verified], to: :initialized
     end
   end
@@ -174,5 +174,13 @@ class User < ActiveRecord::Base
   def strip_emoji
     self.first_name = first_name.to_s.gsub(EMOJI_REGEXP, '').strip
     self.last_name = last_name.to_s.gsub(EMOJI_REGEXP, '').strip
+  end
+
+  def notify_state_changed(*_args)
+    EventDispatcher.emit("user:#{aasm.current_state}", initiator: :user,
+                                                       initiator_id: mkey,
+                                                       data: { event: aasm.current_event,
+                                                               from_state: aasm.from_state,
+                                                               to_state: aasm.to_state })
   end
 end
