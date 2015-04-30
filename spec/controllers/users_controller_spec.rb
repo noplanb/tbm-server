@@ -19,6 +19,7 @@ RSpec.describe UsersController, type: :controller do
     let(:params) { { id: user.id, sender_id: sender.id } }
     let(:attributes) do
       { type: :alert,
+        badge: 1,
         payload: { type: 'video_received',
                    from_mkey: sender.mkey,
                    video_id: video_id,

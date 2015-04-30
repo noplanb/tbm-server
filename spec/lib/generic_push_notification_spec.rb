@@ -17,6 +17,7 @@ RSpec.describe GenericPushNotification do
                   video_id: video_id,
                   host: 'zazo.test' },
        alert: "New message from #{user.name}",
+       badge: 10,
        content_available: true
      }
   end

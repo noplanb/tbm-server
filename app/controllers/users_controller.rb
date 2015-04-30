@@ -123,6 +123,7 @@ class UsersController < AdminController
                                             from_mkey: sender.mkey,
                                             video_id: video_id,
                                             host: request.host },
+                                 badge:1,
                                  alert: "New message from #{sender.first_name}")
   end
 
