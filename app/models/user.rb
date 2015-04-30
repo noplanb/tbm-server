@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   include EnumHandler
   include AASM
+  include EventNotifiable
 
   has_many :connections_as_creator, class_name: 'Connection', foreign_key: :creator_id, dependent: :destroy
   has_many :connections_as_target, class_name: 'Connection', foreign_key: :target_id, dependent: :destroy
@@ -154,6 +155,10 @@ class User < ActiveRecord::Base
     false
   end
 
+  def event_id
+    mkey
+  end
+
   private
 
   # ==================
@@ -174,13 +179,5 @@ class User < ActiveRecord::Base
   def strip_emoji
     self.first_name = first_name.to_s.gsub(EMOJI_REGEXP, '').strip
     self.last_name = last_name.to_s.gsub(EMOJI_REGEXP, '').strip
-  end
-
-  def notify_state_changed(*_args)
-    EventDispatcher.emit("user:#{aasm.current_state}", initiator: :user,
-                                                       initiator_id: mkey,
-                                                       data: { event: aasm.current_event,
-                                                               from_state: aasm.from_state,
-                                                               to_state: aasm.to_state })
   end
 end

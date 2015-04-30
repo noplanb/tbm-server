@@ -340,7 +340,7 @@ RSpec.describe User, type: :model do
       describe "##{options[:event]}" do
         subject { instance.send options[:event] }
         let(:params) do
-           { initiator: :user,
+           { initiator: 'user',
              initiator_id: instance.mkey,
              data: options }
         end
@@ -356,7 +356,7 @@ RSpec.describe User, type: :model do
         instance.register!
       end
       let(:params) do
-         { initiator: :user,
+         { initiator: 'user',
            initiator_id: instance.mkey,
            data: { event: :verify,
                    from_state: :registered,
@@ -373,7 +373,7 @@ RSpec.describe User, type: :model do
         instance.register!
       end
       let(:params) do
-         { initiator: :user,
+         { initiator: 'user',
            initiator_id: instance.mkey,
            data: { event: :pend,
                    from_state: :registered,
