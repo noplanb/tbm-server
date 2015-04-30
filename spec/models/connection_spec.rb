@@ -70,7 +70,7 @@ RSpec.describe Connection, type: :model do
     let(:instance) { create(:connection) }
     describe '#establish' do
       subject { instance.establish }
-      let(:params) do
+      let(:event_params) do
          { initiator: 'connection',
            initiator_id: instance.ckey,
            data: { event: :establish,
@@ -87,7 +87,7 @@ RSpec.describe Connection, type: :model do
         allow(EventDispatcher.sqs_client).to receive(:send_message)
         instance.establish!
       end
-      let(:params) do
+      let(:event_params) do
          { initiator: 'connection',
            initiator_id: instance.ckey,
            data: { event: :void,

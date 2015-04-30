@@ -25,7 +25,7 @@ RSpec.describe EventNotifiable do
       from_state: :pending,
       to_state: :active }
   end
-  let(:params) do
+  let(:event_params) do
      { initiator: 'test_class',
        initiator_id: instance.event_id,
        data: data }

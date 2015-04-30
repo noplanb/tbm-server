@@ -339,7 +339,7 @@ RSpec.describe User, type: :model do
     ].each do |options|
       describe "##{options[:event]}" do
         subject { instance.send options[:event] }
-        let(:params) do
+        let(:event_params) do
            { initiator: 'user',
              initiator_id: instance.mkey,
              data: options }
@@ -355,7 +355,7 @@ RSpec.describe User, type: :model do
         allow(EventDispatcher.sqs_client).to receive(:send_message)
         instance.register!
       end
-      let(:params) do
+      let(:event_params) do
          { initiator: 'user',
            initiator_id: instance.mkey,
            data: { event: :verify,
@@ -372,7 +372,7 @@ RSpec.describe User, type: :model do
         allow(EventDispatcher.sqs_client).to receive(:send_message)
         instance.register!
       end
-      let(:params) do
+      let(:event_params) do
          { initiator: 'user',
            initiator_id: instance.mkey,
            data: { event: :pend,

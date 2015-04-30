@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.shared_examples 'event dispatchable' do |event|
   specify nil, event_dispatcher: true do
     allow(EventDispatcher.sqs_client).to receive(:send_message)
-    expect(EventDispatcher).to receive(:emit).with(event, params)
+    expect(EventDispatcher).to receive(:emit).with(event, event_params)
     subject
   end
 
