@@ -5,7 +5,11 @@ RSpec.configure do |config|
     EventDispatcher.enable_send_message!
   end
 
-  config.before(event_dispatcher_enabled: true) do
+  config.before(event_dispatcher: true) do
     EventDispatcher.enable_send_message!
+  end
+
+  config.before(event_dispatcher: false) do
+    EventDispatcher.disable_send_message!
   end
 end

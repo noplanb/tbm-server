@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe EventDispatcher do
-  describe '.emit', event_dispatcher_enabled: true do
+  describe '.emit', event_dispatcher: true do
     let(:name) { 'zazo:test' }
     let(:params) do
       { initiator: 'user',
@@ -22,7 +22,7 @@ RSpec.describe EventDispatcher do
     end
   end
 
-  describe '.disable_send_message!', event_dispatcher_enabled: true do
+  describe '.disable_send_message!', event_dispatcher: true do
     subject { described_class.disable_send_message! }
     specify do
       expect { subject }.to change { described_class.send_message_enabled? }.from(true).to(false)
