@@ -45,15 +45,21 @@ class User < ActiveRecord::Base
 
   # GARF: Change this to before_create when we finalize the algorithm for creating keys. Right now I incorporate id
   # in the key so I need to have after_create
-  before_save  :strip_emoji, :set_keys
+  before_save :strip_emoji, :set_keys
 
   def self.find_by_raw_mobile_number(value)
     find_by_mobile_number GlobalPhone.normalize(value)
   end
 
   def self.search(query)
+    return all if query.blank?
+    return where(id: query) if query.is_a?(Integer) || query.match(/^\d+$/)
     query_param = "%#{query}%"
-    where('first_name LIKE ? OR last_name LIKE ? OR mobile_number LIKE ?', query_param, query_param, query_param)
+    where('mkey = ? OR first_name LIKE ? OR last_name LIKE ? OR mobile_number LIKE ?',
+          query,
+          query_param,
+          query_param,
+          query_param)
   end
 
   def name
