@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_with_token
-    authenticate_with_http_token do |token, options|
+    authenticate_with_http_token do |token, _options|
       @user = @current_user = User.find_by_mkey(token)
       @user && @user.auth
     end
@@ -73,18 +73,22 @@ class ApplicationController < ActionController::Base
     video_filename = Kvstore.video_filename(sender_mkey,
                                             push_user.mkey,
                                             video_id)
+
+    message = { initiator: 'admin', initiator_id: nil }
+    if current_user.present?
+      message.update(initiator: 'user', initiator_id: current_user.mkey)
+    end
     EventDispatcher.emit('video:notification:received',
-                         initiator: 'user',
-                         initiator_id: push_user.mkey,
-                         target: 'video',
-                         target_id: video_filename,
-                         data: {
-                           sender_id: sender_mkey,
-                           receiver_id: push_user.mkey,
-                           video_filename: video_filename,
-                           video_id: video_id
-                         },
-                         raw_params: params.except(:controller, :action))
+                         message.merge(
+                           target: 'video',
+                           target_id: video_filename,
+                           data: {
+                             sender_id: sender_mkey,
+                             receiver_id: push_user.mkey,
+                             video_filename: video_filename,
+                             video_id: video_id
+                           },
+                           raw_params: params.except(:controller, :action)))
   end
 
   def send_video_received_notification(push_user, sender_mkey, sender_name, video_id)
@@ -97,5 +101,4 @@ class ApplicationController < ActionController::Base
                                             video_id: video_id,
                                             host: request.host })
   end
-
 end

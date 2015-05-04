@@ -2,23 +2,25 @@ require 'rails_helper'
 
 RSpec.describe NotificationController, type: :controller do
   let(:video_id) { (Time.now.to_f * 1000).to_i.to_s }
-  let(:other_user) { create(:user) }
-  let(:user) { create(:user) }
+  let(:sender) { create(:user) }
+  let(:receiver) { create(:user) }
   let(:target) do
     create(:push_user,
            mkey: user.mkey,
            device_platform: user.device_platform)
   end
   let(:push_user_params) do
-    { mkey: user.mkey,
+    { mkey: target.mkey,
       push_token: 'push_token',
-      device_platform: user.device_platform,
+      device_platform: target.device_platform,
       device_build: 'dev' }
   end
+  let(:video_filename) { Kvstore.video_filename(sender, receiver, video_id) }
 
-  before { create(:established_connection, creator: user, target: other_user) }
+  before { create(:established_connection, creator: sender, target: receiver) }
 
   describe 'POST #set_push_token' do
+    let(:user) { sender }
     let(:params) { push_user_params }
     before do
       authenticate_with_http_digest(user.mkey, user.auth) do
@@ -31,10 +33,11 @@ RSpec.describe NotificationController, type: :controller do
   end
 
   describe 'POST #send_video_received' do
+    let(:user) { receiver }
     let(:params) do
-      push_user_params.merge(from_mkey: other_user.mkey,
+      push_user_params.merge(from_mkey: sender.mkey,
                              target_mkey: target.mkey,
-                             sender_name: user.first_name,
+                             sender_name: sender.first_name,
                              video_id: video_id)
     end
     let(:attributes) do
@@ -67,10 +70,9 @@ RSpec.describe NotificationController, type: :controller do
     end
 
     describe 'event notification' do
-      let(:video_filename) { Kvstore.video_filename(other_user, user, video_id) }
       let(:event_params) do
         { initiator: 'user',
-          initiator_id: target.mkey,
+          initiator_id: user.mkey,
           target: 'video',
           target_id: video_filename,
           data: {
@@ -92,7 +94,7 @@ RSpec.describe NotificationController, type: :controller do
     end
 
     context 'Android' do
-      let(:user) { create(:android_user) }
+      let(:receiver) { create(:android_user) }
       let(:payload) do
         GcmServer.make_payload(
           params[:push_token],
@@ -127,7 +129,7 @@ RSpec.describe NotificationController, type: :controller do
     end
 
     context 'iOS' do
-      let(:user) { create(:ios_user) }
+      let(:receiver) { create(:ios_user) }
 
       specify 'expects GenericPushNotification to receive :send_notification' do
         expect(GenericPushNotification).to receive(:send_notification)
@@ -150,8 +152,9 @@ RSpec.describe NotificationController, type: :controller do
   end
 
   describe 'POST #send_video_status_update' do
+    let(:user) { sender }
     let(:params) do
-      push_user_params.merge(to_mkey: other_user.mkey,
+      push_user_params.merge(to_mkey: receiver.mkey,
                              target_mkey: target.mkey,
                              video_id: video_id,
                              status: 'viewed')
@@ -185,7 +188,6 @@ RSpec.describe NotificationController, type: :controller do
     end
 
     describe 'event notification' do
-      let(:video_filename) { Kvstore.video_filename(user, other_user, video_id) }
       let(:event_params) do
         { initiator: 'user',
           initiator_id: user.mkey,
@@ -210,7 +212,7 @@ RSpec.describe NotificationController, type: :controller do
     end
 
     context 'Android' do
-      let(:user) { create(:android_user) }
+      let(:sender) { create(:android_user) }
       let(:payload) do
         GcmServer.make_payload(
           params[:push_token],
@@ -245,7 +247,7 @@ RSpec.describe NotificationController, type: :controller do
     end
 
     context 'iOS' do
-      let(:user) { create(:ios_user) }
+      let(:sender) { create(:ios_user) }
 
       specify 'expects GenericPushNotification to receive :send_notification' do
         expect(GenericPushNotification).to receive(:send_notification)

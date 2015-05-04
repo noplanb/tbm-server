@@ -63,8 +63,8 @@ RSpec.describe UsersController, type: :controller do
       describe 'event notification' do
         let(:video_filename) { Kvstore.video_filename(sender, user, video_id) }
         let(:event_params) do
-          { initiator: 'user',
-            initiator_id: user.mkey,
+          { initiator: 'admin',
+            initiator_id: nil,
             target: 'video',
             target_id: video_filename,
             data: {
