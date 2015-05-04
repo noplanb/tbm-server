@@ -16,6 +16,8 @@ RSpec.describe NotificationController, type: :controller do
       device_build: 'dev' }
   end
 
+  before { create(:established_connection, creator: user, target: other_user) }
+
   describe 'POST #set_push_token' do
     let(:params) { push_user_params }
     before do
@@ -41,7 +43,7 @@ RSpec.describe NotificationController, type: :controller do
         payload: { type: 'video_received',
                    from_mkey: params[:from_mkey],
                    video_id: params[:video_id],
-                   host: 'test.host'} }
+                   host: 'test.host' } }
     end
 
     it 'expects any instance of PushUser receives :send_notification with valid attributes' do
@@ -64,20 +66,28 @@ RSpec.describe NotificationController, type: :controller do
     end
 
     describe 'event notification' do
+      let(:video_filename) { Kvstore.video_filename(other_user, user, video_id) }
       let(:event_params) do
         { initiator: 'user',
           initiator_id: target.mkey,
-          target: 'user',
-          target_id: other_user.mkey,
-          data: params.stringify_keys }
+          target: 'video',
+          target_id: video_filename,
+          data: {
+            sender_id: params[:from_mkey],
+            receiver_id: params[:target_mkey],
+            video_filename: video_filename,
+            video_id: video_id
+          },
+          raw_params: params.stringify_keys }
       end
+
       subject do
         allow(GenericPushNotification).to receive(:send_notification)
         authenticate_with_http_digest(user.mkey, user.auth) do
           post :send_video_received, params
         end
       end
-      it_behaves_like 'event dispatchable', 'video:received'
+      it_behaves_like 'event dispatchable', 'video:notification:received'
     end
 
     context 'Android' do
@@ -174,22 +184,29 @@ RSpec.describe NotificationController, type: :controller do
     end
 
     describe 'event notification' do
+      let(:video_filename) { Kvstore.video_filename(user, other_user, video_id) }
       let(:event_params) do
         { initiator: 'user',
-          initiator_id: target.mkey,
-          target: 'user',
-          target_id: other_user.mkey,
-          data: params.stringify_keys }
+          initiator_id: user.mkey,
+          target: 'video',
+          target_id: video_filename,
+          data: {
+            sender_id: params[:target_mkey],
+            receiver_id: params[:to_mkey],
+            video_filename: video_filename,
+            video_id: video_id
+          },
+          raw_params: params.stringify_keys }
       end
+
       subject do
         allow(GenericPushNotification).to receive(:send_notification)
         authenticate_with_http_digest(user.mkey, user.auth) do
           post :send_video_status_update, params
         end
       end
-      it_behaves_like 'event dispatchable', 'video:status_updated'
+      it_behaves_like 'event dispatchable', 'video:notification:viewed'
     end
-
 
     context 'Android' do
       let(:user) { create(:android_user) }

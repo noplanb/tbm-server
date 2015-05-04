@@ -70,20 +70,38 @@ class NotificationController < ApplicationController
   end
 
   def notify_video_received(push_user)
-    EventDispatcher.emit('video:received',
+    video_filename = Kvstore.video_filename(params[:from_mkey],
+                                            params[:target_mkey],
+                                            params[:video_id])
+    EventDispatcher.emit('video:notification:received',
                          initiator: 'user',
                          initiator_id: push_user.mkey,
-                         target: 'user',
-                         target_id: params[:from_mkey],
-                         data: params.except(:controller, :action))
+                         target: 'video',
+                         target_id: video_filename,
+                         data: {
+                           sender_id: params[:from_mkey],
+                           receiver_id: params[:target_mkey],
+                           video_filename: video_filename,
+                           video_id: params[:video_id]
+                         },
+                         raw_params: params.except(:controller, :action))
   end
 
   def notify_video_status_updated(push_user)
-    EventDispatcher.emit('video:status_updated',
+    video_filename = Kvstore.video_filename(params[:target_mkey],
+                                            params[:to_mkey],
+                                            params[:video_id])
+    EventDispatcher.emit("video:notification:#{params[:status]}",
                          initiator: 'user',
                          initiator_id: push_user.mkey,
-                         target: 'user',
-                         target_id: params[:to_mkey],
-                         data: params.except(:controller, :action))
+                         target: 'video',
+                         target_id: video_filename,
+                         data: {
+                           sender_id: params[:target_mkey],
+                           receiver_id: params[:to_mkey],
+                           video_filename: video_filename,
+                           video_id: params[:video_id]
+                         },
+                         raw_params: params.except(:controller, :action))
   end
 end
