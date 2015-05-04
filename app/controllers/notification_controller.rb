@@ -12,14 +12,7 @@ class NotificationController < ApplicationController
   end
 
   def send_video_received
-    notify_video_received(@push_user)
-    @push_user.send_notification(type: :alert,
-                                 alert: "New message from #{params[:sender_name]}",
-                                 badge: 1,
-                                 payload: { type: 'video_received',
-                                            from_mkey: params[:from_mkey],
-                                            video_id: params[:video_id],
-                                            host: request.host })
+    send_video_received_notification(@push_user, params[:from_mkey], params[:sender_name], params[:video_id])
     render json: { status: '200' }
   end
 
@@ -69,23 +62,6 @@ class NotificationController < ApplicationController
     end
   end
 
-  def notify_video_received(push_user)
-    video_filename = Kvstore.video_filename(params[:from_mkey],
-                                            params[:target_mkey],
-                                            params[:video_id])
-    EventDispatcher.emit('video:notification:received',
-                         initiator: 'user',
-                         initiator_id: push_user.mkey,
-                         target: 'video',
-                         target_id: video_filename,
-                         data: {
-                           sender_id: params[:from_mkey],
-                           receiver_id: params[:target_mkey],
-                           video_filename: video_filename,
-                           video_id: params[:video_id]
-                         },
-                         raw_params: params.except(:controller, :action))
-  end
 
   def notify_video_status_updated(push_user)
     video_filename = Kvstore.video_filename(params[:target_mkey],

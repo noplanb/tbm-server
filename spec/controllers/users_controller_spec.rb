@@ -15,7 +15,7 @@ RSpec.describe UsersController, type: :controller do
                               secret_key: 'secret_key')
       cred
     end
-    let(:params) { { id: user.id, sender_id: sender.id } }
+    let(:params) { { sender_id: sender.id, id: user.id } }
     let(:attributes) do
       { type: :alert,
         badge: 1,
@@ -58,6 +58,29 @@ RSpec.describe UsersController, type: :controller do
       specify do
         get :receive_test_video, params
         expect(response).to redirect_to(user)
+      end
+
+      describe 'event notification' do
+        let(:video_filename) { Kvstore.video_filename(sender, user, video_id) }
+        let(:event_params) do
+          { initiator: 'user',
+            initiator_id: user.mkey,
+            target: 'video',
+            target_id: video_filename,
+            data: {
+              sender_id: sender.mkey,
+              receiver_id: user.mkey,
+              video_filename: video_filename,
+              video_id: video_id
+            },
+            raw_params: Hash[params.map { |k, v| [k.to_s, v.to_s] }] }
+        end
+
+        subject do
+          allow(GenericPushNotification).to receive(:send_notification)
+          post :receive_test_video, params
+        end
+        it_behaves_like 'event dispatchable', 'video:notification:received'
       end
     end
 

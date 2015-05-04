@@ -94,7 +94,8 @@ class UsersController < AdminController
     sender = User.find params[:sender_id]
     video_id = create_test_video(sender, @user, file_name)
     Kvstore.add_id_key(sender, @user, video_id)
-    send_video_received_notification(sender, @user, video_id)
+    @push_user = PushUser.find_by_mkey(@user.mkey) || not_found
+    send_video_received_notification(@push_user, sender.mkey, sender.first_name, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
 
@@ -117,17 +118,6 @@ class UsersController < AdminController
 
   def test_video
     Video.find_by_filename 'test_video'
-  end
-
-  def send_video_received_notification(sender, receiver, video_id)
-    @push_user = PushUser.find_by_mkey(receiver.mkey) || not_found
-    @push_user.send_notification(type: :alert,
-                                 payload: { type: 'video_received',
-                                            from_mkey: sender.mkey,
-                                            video_id: video_id,
-                                            host: request.host },
-                                 badge:1,
-                                 alert: "New message from #{sender.first_name}")
   end
 
   # Use callbacks to share common setup or constraints between actions.

@@ -68,4 +68,34 @@ class ApplicationController < ActionController::Base
   def store_url
     ios? ? iphone_store_url : android_store_url
   end
+
+  def notify_video_received(push_user, sender_mkey, video_id)
+    video_filename = Kvstore.video_filename(sender_mkey,
+                                            push_user.mkey,
+                                            video_id)
+    EventDispatcher.emit('video:notification:received',
+                         initiator: 'user',
+                         initiator_id: push_user.mkey,
+                         target: 'video',
+                         target_id: video_filename,
+                         data: {
+                           sender_id: sender_mkey,
+                           receiver_id: push_user.mkey,
+                           video_filename: video_filename,
+                           video_id: video_id
+                         },
+                         raw_params: params.except(:controller, :action))
+  end
+
+  def send_video_received_notification(push_user, sender_mkey, sender_name, video_id)
+    notify_video_received(push_user, sender_mkey, video_id)
+    @push_user.send_notification(type: :alert,
+                                 alert: "New message from #{sender_name}",
+                                 badge: 1,
+                                 payload: { type: 'video_received',
+                                            from_mkey: sender_mkey,
+                                            video_id: video_id,
+                                            host: request.host })
+  end
+
 end

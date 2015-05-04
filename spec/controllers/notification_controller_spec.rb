@@ -34,6 +34,7 @@ RSpec.describe NotificationController, type: :controller do
     let(:params) do
       push_user_params.merge(from_mkey: other_user.mkey,
                              target_mkey: target.mkey,
+                             sender_name: user.first_name,
                              video_id: video_id)
     end
     let(:attributes) do
