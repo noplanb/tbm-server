@@ -45,7 +45,10 @@ class Kvstore < ActiveRecord::Base
   end
 
   def self.video_filename(sender, receiver, video_id)
+    sender = User.find_by(mkey: sender) if sender.is_a?(String)
+    receiver = User.find_by(mkey: receiver) if receiver.is_a?(String)
     connection = Connection.live_between(sender.id, receiver.id).first
+    fail "No connection found between #{sender.name} and #{receiver.name}" if connection.nil?
     "#{sender.mkey}-#{receiver.mkey}-#{digest(connection.ckey + video_id)}"
   end
 end

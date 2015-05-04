@@ -39,7 +39,7 @@ RSpec.describe Connection, type: :model do
       end
 
       context 'and established' do
-        let!(:connection) { create(:connection, :established, creator: creator, target: target) }
+        let!(:connection) { create(:established_connection, creator: creator, target: target) }
         it { is_expected.to be_established }
       end
     end
