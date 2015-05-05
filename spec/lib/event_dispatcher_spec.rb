@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe EventDispatcher do
   describe '.emit', event_dispatcher: true do
-    let(:name) { 'zazo:test' }
+    let(:name) { %w(event_dispatcher test) }
     let(:params) do
       { initiator: 'user',
         initiator_id: '1' }
@@ -17,8 +17,37 @@ RSpec.describe EventDispatcher do
       end
     end
 
+    it { is_expected.to be_a(Aws::PageableResponse) }
+
+    context 'when name is string' do
+      let(:name) { 'zazo:test' }
+      it { is_expected.to be_a(Aws::PageableResponse) }
+    end
+  end
+
+  describe '.build_message' do
+    let(:name) { %w(zazo test) }
+    let(:params) { {} }
+    let(:triggered_at) { DateTime.now.utc }
+    subject { described_class.build_message(name, params) }
+
     specify do
-      is_expected.to be_a(Aws::PageableResponse)
+      Timecop.freeze(triggered_at) do
+        is_expected.to eq(name: %w(zazo test),
+                          triggered_by: 'zazo:api',
+                          triggered_at: DateTime.now.utc)
+      end
+    end
+
+    context 'when name is string' do
+      let(:name) { 'zazo:test' }
+      specify do
+        Timecop.freeze(triggered_at) do
+          is_expected.to eq(name: %w(zazo test),
+                            triggered_by: 'zazo:api',
+                            triggered_at: DateTime.now.utc)
+        end
+      end
     end
   end
 

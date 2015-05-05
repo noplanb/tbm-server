@@ -21,12 +21,17 @@ class EventDispatcher
     @send_message_enabled
   end
 
-  def self.emit(name, params = {})
-    message_body = params.reverse_merge(
+  def self.build_message(name, params = {})
+    name = name.split(':') if name.is_a?(String)
+    params.reverse_merge(
       name: name,
       triggered_by: 'zazo:api',
-      triggered_at: DateTime.now.utc).to_json
-    Rails.logger.info "[#{self}] Attemt to sent message to SQS queue #{queue_url}: #{message_body}"
-    sqs_client.send_message(queue_url: queue_url, message_body: message_body) if send_message_enabled?
+      triggered_at: DateTime.now.utc)
+  end
+
+  def self.emit(name, params = {})
+    message = build_message(name, params)
+    Rails.logger.info "[#{self}] Attemt to sent message to SQS queue #{queue_url}: #{message}"
+    sqs_client.send_message(queue_url: queue_url, message_body: message.to_json) if send_message_enabled?
   end
 end
