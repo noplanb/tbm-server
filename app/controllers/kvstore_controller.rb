@@ -19,7 +19,7 @@ class KvstoreController < ApplicationController
   def delete
     kvs = get_kvs
     logger.info "deleting #{kvs.length} kvs"
-    kvs.each(&:destroy)
+    kvs.destroy_all
     render json: { status: '200' }
   end
 
@@ -38,8 +38,8 @@ class KvstoreController < ApplicationController
   private
 
   def get_kvs
-      return Kvstore.where('key1 = ?', params[:key1]) if params[:key2].blank?
-      Kvstore.where('key1 = ? and key2 = ?', params[:key1], params[:key2])
+    return Kvstore.where('key1 = ?', params[:key1]) if params[:key2].blank?
+    Kvstore.where('key1 = ? and key2 = ?', params[:key1], params[:key2])
   end
 
   def kvstore_params
