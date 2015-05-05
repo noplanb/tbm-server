@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 RSpec.shared_examples 'event dispatchable' do |event|
-  it "EventDispatcher receives :emit with #{event.inspect}", event_dispatcher: true do
-    allow(EventDispatcher.sqs_client).to receive(:send_message)
+  it "EventDispatcher receives :emit with #{event.inspect}" do
     expect(EventDispatcher).to receive(:emit).with(event, event_params)
     subject
   end
