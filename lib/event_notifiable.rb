@@ -5,7 +5,7 @@ module EventNotifiable
 
   def notify_state_changed
     initiator = self.class.name.underscore
-    EventDispatcher.emit("#{initiator}:#{aasm.current_state}",
+    EventDispatcher.emit([initiator, aasm.current_state],
                          initiator: initiator,
                          initiator_id: event_id,
                          data: { event: aasm.current_event,

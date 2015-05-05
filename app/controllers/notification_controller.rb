@@ -67,7 +67,7 @@ class NotificationController < ApplicationController
     video_filename = Kvstore.video_filename(params[:target_mkey],
                                             params[:to_mkey],
                                             params[:video_id])
-    EventDispatcher.emit("video:notification:#{params[:status]}",
+    EventDispatcher.emit(['video', 'notification', params[:status]],
                          initiator: 'user',
                          initiator_id: push_user.mkey,
                          target: 'video',

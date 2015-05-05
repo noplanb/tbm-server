@@ -78,7 +78,7 @@ RSpec.describe Connection, type: :model do
                    to_state: :established } }
       end
 
-      it_behaves_like 'event dispatchable', 'connection:established'
+      it_behaves_like 'event dispatchable', ['connection', :established]
     end
 
     describe '#void' do
@@ -95,7 +95,7 @@ RSpec.describe Connection, type: :model do
                    to_state: :voided } }
       end
 
-      it_behaves_like 'event dispatchable', 'connection:voided'
+      it_behaves_like 'event dispatchable', ['connection', :voided]
     end
   end
 end

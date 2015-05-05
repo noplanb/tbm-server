@@ -34,6 +34,6 @@ RSpec.describe EventNotifiable do
   describe '#notify_state_changed' do
     before { instance.activate }
     subject { instance.notify_state_changed }
-    it_behaves_like 'event dispatchable', 'test_class:active'
+    it_behaves_like 'event dispatchable', ['test_class', :active]
   end
 end

@@ -80,7 +80,7 @@ RSpec.describe UsersController, type: :controller do
           allow(GenericPushNotification).to receive(:send_notification)
           post :receive_test_video, params
         end
-        it_behaves_like 'event dispatchable', 'video:notification:received'
+        it_behaves_like 'event dispatchable', %w(video notification received)
       end
     end
 

@@ -90,7 +90,7 @@ RSpec.describe NotificationController, type: :controller do
           post :send_video_received, params
         end
       end
-      it_behaves_like 'event dispatchable', 'video:notification:received'
+      it_behaves_like 'event dispatchable', %w(video notification received)
     end
 
     context 'Android' do
@@ -208,7 +208,7 @@ RSpec.describe NotificationController, type: :controller do
           post :send_video_status_update, params
         end
       end
-      it_behaves_like 'event dispatchable', 'video:notification:viewed'
+      it_behaves_like 'event dispatchable', %w(video notification viewed)
     end
 
     context 'Android' do

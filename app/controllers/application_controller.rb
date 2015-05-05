@@ -78,7 +78,7 @@ class ApplicationController < ActionController::Base
     if current_user.present?
       message.update(initiator: 'user', initiator_id: current_user.mkey)
     end
-    EventDispatcher.emit('video:notification:received',
+    EventDispatcher.emit(%w(video notification received),
                          message.merge(
                            target: 'video',
                            target_id: video_filename,

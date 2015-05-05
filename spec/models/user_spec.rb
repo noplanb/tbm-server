@@ -355,7 +355,7 @@ RSpec.describe User, type: :model do
              data: options }
         end
 
-        it_behaves_like 'event dispatchable', "user:#{options[:to_state]}"
+        it_behaves_like 'event dispatchable', ['user', options[:to_state]]
       end
     end
 
@@ -373,7 +373,7 @@ RSpec.describe User, type: :model do
                    to_state: :verified } }
       end
 
-      it_behaves_like 'event dispatchable', 'user:verified'
+      it_behaves_like 'event dispatchable', ['user', :verified]
     end
 
     describe '#pend' do
@@ -390,7 +390,7 @@ RSpec.describe User, type: :model do
                    to_state: :initialized } }
       end
 
-      it_behaves_like 'event dispatchable', 'user:initialized'
+      it_behaves_like 'event dispatchable', ['user', :initialized]
     end
   end
 end
