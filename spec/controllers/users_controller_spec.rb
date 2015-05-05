@@ -5,8 +5,9 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'GET #receive_test_video' do
     let(:video_id) { '1429630398758' }
-    let(:user) { create(:user) }
-    let(:sender) { create(:user) }
+    let(:connection) { create(:established_connection) }
+    let(:user) { connection.creator }
+    let(:sender) { connection.target }
     let!(:s3_credential) do
       cred = S3Credential.instance
       cred.update_credentials(region: 'us-west-1',
@@ -50,7 +51,7 @@ RSpec.describe UsersController, type: :controller do
 
       before { allow_any_instance_of(GenericPushNotification).to receive(:send_notification).and_return(true) }
 
-      specify do
+      it 'expects any instance of PushUser to receive :send_notification with attributes' do
         expect_any_instance_of(PushUser).to receive(:send_notification).with(attributes)
         get :receive_test_video, params
       end
@@ -62,7 +63,25 @@ RSpec.describe UsersController, type: :controller do
 
       describe 'event notification' do
         let(:video_filename) { Kvstore.video_filename(sender, user, video_id) }
-        let(:event_params) do
+        let(:event_params1) do
+          { initiator: 'user',
+            initiator_id: sender.mkey,
+            target: 'video',
+            target_id: video_filename,
+            data: {
+              sender_id: sender.mkey,
+              receiver_id: user.mkey,
+              video_filename: video_filename,
+              video_id: video_id
+            },
+            raw_params: {
+              'key1' => Kvstore.generate_id_key(sender, user, connection),
+              'key2' => video_id,
+              'value' => { 'videoId' => video_id }.to_json
+            }
+          }
+        end
+        let(:event_params2) do
           { initiator: 'admin',
             initiator_id: nil,
             target: 'video',
@@ -80,7 +99,17 @@ RSpec.describe UsersController, type: :controller do
           allow(GenericPushNotification).to receive(:send_notification)
           post :receive_test_video, params
         end
-        it_behaves_like 'event dispatchable', %w(video notification received)
+
+        it "emits ['video', 'kvstore', 'received'] and ['video', 'notification', 'received'] events" do
+          expect(EventDispatcher).to receive(:emit).with(['video', 'kvstore', 'received'], event_params1).ordered
+          expect(EventDispatcher).to receive(:emit).with(['video', 'notification', 'received'], event_params2).ordered
+          subject
+        end
+
+        it 'EventDispatcher.sqs_client receives :send_message twice', event_dispatcher: true do
+          expect(EventDispatcher.sqs_client).to receive(:send_message).twice
+          subject
+        end
       end
     end
 

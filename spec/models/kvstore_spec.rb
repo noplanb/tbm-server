@@ -64,4 +64,68 @@ RSpec.describe Kvstore, type: :model do
     it { is_expected.to be_valid }
   end
 
+  describe '.create_or_update' do
+    subject { described_class.create_or_update(params) }
+    let!(:connection) { create(:established_connection, connection_attributes) }
+    let(:video_filename) { described_class.video_filename(sender_mkey, receiver_mkey, video_id) }
+
+    context 'video id' do
+      let(:params) do
+        { key1: described_class.generate_id_key(sender, receiver, connection),
+          key2: video_id, value: { 'videoId' => video_id }.to_json }
+      end
+
+      specify do
+        expect { subject }.to change { described_class.count }.by(1)
+      end
+
+      context 'event notification' do
+        let(:event_params) do
+          { initiator: 'user',
+            initiator_id: sender.mkey,
+            target: 'video',
+            target_id: video_filename,
+            data: {
+              sender_id: sender.mkey,
+              receiver_id: receiver.mkey,
+              video_filename: video_filename,
+              video_id: video_id
+            },
+            raw_params: params.stringify_keys }
+        end
+
+        it_behaves_like 'event dispatchable', %w(video kvstore received)
+      end
+    end
+
+    context 'video status' do
+      let(:params) do
+        { key1: described_class.generate_status_key(sender, receiver, connection),
+          key2: nil, value: { 'status' => 'downloaded', 'videoId' => video_id }.to_json }
+      end
+
+      specify do
+        expect { subject }.to change { described_class.count }.by(1)
+      end
+
+      context 'event notification' do
+        let(:event_params) do
+          { initiator: 'user',
+            initiator_id: sender.mkey,
+            target: 'video',
+            target_id: video_filename,
+            data: {
+              sender_id: sender.mkey,
+              receiver_id: receiver.mkey,
+              video_filename: video_filename,
+              video_id: video_id
+            },
+            raw_params: params.stringify_keys }
+        end
+
+        it_behaves_like 'event dispatchable', %w(video kvstore downloaded)
+      end
+    end
+  end
+
 end
