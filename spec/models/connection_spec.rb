@@ -39,7 +39,7 @@ RSpec.describe Connection, type: :model do
       end
 
       context 'and established' do
-        let!(:connection) { create(:connection, :established, creator: creator, target: target) }
+        let!(:connection) { create(:established_connection, creator: creator, target: target) }
         it { is_expected.to be_established }
       end
     end
@@ -63,6 +63,39 @@ RSpec.describe Connection, type: :model do
         before { Kvstore.add_id_key(creator, target, video_id) }
         it { is_expected.to be_falsey }
       end
+    end
+  end
+
+  describe 'states' do
+    let(:instance) { create(:connection) }
+    describe '#establish' do
+      subject { instance.establish }
+      let(:event_params) do
+         { initiator: 'connection',
+           initiator_id: instance.ckey,
+           data: { event: :establish,
+                   from_state: :voided,
+                   to_state: :established } }
+      end
+
+      it_behaves_like 'event dispatchable', ['connection', :established]
+    end
+
+    describe '#void' do
+      subject { instance.void }
+      before do
+        allow(EventDispatcher.sqs_client).to receive(:send_message)
+        instance.establish!
+      end
+      let(:event_params) do
+         { initiator: 'connection',
+           initiator_id: instance.ckey,
+           data: { event: :void,
+                   from_state: :established,
+                   to_state: :voided } }
+      end
+
+      it_behaves_like 'event dispatchable', ['connection', :voided]
     end
   end
 end

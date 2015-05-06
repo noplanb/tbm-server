@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   include EnumHandler
   include AASM
+  include EventNotifiable
 
   has_many :connections_as_creator, class_name: 'Connection', foreign_key: :creator_id, dependent: :destroy
   has_many :connections_as_target, class_name: 'Connection', foreign_key: :target_id, dependent: :destroy
@@ -21,38 +22,42 @@ class User < ActiveRecord::Base
     state :failed_to_register
     state :verified
 
-    event :register do
-      transitions from: [:initialized, :invited], to: :registered
-    end
-
-    event :fail_to_register do
-      transitions from: [:initialized, :invited], to: :failed_to_register
-    end
-
-    event :invite do
+    event :invite, after: :notify_state_changed do
       transitions from: :initialized, to: :invited
     end
 
-    event :verify do
+    event :register, after: :notify_state_changed do
+      transitions from: [:initialized, :invited], to: :registered
+    end
+
+    event :fail_to_register, after: :notify_state_changed do
+      transitions from: [:initialized, :invited], to: :failed_to_register
+    end
+
+    event :verify, after: :notify_state_changed do
       transitions from: :registered, to: :verified
     end
 
-    event :pend do
+    event :pend, after: :notify_state_changed do
       transitions from: [:registered, :failed_to_register, :verified], to: :initialized
     end
   end
 
-  # GARF: Change this to before_create when we finalize the algorithm for creating keys. Right now I incorporate id
-  # in the key so I need to have after_create
-  before_save  :strip_emoji, :set_keys
+  before_save :strip_emoji, :set_keys
 
   def self.find_by_raw_mobile_number(value)
     find_by_mobile_number GlobalPhone.normalize(value)
   end
 
   def self.search(query)
+    return all if query.blank?
+    return where(id: query) if query.is_a?(Integer) || query.match(/^\d+$/)
     query_param = "%#{query}%"
-    where('first_name LIKE ? OR last_name LIKE ? OR mobile_number LIKE ?', query_param, query_param, query_param)
+    where('mkey = ? OR first_name LIKE ? OR last_name LIKE ? OR mobile_number LIKE ?',
+          query,
+          query_param,
+          query_param,
+          query_param)
   end
 
   def name
@@ -152,6 +157,10 @@ class User < ActiveRecord::Base
     return true if verification_code.blank? || verification_date_time.blank?
     return true if verification_date_time < n.minutes.from_now
     false
+  end
+
+  def event_id
+    mkey
   end
 
   private

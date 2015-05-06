@@ -4,7 +4,7 @@ section
   .col-md-12
     = form_tag users_path, method: :get, id: 'users-filter-form', class: 'form-inline' do
       .form-group
-        = search_field_tag :query, params[:query], class: 'form-control', placeholder: 'enter part of first_name, last_name or mobile_number'
+        = search_field_tag :query, params[:query], class: 'form-control', placeholder: 'enter id, mkey or part of first_name, last_name or mobile_number'
         = submit_tag 'Filter'
     br
   .col-md-12

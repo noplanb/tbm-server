@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_with_token
-    authenticate_with_http_token do |token, options|
+    authenticate_with_http_token do |token, _options|
       @user = @current_user = User.find_by_mkey(token)
       @user && @user.auth
     end
@@ -67,5 +67,38 @@ class ApplicationController < ActionController::Base
 
   def store_url
     ios? ? iphone_store_url : android_store_url
+  end
+
+  def notify_video_received(push_user, sender_mkey, video_id)
+    video_filename = Kvstore.video_filename(sender_mkey,
+                                            push_user.mkey,
+                                            video_id)
+
+    message = { initiator: 'admin', initiator_id: nil }
+    if current_user.present?
+      message.update(initiator: 'user', initiator_id: current_user.mkey)
+    end
+    EventDispatcher.emit(%w(video notification received),
+                         message.merge(
+                           target: 'video',
+                           target_id: video_filename,
+                           data: {
+                             sender_id: sender_mkey,
+                             receiver_id: push_user.mkey,
+                             video_filename: video_filename,
+                             video_id: video_id
+                           },
+                           raw_params: params.except(:controller, :action)))
+  end
+
+  def send_video_received_notification(push_user, sender_mkey, sender_name, video_id)
+    notify_video_received(push_user, sender_mkey, video_id)
+    @push_user.send_notification(type: :alert,
+                                 alert: "New message from #{sender_name}",
+                                 badge: 1,
+                                 payload: { type: 'video_received',
+                                            from_mkey: sender_mkey,
+                                            video_id: video_id,
+                                            host: request.host })
   end
 end

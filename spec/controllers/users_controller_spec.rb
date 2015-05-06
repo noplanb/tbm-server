@@ -1,22 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
-  let(:video_id) { '1429630398758' }
-  let(:user) { create(:user) }
-  let(:sender) { create(:user) }
-  let!(:connection) { Connection.find_or_create(user.id, sender.id) }
-  let!(:s3_credential) do
-    S3Credential.instance.update_credentials(region: 'us-west-1',
-                                             bucket: 'bucket',
-                                             access_key: 'access_key',
-                                             secret_key: 'secret_key')
-  end
-
   before { authenticate_with_http_basic }
-  before { allow(subject).to receive(:s3_object).and_return(double('AWS::S3::Object', write: true)) }
 
   describe 'GET #receive_test_video' do
-    let(:params) { { id: user.id, sender_id: sender.id } }
+    let(:video_id) { '1429630398758' }
+    let(:connection) { create(:established_connection) }
+    let(:user) { connection.creator }
+    let(:sender) { connection.target }
+    let!(:s3_credential) do
+      cred = S3Credential.instance
+      cred.update_credentials(region: 'us-west-1',
+                              bucket: 'bucket',
+                              access_key: 'access_key',
+                              secret_key: 'secret_key')
+      cred
+    end
+    let(:params) { { sender_id: sender.id, id: user.id } }
     let(:attributes) do
       { type: :alert,
         badge: 1,
@@ -27,6 +27,21 @@ RSpec.describe UsersController, type: :controller do
         alert: "New message from #{sender.first_name}" }
     end
 
+    before { allow(controller).to receive(:test_video_id).and_return(video_id) }
+
+    around do |example|
+      Connection.find_or_create(user.id, sender.id)
+      VCR.use_cassette('s3_put_video', erb: {
+                         region: s3_credential.region,
+                         bucket: s3_credential.bucket,
+                         access_key: s3_credential.access_key,
+                         secret_key: s3_credential.secret_key,
+                         key: Kvstore.video_filename(sender, user, video_id)
+                       }) do
+          example.run
+      end
+    end
+
     context 'when push user exists' do
       let!(:push_user) do
         PushUser.create_or_update(mkey: user.mkey,
@@ -35,15 +50,66 @@ RSpec.describe UsersController, type: :controller do
       end
 
       before { allow_any_instance_of(GenericPushNotification).to receive(:send_notification).and_return(true) }
-      before { allow(controller).to receive(:create_test_video).and_return(video_id) }
 
-      it 'expects any instance of PushUser receives :send_notification with valid attributes' do
+      it 'expects any instance of PushUser to receive :send_notification with attributes' do
         expect_any_instance_of(PushUser).to receive(:send_notification).with(attributes)
         get :receive_test_video, params
       end
+
       specify do
         get :receive_test_video, params
         expect(response).to redirect_to(user)
+      end
+
+      describe 'event notification' do
+        let(:video_filename) { Kvstore.video_filename(sender, user, video_id) }
+        let(:event_params1) do
+          { initiator: 'user',
+            initiator_id: sender.mkey,
+            target: 'video',
+            target_id: video_filename,
+            data: {
+              sender_id: sender.mkey,
+              receiver_id: user.mkey,
+              video_filename: video_filename,
+              video_id: video_id
+            },
+            raw_params: {
+              'key1' => Kvstore.generate_id_key(sender, user, connection),
+              'key2' => video_id,
+              'value' => { 'videoId' => video_id }.to_json
+            }
+          }
+        end
+        let(:event_params2) do
+          { initiator: 'admin',
+            initiator_id: nil,
+            target: 'video',
+            target_id: video_filename,
+            data: {
+              sender_id: sender.mkey,
+              receiver_id: user.mkey,
+              video_filename: video_filename,
+              video_id: video_id
+            },
+            raw_params: Hash[params.map { |k, v| [k.to_s, v.to_s] }] }
+        end
+
+        subject do
+          allow(GenericPushNotification).to receive(:send_notification)
+          post :receive_test_video, params
+        end
+
+        it "emits ['video', 'kvstore', 'received'] and ['video', 'notification', 'received'] events" do
+          expect(EventDispatcher).to receive(:emit).with(['video', 'kvstore', 'received'], event_params1).ordered
+          expect(EventDispatcher).to receive(:emit).with(['video', 'notification', 'received'], event_params2).ordered
+          subject
+        end
+
+        it 'EventDispatcher.sqs_client receives :send_message twice', event_dispatcher: true do
+          expect(EventDispatcher.sqs_client).to receive(:send_message).twice
+          subject
+        end
       end
     end
 

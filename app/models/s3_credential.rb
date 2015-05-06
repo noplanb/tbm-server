@@ -5,4 +5,8 @@ class S3Credential < Credential
   define_attributes :region, :bucket, :access_key, :secret_key
 
   validates :region, allow_blank: true, inclusion: { in: REGION_LIST, message: "must either: #{REGION_LIST.join(', ')}" }
+
+  def s3_client
+    @s3_client ||= Aws::S3::Client.new(region: region, access_key_id: access_key, secret_access_key: secret_key)
+  end
 end

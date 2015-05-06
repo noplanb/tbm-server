@@ -94,39 +94,31 @@ class UsersController < AdminController
     sender = User.find params[:sender_id]
     video_id = create_test_video(sender, @user, file_name)
     Kvstore.add_id_key(sender, @user, video_id)
-    send_video_received_notification(sender, @user, video_id)
+    @push_user = PushUser.find_by_mkey(@user.mkey) || not_found
+    send_video_received_notification(@push_user, sender.mkey, sender.first_name, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
 
+  def test_video_id
+    (Time.now.to_f * 1000).to_i.to_s
+  end
+
   def create_test_video(sender, receiver, file_name)
-    video_id = (Time.now.to_f * 1000).to_i.to_s
-    s3_object(sender, receiver, video_id).write(file: file_name)
+    video_id = test_video_id
+    put_s3_object(sender, receiver, video_id, file_name)
     video_id
   end
 
-  def s3_object(sender, receiver, video_id)
-    creds = S3Credential.instance
-    s3 = AWS::S3.new(access_key_id: creds.access_key, secret_access_key: creds.secret_key, region: creds.region)
-    b = s3.buckets[creds.bucket]
-    o = b.objects[Kvstore.video_filename(sender, receiver, video_id)]
-    o
+  def put_s3_object(sender, receiver, video_id, file_name)
+    cred = S3Credential.instance
+    cred.s3_client.put_object(bucket: cred.bucket,
+                              key: Kvstore.video_filename(sender, receiver, video_id),
+                              body: File.read(file_name))
   end
 
   def test_video
     Video.find_by_filename 'test_video'
   end
-
-  def send_video_received_notification(sender, receiver, video_id)
-    @push_user = PushUser.find_by_mkey(receiver.mkey) || not_found
-    @push_user.send_notification(type: :alert,
-                                 payload: { type: 'video_received',
-                                            from_mkey: sender.mkey,
-                                            video_id: video_id,
-                                            host: request.host },
-                                 badge:1,
-                                 alert: "New message from #{sender.first_name}")
-  end
-
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user

@@ -1,0 +1,52 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: <%= queue_url %>
+    body:
+      encoding: UTF-8
+      string: Action=SendMessage&MessageBody=%7B%22initiator%22%3A%22user%22%2C%22initiator_id%22%3A%221%22%2C%22event%22%3A%22user%3Averified%22%2C%22triggered_by%22%3A%22zazo%3Aapi%22%2C%22triggered_at%22%3A%222015-04-29T22%3A15%3A53.906Z%22%7D&QueueUrl=<%= CGI.escape queue_url %>&Version=2012-11-05
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.0.41 ruby/2.2.2 x86_64-darwin14
+      X-Amz-Date:
+      - 20150429T221554Z
+      Host:
+      - sqs.<%= region %>.amazonaws.com
+      X-Amz-Content-Sha256:
+      - 8942242af4d6316f8ab150f54adf6fe1456ab1066feb2d29557c653c52519030
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=<%= access_key %>/20150429/<%= region %>/sqs/aws4_request,
+        SignedHeaders=content-type;host;user-agent;x-amz-content-sha256;x-amz-date,
+        Signature=bb33e5f9c43111e504d657e0774b7137e09fbf0844f52e13c6135bfae129024c
+      Content-Length:
+      - '345'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Server
+      Date:
+      - Wed, 29 Apr 2015 22:15:57 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '378'
+      Connection:
+      - keep-alive
+      X-Amzn-Requestid:
+      - da3ce3cf-213b-5c70-82f6-ae747b67dde2
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0"?><SendMessageResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><SendMessageResult><MessageId>a7f37b27-f367-4eea-bd92-18437fb249d9</MessageId><MD5OfMessageBody>2e22c5550b2f492478be795002695832</MD5OfMessageBody></SendMessageResult><ResponseMetadata><RequestId>da3ce3cf-213b-5c70-82f6-ae747b67dde2</RequestId></ResponseMetadata></SendMessageResponse>
+    http_version:
+  recorded_at: Wed, 29 Apr 2015 22:15:56 GMT
+recorded_with: VCR 2.9.3
