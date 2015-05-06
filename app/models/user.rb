@@ -43,8 +43,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  # GARF: Change this to before_create when we finalize the algorithm for creating keys. Right now I incorporate id
-  # in the key so I need to have after_create
   before_save :strip_emoji, :set_keys
 
   def self.find_by_raw_mobile_number(value)

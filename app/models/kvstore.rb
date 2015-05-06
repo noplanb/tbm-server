@@ -1,5 +1,5 @@
 class Kvstore < ActiveRecord::Base
-  after_save :notify_with_event
+  after_save :trigger_event
 
   def self.create_or_update(params)
     if params[:key2].blank?
@@ -56,7 +56,7 @@ class Kvstore < ActiveRecord::Base
 
   private
 
-  def notify_with_event
+  def trigger_event
     return false if key1.blank? && value.blank?
     sender_id, receiver_id, _hash, _type = key1.split('-')
     parsed_value = JSON.parse(value)
