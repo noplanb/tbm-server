@@ -1,7 +1,8 @@
 require 'no_plan_b/utils/text_utils'
 
 class Connection < ActiveRecord::Base
-  include EnumHandler
+  include AASM
+  include EventNotifiable
 
   belongs_to :creator, class_name: 'User'
   belongs_to :target, class_name: 'User'
@@ -12,17 +13,24 @@ class Connection < ActiveRecord::Base
 
   after_create :set_ckey
 
-  define_enum :status, [:established, :voided],
-              sets: {
-                live: [:established]
-              },
-              primary: true
+  aasm column: :status do
+    state :voided, initial: true
+    state :established
+
+    event :establish, after: :notify_state_changed do
+      transitions from: :voided, to: :established
+    end
+
+    event :void, after: :notify_state_changed do
+      transitions from: :established, to: :voided
+    end
+  end
 
   scope :for_user_id, ->(user_id) { where ['creator_id = ? OR target_id = ?', user_id, user_id] }
   scope :between_creator_and_target, ->(creator_id, target_id) { where ['creator_id = ? AND target_id = ?', creator_id, target_id] }
 
   def self.live_between(user1_id, user2_id)
-    between_creator_and_target(user1_id, user2_id).live + between_creator_and_target(user2_id, user1_id).live
+    between_creator_and_target(user1_id, user2_id).established + between_creator_and_target(user2_id, user1_id).established
   end
 
   def self.between(user1_id, user2_id)
@@ -30,11 +38,13 @@ class Connection < ActiveRecord::Base
   end
 
   def self.find_or_create(creator_id, target_id)
-    between(creator_id, target_id).first || create(creator_id: creator_id, target_id: target_id, status: :established)
+    connection = between(creator_id, target_id).first || create(creator_id: creator_id, target_id: target_id)
+    connection.establish! if connection.may_establish?
+    connection
   end
 
   def check_for_dups
-    unless Connection.live_between(creator_id, target_id).blank?
+    if Connection.live_between(creator_id, target_id).present?
       fail "Cannot create a connection between #{creator_id} and #{target_id} a live one already exists."
     end
   end
@@ -45,9 +55,13 @@ class Connection < ActiveRecord::Base
   end
 
   def active?
-    return false if status != :established
+    return false unless established?
     Kvstore.where('key1 LIKE ?', "#{key_search(creator, target)}%").count > 0 &&
       Kvstore.where('key1 LIKE ?', "#{key_search(target, creator)}%").count > 0
+  end
+
+  def event_id
+    ckey
   end
 
   private

@@ -78,5 +78,26 @@ RSpec.describe S3Credential, type: :model do
                                        secret_key: 'secret_key')
       end
     end
+
+    describe '#s3_client' do
+      subject { instance.s3_client }
+
+      it { is_expected.to be_a(Aws::S3::Client) }
+
+      context 'region' do
+        subject { instance.s3_client.config.region }
+        it { is_expected.to eq(instance.region) }
+      end
+
+      context 'access_key_id' do
+        subject { instance.s3_client.config.access_key_id }
+        it { is_expected.to eq(instance.access_key) }
+      end
+
+      context 'secret_access_key' do
+        subject { instance.s3_client.config.secret_access_key }
+        it { is_expected.to eq(instance.secret_key) }
+      end
+    end
   end
 end

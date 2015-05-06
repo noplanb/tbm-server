@@ -12,16 +12,12 @@ class NotificationController < ApplicationController
   end
 
   def send_video_received
-    @push_user.send_notification(type: :alert,
-                                 alert: "New message from #{params[:sender_name]}",
-                                 payload: { type: 'video_received',
-                                            from_mkey: params[:from_mkey],
-                                            video_id: params[:video_id],
-                                            host: request.host })
+    send_video_received_notification(@push_user, params[:from_mkey], params[:sender_name], params[:video_id])
     render json: { status: '200' }
   end
 
   def send_video_status_update
+    notify_video_status_updated(@push_user)
     @push_user.send_notification(type: :silent,
                                  payload: { type: 'video_status_update',
                                             to_mkey: params[:to_mkey],
@@ -64,5 +60,24 @@ class NotificationController < ApplicationController
       logger.info(msg)
       render json: { status: '404', title: 'Not found', msg: "No PushUser found for mkey: #{params[:target_mkey]}" }, status: :not_found
     end
+  end
+
+
+  def notify_video_status_updated(push_user)
+    video_filename = Kvstore.video_filename(params[:target_mkey],
+                                            params[:to_mkey],
+                                            params[:video_id])
+    EventDispatcher.emit(['video', 'notification', params[:status]],
+                         initiator: 'user',
+                         initiator_id: push_user.mkey,
+                         target: 'video',
+                         target_id: video_filename,
+                         data: {
+                           sender_id: params[:target_mkey],
+                           receiver_id: params[:to_mkey],
+                           video_filename: video_filename,
+                           video_id: params[:video_id]
+                         },
+                         raw_params: params.except(:controller, :action))
   end
 end

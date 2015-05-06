@@ -9,6 +9,7 @@ RSpec.describe RegController, type: :controller do
         'last_name' => 'Test',
         'mobile_number' => mobile_number }
     end
+    let(:user) { User.find_by_raw_mobile_number(mobile_number) }
 
     it 'returns http success' do
       VCR.use_cassette('twilio_message_with_success', erb: {
@@ -46,6 +47,38 @@ RSpec.describe RegController, type: :controller do
           get :reg, params
         end
         expect(JSON.parse(response.body).keys).to include('status', 'auth', 'mkey')
+      end
+
+      context 'status' do
+        specify do
+          VCR.use_cassette('twilio_message_with_success', erb: {
+                             twilio_ssid: Figaro.env.twilio_ssid,
+                             twilio_token: Figaro.env.twilio_token,
+                             from: Figaro.env.twilio_from_number,
+                             to: mobile_number }) do
+            get :reg, params
+          end
+          expect(user.status).to eq('registered')
+        end
+      end
+    end
+
+    context 'when device_platform is blank' do
+      let(:params) do
+        { 'first_name' => 'Egypt',
+          'last_name' => 'Test',
+          'mobile_number' => mobile_number }
+      end
+
+      it 'returns failure' do
+        VCR.use_cassette('twilio_message_with_success', erb: {
+                           twilio_ssid: Figaro.env.twilio_ssid,
+                           twilio_token: Figaro.env.twilio_token,
+                           from: Figaro.env.twilio_from_number,
+                           to: mobile_number }) do
+          get :reg, params
+        end
+        expect(JSON.parse(response.body).keys).to include('status', 'title', 'msg')
       end
     end
 
@@ -93,6 +126,36 @@ RSpec.describe RegController, type: :controller do
           end
         end
       end
+
+      context 'status' do
+        specify do
+          expect(user.status).to eq('failed_to_register')
+        end
+      end
+    end
+  end
+
+  describe 'GET #verify_code' do
+    let(:user) { create(:ios_user, status: :registered) }
+    let(:params) do
+      user.attributes.slice('first_name', 'last_name',
+                            'device_platform', 'verification_code')
+    end
+    before { user.reset_verification_code }
+
+    specify do
+      expect do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          get :verify_code, params
+        end
+      end.to change { user.reload.status }.from('registered').to('verified')
+    end
+
+    specify do
+      authenticate_with_http_digest(user.mkey, user.auth) do
+        get :verify_code, params
+      end
+      expect(response).to have_http_status(:success)
     end
   end
 end

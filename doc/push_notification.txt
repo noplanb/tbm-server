@@ -7,16 +7,16 @@ Architecture
       - ios specific: alert, badge, sound
       - payload - <json>
   - notification_handler calls appropriate gateway using the appropriate server
-  
+
   - Types of TBM notifications
     - video_received
-      - IOS: 
-        - Always send an alert type notification but use content-available. 
+      - IOS:
+        - Always send an alert type notification but use content-available.
         - In most cases we will be woken to do the fetch in the background and by the time the user responds to the alert we should be done. And in the cases where we are not woken to the background the user will get the notification and can wake us.
         - Send badge of 1 app can badge differently if it is woken.
     _ video_status_updated
       - IOS: send content-available only no alert. When we get the notification update the status appropriately and silently.
-    
+
 Todo
   x Read about apns badging etc.
   x Implement GenericPushNotification class
@@ -33,15 +33,15 @@ Todo
         x token
         x platform - ios | android
         x ios type: alert | silent
-        x ios specific attrs: 
+        x ios specific attrs:
           x alert
-          x badge 
+          x badge
           x sound
         x payload: hash
       x Methods
         x send
-        
-GOAL :: Make android and ios phones interoperate against the same server. Dont change android client for now. 
+
+GOAL :: Make android and ios phones interoperate against the same server. Dont change android client for now.
   x Wire the controller GPN for both android and ios notifications.
   x Test android notifications
     x Destroy all videos
@@ -52,11 +52,11 @@ GOAL :: Make android and ios phones interoperate against the same server. Dont c
   - Test between ios and android
     - ios send platform with push token
     - Point ios at local server
-    
-      
-       
-    
-  
+
+
+
+
+
 Apple Push Notification Server
 
  - Set up provider server
@@ -66,5 +66,92 @@ Apple Push Notification Server
    - Add apns to gemfile
    - Follow instructions with the apns gem.
    - Note the latest apns gem is not in the gem directory. Better to get it straight from github.
-   
-   
+
+
+4/29/2015
+---------
+
+PROBLEM: If app is killed in task manager or never launched after power up it will not get the notification and badge number is never set.
+
+SOLUTION:
+  Always send a badge number of 1 from server with each VideoReceived notification.
+
+TRY: Do nothing else. Hopefully the badge will be set by the notification first and if we are launched in the background we will adjust appropriately and our adjust will override. If we are not launched in background then at least the badge has a 1 which is better than nothing.
+
+This works well.
+
+TEST CASES:
+
+- App killed in task manager when new messages come in
+  - View all unviewed messages on p1
+  - Kill zazo on p1 in task manager
+  - EXPECT
+    - Icon on home screen shows no unviewed badge count
+  - Send 3 messages from p2 to p1
+  - EXPECT
+    - 3X Zazo user notification to appear on the phone with zazo tone
+    - Zazo icon on home screen shows red badge with 1
+
+- App in background when new messages come in WIFI
+  - Device connected to wifi
+  - View all unviewed messages on p1
+  - Put zazo in background by pressing home button
+  - EXPECT
+    - Icon on home screen shows no unviewed badge count
+  - Send 3 messages from p2 to p1
+  - EXPECT
+    - 3X Zazo user notification to appear on the phone with zazo tone
+    - Zazo icon on home screen shows red badge with 3
+  - Wait 30 seconds
+  - Launch Zazo
+  - EXPECT
+    - 3 zazos from p2 are already on p1 when the app is opened.
+
+- App in background when new messages come in Cellular
+  - Device connected to wifi
+  - View all unviewed messages on p1
+  - Put zazo in background by pressing home button
+  - EXPECT
+    - Icon on home screen shows no unviewed badge count
+  - Send 3 messages from p2 to p1
+  - EXPECT
+    - 3X Zazo user notification to appear on the phone with zazo tone
+    - Zazo icon on home screen shows red badge with 3
+  - Wait 30 seconds
+  - Launch Zazo
+  - EXPECT
+    - Messages from p2 are in downloading state when app is opened but eventually download successfully.
+
+- Device locked app in background when new messages come in (wifi or cellular ok)
+  - View all unviewed messages on p1
+  - Turn off the phone (not power down)
+  - Send 3 messages from p2 to p1
+  - EXPECT
+    - 3X Zazo user notification to appear on the lock screen with zazo tone
+  - Open phone
+  - EXPECT
+    - Zazo icon on home screen shows red badge with 3
+
+- Device powered down when messages sent
+  - View all unviewed messages on p1
+  - Power off p1
+  - Send 3 messages from p2 to p1
+  - Power on p1
+  - EXPECT
+    - A single notification with zazo tone to home screen
+  - Open phone do not tap zazo notification
+  - EXPECT
+    - Zazo icon on home screen shows red badge with 1
+
+- Icon cleared to show only unviewed when exiting app
+  - View all unviewed messages on p1
+  - Put zazo in background on p1 by clicking home button
+  - Send 3 messages from p2 to p1
+  - EXPECT
+    - 3X notification messages.
+    - Zazo app icon on home screen shows red badge with 3
+  - Launch zazo
+  - Watch only 1 message
+  - Put Zazo in background
+  - EXPECT
+    - Zazo icon shows red badge with 2

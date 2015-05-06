@@ -28,7 +28,7 @@ gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 
-gem 'aws-sdk', '< 2.0'
+gem 'aws-sdk', '~> 2'
 
 # Used in notifications
 gem 'faraday_middleware'
@@ -79,6 +79,8 @@ gem 'rollbar'
 gem 'settingslogic'
 gem 'rack-attack'
 gem 'newrelic_rpm'
+gem 'kaminari'
+gem 'aasm'
 
 group :development do
   gem 'better_errors'
@@ -115,4 +117,5 @@ group :test do
   gem 'simplecov', require: false
   gem 'webmock'
   gem 'vcr'
+  gem 'timecop'
 end
