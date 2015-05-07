@@ -14,6 +14,10 @@ module LandingHelper
     request.user_agent =~ /ios/i
   end
 
+  def windows_phone?
+    request.user_agent =~ /windows phone/i
+  end
+
   def app_name
     Settings.app_name
   end
