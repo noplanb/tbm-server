@@ -24,3 +24,5 @@ en:
   device_platforms:
     ios: iOS
     android: Android
+  messages:
+    user_not_found: User not found with ID or mkey %{query}

@@ -133,4 +133,57 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe 'GET #index', focus: true do
+    let(:user) { create(:user) }
+
+    describe 'search' do
+      context 'by first_name' do
+        let(:params) { { query: user.first_name } }
+        specify do
+          get :index, params
+          expect(assigns(:users)).to eq([user])
+        end
+      end
+
+      context 'by mobile_number' do
+        let(:params) { { query: user.mobile_number.gsub('+', '') } }
+        specify do
+          get :index, params
+          expect(assigns(:users)).to eq([user])
+        end
+      end
+    end
+
+    describe 'go to user' do
+      context 'by id' do
+        let(:params) { { user_id_or_mkey: user.id } }
+
+        specify do
+          get :index, params
+          expect(response).to redirect_to(user)
+        end
+      end
+
+      context 'by mkey' do
+        let(:params) { { user_id_or_mkey: user.mkey } }
+
+        specify do
+          get :index, params
+          expect(response).to redirect_to(user)
+        end
+      end
+
+      context 'when no user found' do
+        let(:params) { { user_id_or_mkey: 'fooo' } }
+
+        describe 'alert' do
+          specify do
+            get :index, params
+            expect(flash[:alert]).to be_present
+          end
+        end
+      end
+    end
+  end
 end

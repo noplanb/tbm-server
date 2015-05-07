@@ -80,16 +80,6 @@ RSpec.describe User, type: :model do
       let(:query) {}
       it { is_expected.to eq([user1, user2, user3]) }
     end
-
-    context 'by id' do
-      let(:query) { user1.id }
-      it { is_expected.to eq([user1]) }
-    end
-
-    context 'by mkey' do
-      let(:query) { user1.mkey }
-      it { is_expected.to eq([user1]) }
-    end
   end
 
   describe 'before_save' do
