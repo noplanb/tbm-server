@@ -1,4 +1,6 @@
 class LandingController < ApplicationController
+  include LandingHelper # FIXME: should be included automatically
+
   layout 'landing'
   before_action :set_state
 
@@ -7,6 +9,7 @@ class LandingController < ApplicationController
   end
 
   def invite
+    return if windows_phone?
     redirect_to iphone_store_url if ios?
     redirect_to android_store_url if android?
   end

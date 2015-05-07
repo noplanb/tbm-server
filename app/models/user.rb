@@ -50,11 +50,8 @@ class User < ActiveRecord::Base
   end
 
   def self.search(query)
-    return all if query.blank?
-    return where(id: query) if query.is_a?(Integer) || query.match(/^\d+$/)
     query_param = "%#{query}%"
-    where('mkey = ? OR first_name LIKE ? OR last_name LIKE ? OR mobile_number LIKE ?',
-          query,
+    where('first_name LIKE ? OR last_name LIKE ? OR mobile_number LIKE ?',
           query_param,
           query_param,
           query_param)
