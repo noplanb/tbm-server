@@ -134,7 +134,7 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  describe 'GET #index', focus: true do
+  describe 'GET #index' do
     let(:user) { create(:user) }
 
     describe 'search' do
