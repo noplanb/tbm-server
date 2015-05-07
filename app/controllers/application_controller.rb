@@ -40,35 +40,6 @@ class ApplicationController < ActionController::Base
     fail ActionController::RoutingError.new('Not Found')
   end
 
-  # FIXME: Alex, this is ugly cuz it is redundant with landing helper. Please fix. Isnt there a way to make the methods in
-  # controller be available to views automatically. Anyway the ones related to type of request are pretty broadly useful
-  # methods so probably shouldnt be down in landingHelper. Please clean as you see fit. I just wanted to make it work
-  # since iphone is now in the store.
-
-  def mobile_device?
-    request.user_agent =~ /mobile|webos/i
-  end
-
-  def android?
-    request.user_agent =~ /android/i
-  end
-
-  def ios?
-    request.user_agent =~ /ios|iphone|ipad/i
-  end
-
-  def iphone_store_url
-    Settings.iphone_store_url
-  end
-
-  def android_store_url
-    Settings.android_store_url
-  end
-
-  def store_url
-    ios? ? iphone_store_url : android_store_url
-  end
-
   def notify_video_received(push_user, sender_mkey, video_id)
     video_filename = Kvstore.video_filename(sender_mkey,
                                             push_user.mkey,
