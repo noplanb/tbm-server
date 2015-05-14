@@ -51,7 +51,7 @@ RSpec.describe LandingController, type: :controller do
 
       specify do
         subject
-        expect(response).to render_template(:invite)
+        expect(response).to be_redirect
       end
     end
 
@@ -93,7 +93,7 @@ RSpec.describe LandingController, type: :controller do
 
       specify do
         subject
-        expect(response).to render_template(:invite)
+        expect(response).to be_redirect
       end
     end
   end
