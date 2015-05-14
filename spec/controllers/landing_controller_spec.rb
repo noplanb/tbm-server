@@ -19,7 +19,9 @@ RSpec.describe LandingController, type: :controller do
     end
 
     context 'iPhone' do
-      before { request.user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12F70 Safari/600.1.4' }
+      before { request.user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X)
+        AppleWebKit/600.1.4 (KHTML, like Gecko)
+        Version/8.0 Mobile/12F70 Safari/600.1.4' }
 
       specify do
         subject
@@ -56,7 +58,9 @@ RSpec.describe LandingController, type: :controller do
     end
 
     context 'iPhone & Android' do
-      before { request.user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12F70 Safari/600.1.4 Android 5.0' }
+      before { request.user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X)
+        AppleWebKit/600.1.4 (KHTML, like Gecko)
+        Version/8.0 Mobile/12F70 Safari/600.1.4 Android 5.0' }
 
       specify do
         expect(Rollbar).to receive(:warning)

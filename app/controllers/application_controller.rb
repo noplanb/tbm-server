@@ -4,6 +4,11 @@ class ApplicationController < ActionController::Base
   # protect_from_forgery with: :exception
   REALM = 'zazo.com'
 
+  MOBILE_REGEXP = /mobile|webos/i
+  ANDROID_REGEXP = /android/i
+  IOS_REGEXP = /ios|iphone|ipad|ipod/i
+  WINDOWS_PHONE_REGEXP = /windows phone/i
+
   attr_reader :current_user
   helper_method :current_user
 
@@ -77,19 +82,23 @@ class ApplicationController < ActionController::Base
   # = User Agent related methods =
   # ==============================
   def mobile_device?
-    request.user_agent =~ /mobile|webos/i
+    !request.user_agent.match(MOBILE_REGEXP).nil?
   end
 
   def android?
-    request.user_agent =~ /android/i
+    request.user_agent.match(WINDOWS_PHONE_REGEXP).nil? &&
+      request.user_agent.match(IOS_REGEXP).nil? &&
+      !request.user_agent.match(ANDROID_REGEXP).nil?
   end
 
   def ios?
-    request.user_agent =~ /ios|iphone|ipad|ipod/i
+    request.user_agent.match(WINDOWS_PHONE_REGEXP).nil? &&
+      request.user_agent.match(ANDROID_REGEXP).nil? &&
+      !request.user_agent.match(IOS_REGEXP).nil?
   end
 
   def windows_phone?
-    request.user_agent =~ /windows phone/i
+    !request.user_agent.match(WINDOWS_PHONE_REGEXP).nil?
   end
 
   def app_name
