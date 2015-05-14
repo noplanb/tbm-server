@@ -9,9 +9,18 @@ class LandingController < ApplicationController
   end
 
   def invite
-    return if windows_phone?
-    redirect_to iphone_store_url if ios?
-    redirect_to android_store_url if android?
+    if android? && ios?
+      Rollbar.warning('Both iOS and Android detected')
+      redirect_to root_path
+    elsif windows_phone?
+      Rollbar.warning('Windows Phone detected')
+    elsif android?
+      redirect_to android_store_url
+    elsif ios?
+      redirect_to iphone_store_url
+    else
+      Rollbar.warning('Unsupported User Agent detected') if mobile_device?
+    end
   end
 
   def privacy

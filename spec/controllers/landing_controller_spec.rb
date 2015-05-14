@@ -45,6 +45,53 @@ RSpec.describe LandingController, type: :controller do
       end
 
       specify do
+        expect(Rollbar).to receive(:warning)
+        subject
+      end
+
+      specify do
+        subject
+        expect(response).to render_template(:invite)
+      end
+    end
+
+    context 'iOS & Android' do
+      before { request.user_agent = 'iOS 8.3/Android 5.0' }
+
+      specify do
+        expect(Rollbar).to receive(:warning)
+        subject
+      end
+
+      specify do
+        subject
+        expect(response).to redirect_to('/')
+      end
+    end
+
+    context 'Unsupported' do
+      before { request.user_agent = 'Unsupported' }
+
+      specify do
+        expect(Rollbar).to_not receive(:warning)
+        subject
+      end
+
+      specify do
+        subject
+        expect(response).to render_template(:invite)
+      end
+    end
+
+    context 'Unsupported Mobile' do
+      before { request.user_agent = 'Unsupported Mobile' }
+
+      specify do
+        expect(Rollbar).to receive(:warning)
+        subject
+      end
+
+      specify do
         subject
         expect(response).to render_template(:invite)
       end
