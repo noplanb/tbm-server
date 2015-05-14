@@ -11,74 +11,56 @@ RSpec.describe RegController, type: :controller do
     end
     let(:user) { User.find_by_raw_mobile_number(mobile_number) }
 
-    it 'returns http success' do
-      VCR.use_cassette('twilio_message_with_success', erb: {
-                         twilio_ssid: Figaro.env.twilio_ssid,
-                         twilio_token: Figaro.env.twilio_token,
-                         from: Figaro.env.twilio_from_number,
-                         to: mobile_number }) do
-        get :reg, params
+    context 'success' do
+      subject do
+        VCR.use_cassette('twilio_message_with_success', erb: {
+                           twilio_ssid: Figaro.env.twilio_ssid,
+                           twilio_token: Figaro.env.twilio_token,
+                           from: Figaro.env.twilio_from_number,
+                           to: mobile_number }) do
+          get :reg, params
+        end
       end
-      expect(response).to have_http_status(:success)
-    end
-
-    context 'when user already exists' do
-      let!(:user) { create(:user, params) }
 
       it 'returns http success' do
-        VCR.use_cassette('twilio_message_with_success', erb: {
-                           twilio_ssid: Figaro.env.twilio_ssid,
-                           twilio_token: Figaro.env.twilio_token,
-                           from: Figaro.env.twilio_from_number,
-                           to: mobile_number }) do
-          get :reg, params
-        end
+        subject
         expect(response).to have_http_status(:success)
       end
-    end
 
-    describe 'on success' do
-      it 'returns mkey and auth' do
-        VCR.use_cassette('twilio_message_with_success', erb: {
-                           twilio_ssid: Figaro.env.twilio_ssid,
-                           twilio_token: Figaro.env.twilio_token,
-                           from: Figaro.env.twilio_from_number,
-                           to: mobile_number }) do
-          get :reg, params
+      context 'when user already exists' do
+        let!(:user) { create(:user, params) }
+
+        it 'returns http success' do
+          subject
+          expect(response).to have_http_status(:success)
         end
-        expect(JSON.parse(response.body).keys).to include('status', 'auth', 'mkey')
       end
 
-      context 'status' do
-        specify do
-          VCR.use_cassette('twilio_message_with_success', erb: {
-                             twilio_ssid: Figaro.env.twilio_ssid,
-                             twilio_token: Figaro.env.twilio_token,
-                             from: Figaro.env.twilio_from_number,
-                             to: mobile_number }) do
-            get :reg, params
+      describe 'on success' do
+        it 'returns mkey and auth' do
+          subject
+          expect(JSON.parse(response.body).keys).to include('status', 'auth', 'mkey')
+        end
+
+        context 'status' do
+          specify do
+            subject
+            expect(user.status).to eq('registered')
           end
-          expect(user.status).to eq('registered')
         end
       end
-    end
 
-    context 'when device_platform is blank' do
-      let(:params) do
-        { 'first_name' => 'Egypt',
-          'last_name' => 'Test',
-          'mobile_number' => mobile_number }
-      end
-
-      it 'returns failure' do
-        VCR.use_cassette('twilio_message_with_success', erb: {
-                           twilio_ssid: Figaro.env.twilio_ssid,
-                           twilio_token: Figaro.env.twilio_token,
-                           from: Figaro.env.twilio_from_number,
-                           to: mobile_number }) do
-          get :reg, params
+      context 'when device_platform is blank' do
+        let(:params) do
+          { 'first_name' => 'Egypt',
+            'last_name' => 'Test',
+            'mobile_number' => mobile_number }
         end
-        expect(JSON.parse(response.body).keys).to include('status', 'title', 'msg')
+
+        it 'returns failure' do
+          subject
+          expect(JSON.parse(response.body).keys).to include('status', 'title', 'msg')
+        end
       end
     end
 
