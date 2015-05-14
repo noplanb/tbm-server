@@ -108,5 +108,5 @@ class ApplicationController < ActionController::Base
     ios? ? iphone_store_url : android_store_url
   end
 
-  helper_method :iphone_store_url, :android_store_url, :store_url
+  helper_method :app_name, :iphone_store_url, :android_store_url, :store_url
 end
