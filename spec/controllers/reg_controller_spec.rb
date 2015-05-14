@@ -27,6 +27,11 @@ RSpec.describe RegController, type: :controller do
         expect(response).to have_http_status(:success)
       end
 
+      it 'uses VerificationCodeSender#send_code' do
+        expect_any_instance_of(VerificationCodeSender).to receive(:send_code)
+        subject
+      end
+
       context 'when user already exists' do
         let!(:user) { create(:user, params) }
 
@@ -60,6 +65,45 @@ RSpec.describe RegController, type: :controller do
         it 'returns failure' do
           subject
           expect(JSON.parse(response.body).keys).to include('status', 'title', 'msg')
+        end
+      end
+
+      context 'via SMS' do
+        let(:mobile_number) { sample_number(:in) }
+        subject do
+          VCR.use_cassette('twilio_message_with_success', erb: {
+                             twilio_ssid: Figaro.env.twilio_ssid,
+                             twilio_token: Figaro.env.twilio_token,
+                             from: Figaro.env.twilio_from_number,
+                             to: mobile_number }) do
+            get :reg, params.merge(via: :sms)
+          end
+        end
+
+        it 'uses VerificationCodeSender#send_verification_sms' do
+          expect_any_instance_of(VerificationCodeSender).to receive(:send_verification_sms)
+          subject
+        end
+      end
+
+      context 'via call' do
+        let(:mobile_number) { sample_number(:us) }
+        subject do
+          VCR.use_cassette('twilio_call_with_success', erb: {
+                             twilio_ssid: Figaro.env.twilio_ssid,
+                             twilio_token: Figaro.env.twilio_token,
+                             from: Figaro.env.twilio_from_number,
+                             to: mobile_number,
+                             url: '/call',
+                             fallback_url: '/call_fallback'
+                           }) do
+            get :reg, params.merge(via: :call)
+          end
+        end
+
+        it 'uses VerificationCodeSender#make_verification_call' do
+          expect_any_instance_of(VerificationCodeSender).to receive(:make_verification_call)
+          subject
         end
       end
     end
