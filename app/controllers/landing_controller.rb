@@ -9,11 +9,11 @@ class LandingController < ApplicationController
   end
 
   def invite
-    if android? && ios?
+    if windows_phone?
+      Rollbar.warning('Windows Phone detected')
+    elsif android? && ios?
       Rollbar.warning('Both iOS and Android detected')
       redirect_to root_path
-    elsif windows_phone?
-      Rollbar.warning('Windows Phone detected')
     elsif android?
       redirect_to android_store_url
     elsif ios?

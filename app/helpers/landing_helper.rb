@@ -11,7 +11,7 @@ module LandingHelper
   end
 
   def ios?
-    request.user_agent =~ /ios/i
+    request.user_agent =~ /ios|iphone|ipad|ipod/i
   end
 
   def windows_phone?
