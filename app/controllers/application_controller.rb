@@ -82,23 +82,23 @@ class ApplicationController < ActionController::Base
   # = User Agent related methods =
   # ==============================
   def mobile_device?
-    !request.user_agent.match(MOBILE_REGEXP).nil?
+    !request.user_agent.to_s.match(MOBILE_REGEXP).nil?
   end
 
   def android?
-    request.user_agent.match(WINDOWS_PHONE_REGEXP).nil? &&
-      request.user_agent.match(IOS_REGEXP).nil? &&
-      !request.user_agent.match(ANDROID_REGEXP).nil?
+    request.user_agent.to_s.match(WINDOWS_PHONE_REGEXP).nil? &&
+      request.user_agent.to_s.match(IOS_REGEXP).nil? &&
+      !request.user_agent.to_s.match(ANDROID_REGEXP).nil?
   end
 
   def ios?
-    request.user_agent.match(WINDOWS_PHONE_REGEXP).nil? &&
-      request.user_agent.match(ANDROID_REGEXP).nil? &&
-      !request.user_agent.match(IOS_REGEXP).nil?
+    request.user_agent.to_s.match(WINDOWS_PHONE_REGEXP).nil? &&
+      request.user_agent.to_s.match(ANDROID_REGEXP).nil? &&
+      !request.user_agent.to_s.match(IOS_REGEXP).nil?
   end
 
   def windows_phone?
-    !request.user_agent.match(WINDOWS_PHONE_REGEXP).nil?
+    !request.user_agent.to_s.match(WINDOWS_PHONE_REGEXP).nil?
   end
 
   def app_name
