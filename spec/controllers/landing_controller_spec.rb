@@ -18,8 +18,10 @@ RSpec.describe LandingController, type: :controller do
       expect(response).to have_http_status(:success)
     end
 
-    context 'iOS' do
-      before { request.user_agent = 'iOS 8.3' }
+    context 'iPhone' do
+      before { request.user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X)
+        AppleWebKit/600.1.4 (KHTML, like Gecko)
+        Version/8.0 Mobile/12F70 Safari/600.1.4' }
 
       specify do
         subject
@@ -45,8 +47,57 @@ RSpec.describe LandingController, type: :controller do
       end
 
       specify do
+        expect(Rollbar).to receive(:warning)
+        subject
+      end
+
+      specify do
+        subject
+        expect(response).to be_redirect
+      end
+    end
+
+    context 'iPhone & Android' do
+      before { request.user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X)
+        AppleWebKit/600.1.4 (KHTML, like Gecko)
+        Version/8.0 Mobile/12F70 Safari/600.1.4 Android 5.0' }
+
+      specify do
+        expect(Rollbar).to receive(:warning)
+        subject
+      end
+
+      specify do
+        subject
+        expect(response).to redirect_to('/')
+      end
+    end
+
+    context 'Unsupported' do
+      before { request.user_agent = 'Unsupported' }
+
+      specify do
+        expect(Rollbar).to_not receive(:warning)
+        subject
+      end
+
+      specify do
         subject
         expect(response).to render_template(:invite)
+      end
+    end
+
+    context 'Unsupported Mobile' do
+      before { request.user_agent = 'Unsupported Mobile' }
+
+      specify do
+        expect(Rollbar).to receive(:warning)
+        subject
+      end
+
+      specify do
+        subject
+        expect(response).to be_redirect
       end
     end
   end

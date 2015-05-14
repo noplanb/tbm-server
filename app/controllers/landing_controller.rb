@@ -1,6 +1,4 @@
 class LandingController < ApplicationController
-  include LandingHelper # FIXME: should be included automatically
-
   layout 'landing'
   before_action :set_state
 
@@ -9,9 +7,17 @@ class LandingController < ApplicationController
   end
 
   def invite
-    return if windows_phone?
-    redirect_to iphone_store_url if ios?
-    redirect_to android_store_url if android?
+    if android? && ios?
+      Rollbar.warning('Both iOS and Android detected')
+      redirect_to root_path
+    elsif android?
+      redirect_to android_store_url
+    elsif ios?
+      redirect_to iphone_store_url
+    elsif mobile_device?
+      Rollbar.warning('Unsupported User Agent detected')
+      redirect_to root_path
+    end
   end
 
   def privacy

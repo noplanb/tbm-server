@@ -4,6 +4,11 @@ class ApplicationController < ActionController::Base
   # protect_from_forgery with: :exception
   REALM = 'zazo.com'
 
+  MOBILE_REGEXP = /mobile|webos/i
+  ANDROID_REGEXP = /android/i
+  IOS_REGEXP = /ios|iphone|ipad|ipod/i
+  WINDOWS_PHONE_REGEXP = /windows phone/i
+
   attr_reader :current_user
   helper_method :current_user
 
@@ -72,4 +77,45 @@ class ApplicationController < ActionController::Base
                                             video_id: video_id,
                                             host: request.host })
   end
+
+  # ==============================
+  # = User Agent related methods =
+  # ==============================
+  def mobile_device?
+    !request.user_agent.to_s.match(MOBILE_REGEXP).nil?
+  end
+
+  def android?
+    request.user_agent.to_s.match(WINDOWS_PHONE_REGEXP).nil? &&
+      request.user_agent.to_s.match(IOS_REGEXP).nil? &&
+      !request.user_agent.to_s.match(ANDROID_REGEXP).nil?
+  end
+
+  def ios?
+    request.user_agent.to_s.match(WINDOWS_PHONE_REGEXP).nil? &&
+      request.user_agent.to_s.match(ANDROID_REGEXP).nil? &&
+      !request.user_agent.to_s.match(IOS_REGEXP).nil?
+  end
+
+  def windows_phone?
+    !request.user_agent.to_s.match(WINDOWS_PHONE_REGEXP).nil?
+  end
+
+  def app_name
+    Settings.app_name
+  end
+
+  def iphone_store_url
+    Settings.iphone_store_url
+  end
+
+  def android_store_url
+    Settings.android_store_url
+  end
+
+  def store_url
+    ios? ? iphone_store_url : android_store_url
+  end
+
+  helper_method :app_name, :iphone_store_url, :android_store_url, :store_url
 end
