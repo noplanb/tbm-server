@@ -2,8 +2,8 @@ class VersionCompatibility < Credential
   include SpecificCredential
 
   SUPPORTED_DEVICE_PLATFORMS = %i(ios android)
-  IOS_MANDATORY_DEFAULT_THRESHOLD = 22
-  ANDROID_MANDATORY_DEFAULT_THRESHOLD = 42
+  IOS_MANDATORY_DEFAULT_THRESHOLD = '22'
+  ANDROID_MANDATORY_DEFAULT_THRESHOLD = '42'
 
   define_attributes :ios_mandatory_upgrade_version_threshold,
                     :ios_optional_upgrade_version_threshold,
@@ -19,6 +19,8 @@ class VersionCompatibility < Credential
     mandatory_threshold = cred["#{device_platform}_mandatory_upgrade_version_threshold"] ||
                           self.class.const_get("#{device_platform.upcase}_MANDATORY_DEFAULT_THRESHOLD")
     optional_threshold = cred["#{device_platform}_optional_upgrade_version_threshold"]
+
+    version ||= version.to_s
 
     if version < mandatory_threshold
       :update_required
