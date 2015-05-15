@@ -56,7 +56,7 @@ RSpec.describe VersionController, type: :controller do
 
         specify do
           subject
-          expect(json_response).to eq('result' => 'update_required')
+          expect(json_response).to eq('result' => 'unsupported')
         end
       end
 
@@ -65,7 +65,7 @@ RSpec.describe VersionController, type: :controller do
 
         specify do
           subject
-          expect(json_response).to eq('result' => 'current')
+          expect(json_response).to eq('result' => 'unsupported')
         end
       end
     end

@@ -15,7 +15,7 @@ class VersionCompatibility < Credential
             presence: true
 
   def compatibility(device_platform, version)
-    return :unsupported unless SUPPORTED_DEVICE_PLATFORMS.include?(device_platform.to_sym)
+    return :unsupported if device_platform.blank? || !SUPPORTED_DEVICE_PLATFORMS.include?(device_platform.to_sym)
     mandatory_threshold = cred["#{device_platform}_mandatory_upgrade_version_threshold"] ||
                           self.class.const_get("#{device_platform.upcase}_MANDATORY_DEFAULT_THRESHOLD")
     optional_threshold = cred["#{device_platform}_optional_upgrade_version_threshold"]
