@@ -18,6 +18,18 @@ RSpec.describe VersionCompatibility, type: :model do
     it { is_expected.to validate_presence_of(:android_mandatory_upgrade_version_threshold) }
   end
 
+  describe 'defaults' do
+    context 'ios_mandatory_upgrade_version_threshold' do
+      subject { instance.ios_mandatory_upgrade_version_threshold }
+      it { is_expected.to eq('22') }
+    end
+
+    context 'android_mandatory_upgrade_version_threshold' do
+      subject { instance.android_mandatory_upgrade_version_threshold }
+      it { is_expected.to eq('42') }
+    end
+  end
+
   describe '#compatibility' do
     subject { instance.compatibility(device_platform, version) }
 
@@ -27,7 +39,7 @@ RSpec.describe VersionCompatibility, type: :model do
 
       it { is_expected.to eq(:unsupported) }
     end
-        
+
     context 'when VersionCompatibility is not set' do
       context 'ios' do
         let(:device_platform) { :ios }

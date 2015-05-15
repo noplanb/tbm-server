@@ -14,10 +14,11 @@ class VersionCompatibility < Credential
             :android_mandatory_upgrade_version_threshold,
             presence: true
 
+  after_initialize :set_defaults
+
   def compatibility(device_platform, version)
     return :unsupported if device_platform.blank? || !SUPPORTED_DEVICE_PLATFORMS.include?(device_platform.to_sym)
-    mandatory_threshold = cred["#{device_platform}_mandatory_upgrade_version_threshold"] ||
-                          self.class.const_get("#{device_platform.upcase}_MANDATORY_DEFAULT_THRESHOLD")
+    mandatory_threshold = cred["#{device_platform}_mandatory_upgrade_version_threshold"]
     optional_threshold = cred["#{device_platform}_optional_upgrade_version_threshold"]
 
     version ||= version.to_s
@@ -28,6 +29,17 @@ class VersionCompatibility < Credential
       :update_optional
     else
       :current
+    end
+  end
+
+  private
+
+  def set_defaults
+    if ios_mandatory_upgrade_version_threshold.blank?
+      self.ios_mandatory_upgrade_version_threshold = IOS_MANDATORY_DEFAULT_THRESHOLD
+    end
+    if android_mandatory_upgrade_version_threshold.blank?
+      self.android_mandatory_upgrade_version_threshold = ANDROID_MANDATORY_DEFAULT_THRESHOLD
     end
   end
 end

@@ -1,0 +1,9 @@
+h1 Version Compatibility
+
+table.table
+  - @version_compatibility.class.credential_attributes.each do |attribute|
+    tr
+      td = attribute.to_s.titleize
+      td = @version_compatibility.cred[attribute]
+
+= link_to 'Edit', edit_version_compatibility_path(@version_compatibility), class: 'btn btn-default'
