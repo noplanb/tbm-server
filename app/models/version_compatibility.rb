@@ -2,8 +2,8 @@ class VersionCompatibility < Credential
   include SpecificCredential
 
   SUPPORTED_DEVICE_PLATFORMS = %i(ios android)
-  IOS_MANDATORY_DEFAULT_THRESHOLD = '22'
-  ANDROID_MANDATORY_DEFAULT_THRESHOLD = '42'
+  IOS_MANDATORY_DEFAULT_THRESHOLD = 22
+  ANDROID_MANDATORY_DEFAULT_THRESHOLD = 42
 
   define_attributes :ios_mandatory_upgrade_version_threshold,
                     :ios_optional_upgrade_version_threshold,
@@ -12,16 +12,21 @@ class VersionCompatibility < Credential
 
   validates :ios_mandatory_upgrade_version_threshold,
             :android_mandatory_upgrade_version_threshold,
-            presence: true
+            presence: true, numericality: { only_integer: true }
+
+  validates :ios_optional_upgrade_version_threshold,
+            :android_optional_upgrade_version_threshold,
+            numericality: { only_integer: true, allow_nil: true }
 
   after_initialize :set_defaults
 
   def compatibility(device_platform, version)
     return :unsupported if device_platform.blank? || !SUPPORTED_DEVICE_PLATFORMS.include?(device_platform.to_sym)
-    mandatory_threshold = cred["#{device_platform}_mandatory_upgrade_version_threshold"]
-    optional_threshold = cred["#{device_platform}_optional_upgrade_version_threshold"]
+    fail ArgumentError, 'version must be an integer' unless version.to_s.match(/^\d+$/)
 
-    version ||= version.to_s
+    version = version.to_i
+    mandatory_threshold = cred["#{device_platform}_mandatory_upgrade_version_threshold"].to_i
+    optional_threshold = cred["#{device_platform}_optional_upgrade_version_threshold"].to_i
 
     if version < mandatory_threshold
       :update_required
@@ -30,6 +35,10 @@ class VersionCompatibility < Credential
     else
       :current
     end
+  end
+
+  def update_credentials(credentials)
+    super HashWithIndifferentAccess[credentials.map { |k, v| [k, v.to_i] }]
   end
 
   private

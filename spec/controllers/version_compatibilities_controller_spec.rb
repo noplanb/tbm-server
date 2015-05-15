@@ -48,19 +48,19 @@ RSpec.describe VersionCompatibilitiesController, type: :controller do
 
   describe 'PATCH #update' do
     before do
-      version_compatibility.ios_mandatory_upgrade_version_threshold = '0.0.0'
-      version_compatibility.ios_optional_upgrade_version_threshold = '0.0.0'
-      version_compatibility.android_mandatory_upgrade_version_threshold = '0.0.0'
-      version_compatibility.android_optional_upgrade_version_threshold = '0.0.0'
+      version_compatibility.ios_mandatory_upgrade_version_threshold = 0
+      version_compatibility.ios_optional_upgrade_version_threshold = 0
+      version_compatibility.android_mandatory_upgrade_version_threshold = 0
+      version_compatibility.android_optional_upgrade_version_threshold = 0
       version_compatibility.save
     end
 
     let(:params) do
       { id: version_compatibility.id, version_compatibility: {
-        ios_mandatory_upgrade_version_threshold: '1.0.0',
-        ios_optional_upgrade_version_threshold: '2.0.0',
-        android_mandatory_upgrade_version_threshold: '1.0.0',
-        android_optional_upgrade_version_threshold: '2.0.0'
+        ios_mandatory_upgrade_version_threshold: '10',
+        ios_optional_upgrade_version_threshold: '20',
+        android_mandatory_upgrade_version_threshold: '10',
+        android_optional_upgrade_version_threshold: '20'
       } }
     end
 
@@ -81,7 +81,25 @@ RSpec.describe VersionCompatibilitiesController, type: :controller do
         specify do
           expect { patch :update, params }.to change {
              version_compatibility.reload.ios_mandatory_upgrade_version_threshold
-          }.from('0.0.0').to('1.0.0')
+          }.from(0).to(10)
+        end
+
+        specify do
+          expect { patch :update, params }.to change {
+             version_compatibility.reload.ios_optional_upgrade_version_threshold
+          }.from(0).to(20)
+        end
+
+        specify do
+          expect { patch :update, params }.to change {
+             version_compatibility.reload.android_mandatory_upgrade_version_threshold
+          }.from(0).to(10)
+        end
+
+        specify do
+          expect { patch :update, params }.to change {
+             version_compatibility.reload.android_optional_upgrade_version_threshold
+          }.from(0).to(20)
         end
       end
     end
