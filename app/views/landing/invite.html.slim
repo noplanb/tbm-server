@@ -16,7 +16,10 @@
         #screenshot = image_tag 'phone.png'
   section#middle
     .column
-      a#get-btn href=store_url Get the App!
+      - if ios? || android?
+        a#get-btn href=store_url Get the App!
+      - else
+        h2 Get the App!
       #text-download
         - if @inviter
           | Download the #{app_name} app today to receive #{@inviter.first_name}'s message.
