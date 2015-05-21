@@ -6,6 +6,7 @@ class InvitationController < ApplicationController
     invitee = User.find_by_raw_mobile_number(params[:mobile_number]) || User.create(invitee_params)
     Connection.find_or_create(@user.id, invitee.id)
     invitee.invite! if invitee.may_invite?
+    trigger_invitation_sent(current_user, invitee)
     render json: invitee.only_app_attrs_for_friend_with_ckey(@user)
   end
 
@@ -34,5 +35,13 @@ class InvitationController < ApplicationController
       return false
     end
     true
+  end
+
+  def trigger_invitation_sent(inviter, invitee)
+    EventDispatcher.emit(%w(user invitation_sent), initiator: 'user',
+                                                   initiator_id: inviter.event_id,
+                                                   target: 'user',
+                                                   target_id: invitee.event_id,
+                                                   raw_params: invitee_params)
   end
 end
