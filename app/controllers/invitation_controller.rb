@@ -42,6 +42,10 @@ class InvitationController < ApplicationController
                                                    initiator_id: inviter.event_id,
                                                    target: 'user',
                                                    target_id: invitee.event_id,
+                                                   data: {
+                                                     inviter_id: inviter.event_id,
+                                                     invitee_id: invitee.event_id
+                                                   },
                                                    raw_params: invitee_params)
   end
 end

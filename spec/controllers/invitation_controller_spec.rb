@@ -86,6 +86,10 @@ RSpec.describe InvitationController, type: :controller do
             initiator_id: user.event_id,
             target: 'user',
             target_id: invitee.event_id,
+            data: {
+              inviter_id: user.event_id,
+              invitee_id: invitee.event_id
+            },
             raw_params: params }
         end
 
