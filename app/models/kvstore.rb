@@ -47,8 +47,8 @@ class Kvstore < ActiveRecord::Base
   end
 
   def self.video_filename(sender, receiver, video_id)
-    sender = User.find_by(mkey: sender) if sender.is_a?(String)
-    receiver = User.find_by(mkey: receiver) if receiver.is_a?(String)
+    sender = User.find_by!(mkey: sender) if sender.is_a?(String)
+    receiver = User.find_by!(mkey: receiver) if receiver.is_a?(String)
     connection = Connection.live_between(sender.id, receiver.id).first
     fail "No connection found between #{sender.name} and #{receiver.name}" if connection.nil?
     "#{sender.mkey}-#{receiver.mkey}-#{digest(connection.ckey + video_id)}"
@@ -60,7 +60,7 @@ class Kvstore < ActiveRecord::Base
     return false if key1.blank? && value.blank?
     sender_id, receiver_id, _hash, _type = key1.split('-')
     parsed_value = JSON.parse(value)
-    status = parsed_value['status'] || 'received'
+    status = parsed_value.fetch('status', 'received')
     video_id = parsed_value['videoId']
     video_filename = self.class.video_filename(sender_id, receiver_id, video_id)
     name = ['video', self.class.name.underscore, status]
