@@ -25,6 +25,7 @@ RSpec.describe Kvstore, type: :model do
 
   describe '.video_filename' do
     subject { described_class.video_filename(sender, receiver, video_id) }
+
     context 'when connection exists' do
       let!(:connection) { create(:established_connection, connection_attributes) }
       it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-8045bfdc02bcc27c87be785c5ffc3b62') }
@@ -37,6 +38,11 @@ RSpec.describe Kvstore, type: :model do
 
     context 'when connection not exists' do
       specify { expect { subject }.to raise_error("No connection found between #{sender.name} and #{receiver.name}")}
+    end
+
+    context 'when user not exists' do
+      subject { described_class.video_filename(sender_mkey, receiver_mkey, video_id) }
+      specify { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
     end
   end
 

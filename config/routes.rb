@@ -4,6 +4,7 @@ ThreebymeServer::Application.routes.draw do
   resources :s3_credentials
   resources :connections
   resources :users
+  resources :version_compatibilities
 
   root 'landing#index'
   get 'landing' => 'landing#index'
