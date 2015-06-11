@@ -33,27 +33,19 @@ RSpec.describe KvstoreController, type: :controller do
   describe 'GET #received_videos' do
     context 'when authenticated' do
       let(:user) { create(:user) }
-      let!(:friend_1) { create(:established_connection, creator: user).target }
-      let!(:friend_2) { create(:established_connection, creator: user).target }
-      let!(:friend_3) { create(:established_connection, creator: user).target }
-      let!(:video_11) { Kvstore.add_id_key(user, friend_1, gen_video_id).key2 }
-      let!(:video_12) { Kvstore.add_id_key(user, friend_1, gen_video_id).key2 }
-      let!(:video_21) { Kvstore.add_id_key(user, friend_2, gen_video_id).key2 }
-      let!(:video_22) { Kvstore.add_id_key(user, friend_2, gen_video_id).key2 }
-      let!(:video_23) { Kvstore.add_id_key(user, friend_2, gen_video_id).key2 }
 
-      before do
+      specify do
         authenticate_with_http_digest(user.mkey, user.auth) do
           get :received_videos
         end
+        is_expected.to respond_with(:success)
       end
 
-      it { is_expected.to respond_with(:success) }
-
       specify do
-        expect(json_response).to include({ friend_1.mkey => [video_11, video_12] },
-                                         friend_2.mkey => [video_21, video_22, video_23],
-                                         friend_3.mkey => [])
+        expect(Kvstore).to receive(:received_videos).with(user)
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          get :received_videos
+        end
       end
     end
 

@@ -148,9 +148,9 @@ RSpec.describe Kvstore, type: :model do
     let!(:video_23) { described_class.add_id_key(user, friend_2, gen_video_id).key2 }
 
     specify do
-      is_expected.to include({ friend_1.mkey => [video_11, video_12] },
-                             friend_2.mkey => [video_21, video_22, video_23],
-                             friend_3.mkey => [])
+      is_expected.to include({ mkey: friend_1.mkey, video_ids: [video_11, video_12] },
+                             mkey: friend_2.mkey, video_ids: [video_21, video_22, video_23],
+                             mkey: friend_3.mkey, video_ids: [])
     end
   end
 end

@@ -64,11 +64,14 @@ class Kvstore < ActiveRecord::Base
     friends_hash = Hash[user.connected_users.pluck(:mkey).map { |mkey| [mkey, []] }]
     data = video_id_kv_keys.with_sender(user.mkey)
            .select(receiver_mkey, :key2)
-           .group(receiver_mkey).group(:key2).count(:key2)
-    data.each_with_object(friends_hash) do |(key, _value), result|
+           .group(receiver_mkey).group(:key2).order(:updated_at).count(:key2)
+    data = data.each_with_object(friends_hash) do |(key, _value), result|
        friend_mkey, video_id = key
        result[friend_mkey] ||= []
        result[friend_mkey] << video_id
+    end
+    data.map do |friend_mkey, video_ids|
+      { mkey: friend_mkey, video_ids: video_ids }
     end
   end
 
