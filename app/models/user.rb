@@ -164,8 +164,8 @@ class User < ActiveRecord::Base
   end
 
   def received_videos
-    list = build_friend_list do |friend, connection|
-      { mkey: friend.mkey, kv_key: Kvstore.generate_id_key(friend, self, connection) }
+    list = build_kv_keys do |friend, connection|
+      Kvstore.generate_id_key(friend, self, connection)
     end
     reduce_by_friends(list, :key2, :first).map do |friend_mkey, video_ids|
       { mkey: friend_mkey, video_ids: video_ids }
@@ -173,8 +173,8 @@ class User < ActiveRecord::Base
   end
 
   def video_status
-    list = build_friend_list do |friend, connection|
-      { mkey: friend.mkey, kv_key: Kvstore.generate_status_key(self, friend, connection) }
+    list = build_kv_keys do |friend, connection|
+      Kvstore.generate_status_key(self, friend, connection)
     end
     reduce_by_friends(list, :value, :second).map do |friend_mkey, values|
       value = values.last || { 'videoId' => '', 'status' => '' }.to_json
@@ -205,28 +205,25 @@ class User < ActiveRecord::Base
     self.last_name = last_name.to_s.gsub(EMOJI_REGEXP, '').strip
   end
 
-  def build_friend_list
+  def build_kv_keys
     live_connections.map do |connection|
-      friend = if connection.creator_id == id
-                  connection.target
-               else
-                  connection.creator
-               end
-      yield friend, connection
+      friend_id = if connection.creator_id == id
+                    connection.target_id
+                  else
+                    connection.creator_id
+                  end
+      yield friend_mkeys[friend_id], connection
     end
   end
 
-  def friends_hash(list)
-    Hash[list.map { |i| [i[:mkey], []] }]
+  def friend_mkeys
+    @friend_mkeys ||= Hash[connected_users.pluck(:id, :mkey)]
   end
 
-  def kv_keys(list)
-    list.map { |i| i[:kv_key] }
-  end
-
-  def reduce_by_friends(list, column, which)
-    data = Kvstore.where(key1: kv_keys(list)).group(:key1, column).count
-    data.each_with_object(friends_hash(list)) do |(item, _), result|
+  def reduce_by_friends(kv_keys, column, which)
+    friends_hash = Hash[friend_mkeys.map { |_, mkey| [mkey, []] }]
+    data = Kvstore.where(key1: kv_keys).group(:key1, column).count
+    data.each_with_object(friends_hash) do |(item, _), result|
       key1, value = item
       friend_mkey = key1.split('-').try(which)
       result[friend_mkey] ||= []
