@@ -2,8 +2,8 @@ class Kvstore < ActiveRecord::Base
   after_save :trigger_event
 
   scope :video_id_kv_keys, -> { where("`#{table_name}`.`key1` LIKE ?", '%VideoIdKVKey') }
-  scope :with_sender, ->(sender) { where("SPLIT_STR(`#{table_name}`.`key1` COLLATE utf8_unicode_ci, ?, ?) = ?", '-', 1, sender) }
-  scope :with_receiver, ->(receiver) { where("SPLIT_STR(`#{table_name}`.`key1` COLLATE utf8_unicode_ci, ?, ?) = ?", '-', 2, receiver) }
+  scope :with_sender, ->(sender) { where("SPLIT_STR(`#{table_name}`.`key1`, ?, ?) = ?", '-', 1, sender) }
+  scope :with_receiver, ->(receiver) { where("SPLIT_STR(`#{table_name}`.`key1`, ?, ?) = ?", '-', 2, receiver) }
 
   def self.create_or_update(params)
     if params[:key2].blank?
@@ -60,11 +60,11 @@ class Kvstore < ActiveRecord::Base
   end
 
   def self.received_videos(user)
-    split = "SPLIT_STR(`#{table_name}`.`key1`, '-', 2) COLLATE utf8_unicode_ci"
+    receiver_mkey = "SPLIT_STR(`#{table_name}`.`key1`, '-', 2)"
     friends_hash = Hash[user.connected_users.pluck(:mkey).map { |mkey| [mkey, []] }]
     data = video_id_kv_keys.with_sender(user.mkey)
-           .select(split, :key2)
-           .group(split).group(:key2).count(:key2)
+           .select(receiver_mkey, :key2)
+           .group(receiver_mkey).group(:key2).count(:key2)
     data.each_with_object(friends_hash) do |(key, _value), result|
        friend_mkey, video_id = key
        result[friend_mkey] ||= []
