@@ -149,8 +149,47 @@ RSpec.describe Kvstore, type: :model do
 
     specify do
       is_expected.to include({ mkey: friend_1.mkey, video_ids: [video_11, video_12] },
-                             mkey: friend_2.mkey, video_ids: [video_21, video_22, video_23],
+                             { mkey: friend_2.mkey, video_ids: [video_21, video_22, video_23] },
                              mkey: friend_3.mkey, video_ids: [])
+    end
+  end
+
+  describe '.video_status' do
+    subject { described_class.video_status(user) }
+
+    let(:user) { create(:user) }
+    let!(:friend_1) { create(:established_connection, creator: user).target }
+    let!(:friend_2) { create(:established_connection, creator: user).target }
+    let!(:friend_3) { create(:established_connection, creator: user).target }
+
+    let!(:video_11) { gen_video_id }
+    let!(:video_12) { gen_video_id }
+    let!(:video_21) { gen_video_id }
+    let!(:video_22) { gen_video_id }
+    let!(:video_23) { gen_video_id }
+
+    let!(:video_101) { gen_video_id }
+    let!(:video_102) { gen_video_id }
+    let!(:video_201) { gen_video_id }
+    let!(:video_202) { gen_video_id }
+    let!(:video_203) { gen_video_id }
+
+    let!(:kvstore_11) { described_class.add_status_key(user, friend_1, video_11, 'downloaded') }
+    let!(:kvstore_12) { described_class.add_status_key(user, friend_1, video_12, 'downloaded') }
+    let!(:kvstore_21) { described_class.add_status_key(user, friend_2, video_21, 'downloaded') }
+    let!(:kvstore_22) { described_class.add_status_key(user, friend_2, video_22, 'viewed') }
+    let!(:kvstore_23) { described_class.add_status_key(user, friend_2, video_23, 'viewed') }
+
+    let!(:kvstore_101) { described_class.add_status_key(friend_1, user, video_101, 'viewed') }
+    let!(:kvstore_102) { described_class.add_status_key(friend_1, user, video_102, 'downloaded') }
+    let!(:kvstore_201) { described_class.add_status_key(friend_2, user, video_201, 'viewed') }
+    let!(:kvstore_202) { described_class.add_status_key(friend_2, user, video_202, 'downloaded') }
+    let!(:kvstore_203) { described_class.add_status_key(friend_2, user, video_203, 'downloaded') }
+
+    specify do
+      is_expected.to include({ mkey: friend_1.mkey, video_id: video_12, status: 'downloaded' },
+                             { mkey: friend_2.mkey, video_id: video_23, status: 'viewed' },
+                             mkey: friend_3.mkey, video_id: nil, status: nil)
     end
   end
 end

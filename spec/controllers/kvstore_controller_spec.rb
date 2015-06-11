@@ -54,4 +54,29 @@ RSpec.describe KvstoreController, type: :controller do
       it { is_expected.to respond_with(:unauthorized) }
     end
   end
+
+  describe 'GET #video_status' do
+    context 'when authenticated' do
+      let(:user) { create(:user) }
+
+      specify do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          get :video_status
+        end
+        is_expected.to respond_with(:success)
+      end
+
+      specify do
+        expect(Kvstore).to receive(:video_status).with(user)
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          get :video_status
+        end
+      end
+    end
+
+    context 'when not authenticated' do
+      before { get :video_status }
+      it { is_expected.to respond_with(:unauthorized) }
+    end
+  end
 end
