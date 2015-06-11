@@ -37,7 +37,7 @@ RSpec.describe Kvstore, type: :model do
     end
 
     context 'when connection not exists' do
-      specify { expect { subject }.to raise_error("No connection found between #{sender.name} and #{receiver.name}")}
+      specify { expect { subject }.to raise_error("No connection found between #{sender.name} and #{receiver.name}") }
     end
 
     context 'when user not exists' do
@@ -134,4 +134,22 @@ RSpec.describe Kvstore, type: :model do
     end
   end
 
+  describe '.received_videos' do
+    subject { described_class.received_videos(user) }
+
+    let(:user) { create(:user) }
+    let!(:friend_1) { create(:established_connection, creator: user).target }
+    let!(:friend_2) { create(:established_connection, creator: user).target }
+    let!(:friend_3) { create(:established_connection, creator: user).target }
+    let!(:video_11) { described_class.add_id_key(user, friend_1, gen_video_id).key2 }
+    let!(:video_12) { described_class.add_id_key(user, friend_1, gen_video_id).key2 }
+    let!(:video_21) { described_class.add_id_key(user, friend_2, gen_video_id).key2 }
+    let!(:video_22) { described_class.add_id_key(user, friend_2, gen_video_id).key2 }
+    let!(:video_23) { described_class.add_id_key(user, friend_2, gen_video_id).key2 }
+
+    specify do
+      is_expected.to include({ friend_1.mkey => [video_11, video_12] },
+                             friend_2.mkey => [video_21, video_22, video_23])
+    end
+  end
 end

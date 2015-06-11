@@ -1,6 +1,10 @@
 class Kvstore < ActiveRecord::Base
   after_save :trigger_event
 
+  scope :video_id_kv_keys, -> { where("`#{table_name}`.`key1` LIKE ?", '%VideoIdKVKey') }
+  scope :with_sender, ->(sender) { where("SPLIT_STR(`#{table_name}`.`key1`, ?, ?) = ?", '-', 1, sender) }
+  scope :with_receiver, ->(receiver) { where("SPLIT_STR(`#{table_name}`.`key1`, ?, ?) = ?", '-', 2, receiver) }
+
   def self.create_or_update(params)
     if params[:key2].blank?
       kvs = where('key1 = ? and key2 is null', params[:key1])
@@ -10,6 +14,7 @@ class Kvstore < ActiveRecord::Base
 
     if kvs.present?
       kvs.first.update_attribute(:value, params[:value])
+      kvs.first
     else
       create(key1: params[:key1], key2: params[:key2], value: params[:value])
     end
@@ -52,6 +57,17 @@ class Kvstore < ActiveRecord::Base
     connection = Connection.live_between(sender.id, receiver.id).first
     fail "No connection found between #{sender.name} and #{receiver.name}" if connection.nil?
     "#{sender.mkey}-#{receiver.mkey}-#{digest(connection.ckey + video_id)}"
+  end
+
+  def self.received_videos(user)
+    data = video_id_kv_keys.with_sender(user.mkey)
+           .select("SPLIT_STR(`#{table_name}`.`key1`, '-', 2) AS receiver_mkey", :key2)
+           .group("SPLIT_STR(`#{table_name}`.`key1`, '-', 2)").group(:key2).count(:key2)
+    data.each_with_object({}) do |(key, _value), result|
+       friend_mkey, video_id = key
+       result[friend_mkey] ||= []
+       result[friend_mkey] << video_id
+    end
   end
 
   private
