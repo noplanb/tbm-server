@@ -70,7 +70,6 @@ class User < ActiveRecord::Base
   end
 
   def connected_user_ids
-    live_connections = Connection.for_user_id(id).established
     live_connections.map { |c| c.creator_id == id ? c.target_id : c.creator_id }
   end
 
@@ -80,6 +79,10 @@ class User < ActiveRecord::Base
 
   def connections
     Connection.for_user_id(id)
+  end
+
+  def live_connections
+    connections.established
   end
 
   def live_connection_count

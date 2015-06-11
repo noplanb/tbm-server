@@ -60,10 +60,11 @@ class Kvstore < ActiveRecord::Base
   end
 
   def self.received_videos(user)
+    friends_hash = Hash[user.connected_users.pluck(:mkey).map { |mkey| [mkey, []] }]
     data = video_id_kv_keys.with_sender(user.mkey)
            .select("SPLIT_STR(`#{table_name}`.`key1`, '-', 2) AS receiver_mkey", :key2)
            .group("SPLIT_STR(`#{table_name}`.`key1`, '-', 2)").group(:key2).count(:key2)
-    data.each_with_object({}) do |(key, _value), result|
+    data.each_with_object(friends_hash) do |(key, _value), result|
        friend_mkey, video_id = key
        result[friend_mkey] ||= []
        result[friend_mkey] << video_id

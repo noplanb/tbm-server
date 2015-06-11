@@ -149,7 +149,8 @@ RSpec.describe Kvstore, type: :model do
 
     specify do
       is_expected.to include({ friend_1.mkey => [video_11, video_12] },
-                             friend_2.mkey => [video_21, video_22, video_23])
+                             friend_2.mkey => [video_21, video_22, video_23],
+                             friend_3.mkey => [])
     end
   end
 end

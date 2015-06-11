@@ -52,7 +52,8 @@ RSpec.describe KvstoreController, type: :controller do
 
       specify do
         expect(json_response).to include({ friend_1.mkey => [video_11, video_12] },
-                                         friend_2.mkey => [video_21, video_22, video_23])
+                                         friend_2.mkey => [video_21, video_22, video_23],
+                                         friend_3.mkey => [])
       end
     end
 
