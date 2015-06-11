@@ -42,7 +42,7 @@ RSpec.describe KvstoreController, type: :controller do
       end
 
       specify do
-        expect(Kvstore).to receive(:received_videos).with(user)
+        expect_any_instance_of(User).to receive(:received_videos)
         authenticate_with_http_digest(user.mkey, user.auth) do
           get :received_videos
         end
@@ -67,7 +67,7 @@ RSpec.describe KvstoreController, type: :controller do
       end
 
       specify do
-        expect(Kvstore).to receive(:video_status).with(user)
+        expect_any_instance_of(User).to receive(:video_status)
         authenticate_with_http_digest(user.mkey, user.auth) do
           get :video_status
         end

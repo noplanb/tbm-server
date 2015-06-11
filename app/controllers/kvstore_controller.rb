@@ -37,11 +37,11 @@ class KvstoreController < ApplicationController
   end
 
   def received_videos
-    render json: Kvstore.received_videos(current_user)
+    render json: current_user.received_videos
   end
 
   def video_status
-    render json: Kvstore.video_status(current_user)
+    render json: current_user.video_status
   end
 
   private

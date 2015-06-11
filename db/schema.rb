@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150611005824) do
+ActiveRecord::Schema.define(version: 20150225002929) do
 
   create_table "connections", force: :cascade do |t|
     t.integer  "creator_id", limit: 4
@@ -25,6 +25,15 @@ ActiveRecord::Schema.define(version: 20150611005824) do
   add_index "connections", ["ckey"], name: "index_connections_on_ckey", using: :btree
   add_index "connections", ["creator_id"], name: "index_connections_on_creator_id", using: :btree
   add_index "connections", ["target_id"], name: "index_connections_on_target_id", using: :btree
+
+  create_table "credentials", force: :cascade do |t|
+    t.string   "cred_type",  limit: 255
+    t.text     "cred",       limit: 65535
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "credentials", ["cred_type"], name: "index_credentials_on_cred_type", using: :btree
 
   create_table "kvstores", force: :cascade do |t|
     t.string   "key1",       limit: 255

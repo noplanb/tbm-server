@@ -163,6 +163,26 @@ class User < ActiveRecord::Base
     mkey
   end
 
+  def received_videos
+    list = build_friend_list do |friend, connection|
+      { mkey: friend.mkey, kv_key: Kvstore.generate_id_key(friend, self, connection) }
+    end
+    reduce_by_friends(list, :key2, :first).map do |friend_mkey, video_ids|
+      { mkey: friend_mkey, video_ids: video_ids }
+    end
+  end
+
+  def video_status
+    list = build_friend_list do |friend, connection|
+      { mkey: friend.mkey, kv_key: Kvstore.generate_status_key(self, friend, connection) }
+    end
+    reduce_by_friends(list, :value, :second).map do |friend_mkey, values|
+      value = values.last || { 'videoId' => '', 'status' => '' }.to_json
+      decoded = JSON.parse(value)
+      { mkey: friend_mkey, video_id: decoded['videoId'], status: decoded['status'] }
+    end
+  end
+
   private
 
   # ==================
@@ -183,5 +203,34 @@ class User < ActiveRecord::Base
   def strip_emoji
     self.first_name = first_name.to_s.gsub(EMOJI_REGEXP, '').strip
     self.last_name = last_name.to_s.gsub(EMOJI_REGEXP, '').strip
+  end
+
+  def build_friend_list
+    live_connections.map do |connection|
+      friend = if connection.creator_id == id
+                  connection.target
+               else
+                  connection.creator
+               end
+      yield friend, connection
+    end
+  end
+
+  def friends_hash(list)
+    Hash[list.map { |i| [i[:mkey], []] }]
+  end
+
+  def kv_keys(list)
+    list.map { |i| i[:kv_key] }
+  end
+
+  def reduce_by_friends(list, column, which)
+    data = Kvstore.where(key1: kv_keys(list)).group(:key1, column).count
+    data.each_with_object(friends_hash(list)) do |(item, _), result|
+      key1, value = item
+      friend_mkey = key1.split('-').try(which)
+      result[friend_mkey] ||= []
+      result[friend_mkey] << value
+    end
   end
 end
