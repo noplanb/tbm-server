@@ -101,6 +101,27 @@ class User < ActiveRecord::Base
     device_platform.present?
   end
 
+  def received_videos
+    data = reduce_by_mkeys(kv_keys_for_received_videos) do |key1|
+      key1.split('-').first
+    end
+    data.map do |mkey, values|
+      video_ids = values.map { |v| JSON.parse(v)['videoId'] }
+      { mkey: mkey, video_ids: video_ids }
+    end
+  end
+
+  def video_status
+    data = reduce_by_mkeys(kv_keys_for_video_status) do |key1|
+      key1.split('-').second
+    end
+    data.map do |mkey, values|
+      value = values.last || { 'videoId' => '', 'status' => '' }.to_json
+      decoded = JSON.parse(value)
+      { mkey: mkey, video_id: decoded['videoId'], status: decoded['status'] }
+    end
+  end
+
   # ==================
   # = App Attributes =
   # ==================
@@ -163,27 +184,6 @@ class User < ActiveRecord::Base
     mkey
   end
 
-  def received_videos
-    data = reduce_by_mkeys(kv_keys_for_received_videos) do |key1|
-      key1.split('-').first
-    end
-    data.map do |mkey, values|
-      video_ids = values.map { |v| JSON.parse(v)['videoId'] }
-      { mkey: mkey, video_ids: video_ids }
-    end
-  end
-
-  def video_status
-    data = reduce_by_mkeys(kv_keys_for_video_status) do |key1|
-      key1.split('-').second
-    end
-    data.map do |mkey, values|
-      value = values.last || { 'videoId' => '', 'status' => '' }.to_json
-      decoded = JSON.parse(value)
-      { mkey: mkey, video_id: decoded['videoId'], status: decoded['status'] }
-    end
-  end
-
   private
 
   # ==================
@@ -205,6 +205,10 @@ class User < ActiveRecord::Base
     self.first_name = first_name.to_s.gsub(EMOJI_REGEXP, '').strip
     self.last_name = last_name.to_s.gsub(EMOJI_REGEXP, '').strip
   end
+
+  # =========================
+  # = Other private methods =
+  # =========================
 
   def find_connected_user_id_from_connection(connection, user_id)
     if connection.creator_id == user_id
