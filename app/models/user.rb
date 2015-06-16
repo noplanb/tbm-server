@@ -70,8 +70,7 @@ class User < ActiveRecord::Base
   end
 
   def connected_user_ids
-    live_connections = Connection.for_user_id(id).established
-    live_connections.map { |c| c.creator_id == id ? c.target_id : c.creator_id }
+    live_connections.map { |c| find_connected_user_id_from_connection(c, id) }
   end
 
   def connected_users
@@ -80,6 +79,10 @@ class User < ActiveRecord::Base
 
   def connections
     Connection.for_user_id(id)
+  end
+
+  def live_connections
+    connections.established
   end
 
   def live_connection_count
@@ -96,6 +99,27 @@ class User < ActiveRecord::Base
 
   def app?
     device_platform.present?
+  end
+
+  def received_videos
+    data = reduce_by_mkeys(kv_keys_for_received_videos) do |key1|
+      key1.split('-').first
+    end
+    data.map do |mkey, values|
+      video_ids = values.map { |v| JSON.parse(v)['videoId'] }
+      { mkey: mkey, video_ids: video_ids }
+    end
+  end
+
+  def video_status
+    data = reduce_by_mkeys(kv_keys_for_video_status) do |key1|
+      key1.split('-').second
+    end
+    data.map do |mkey, values|
+      value = values.last || { 'videoId' => '', 'status' => '' }.to_json
+      decoded = JSON.parse(value)
+      { mkey: mkey, video_id: decoded['videoId'], status: decoded['status'] }
+    end
   end
 
   # ==================
@@ -180,5 +204,54 @@ class User < ActiveRecord::Base
   def strip_emoji
     self.first_name = first_name.to_s.gsub(EMOJI_REGEXP, '').strip
     self.last_name = last_name.to_s.gsub(EMOJI_REGEXP, '').strip
+  end
+
+  # =========================
+  # = Other private methods =
+  # =========================
+
+  def find_connected_user_id_from_connection(connection, user_id)
+    if connection.creator_id == user_id
+      connection.target_id
+    else
+      connection.creator_id
+    end
+  end
+
+  def connected_users_cache
+    @connected_users_cache ||= Hash[connected_users.pluck(:id, :mkey)]
+  end
+
+  def connected_user_mkey(connection)
+    connected_user_id = find_connected_user_id_from_connection(connection, id)
+    connected_users_cache[connected_user_id]
+  end
+
+  def kv_keys_for_received_videos
+    live_connections.map do |connection|
+      Kvstore.generate_id_key(connected_user_mkey(connection), self, connection)
+    end
+  end
+
+  def kv_keys_for_video_status
+    live_connections.map do |connection|
+      Kvstore.generate_status_key(self, connected_user_mkey(connection), connection)
+    end
+  end
+
+  def find_user_kv_records(kv_keys)
+    Kvstore.where(key1: kv_keys).group(:key1, :value).count
+  end
+
+  # @param block - block to extract +mkey+ from +key1+ value
+  def reduce_by_mkeys(kv_keys)
+    data = find_user_kv_records(kv_keys)
+    hash = Hash[connected_users_cache.map { |_, mkey| [mkey, []] }]
+    data.each_with_object(hash) do |(item, _), result|
+      key1, value = item
+      mkey = yield(key1)
+      result[mkey] ||= []
+      result[mkey] << value
+    end
   end
 end

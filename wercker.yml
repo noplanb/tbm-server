@@ -17,7 +17,8 @@ build:
     - bundle-install
 
     # A step that prepares the database.yml using the database in services
-    - rails-database-yml
+    - asux/rails-database-yml:
+        mysql-collation: utf8_unicode_ci
 
     # A custom script step, name value is used in the UI
     # and the code value contains the command that get executed
@@ -27,7 +28,9 @@ build:
           echo "ruby version $(ruby --version) running"
           echo "from location $(which ruby)"
           echo -p "gem list: $(gem list)"
-
+    - script:
+        name: reset database
+        code: bin/rake db:drop db:create db:migrate
     - script:
         name: create rspec and coverage dir
         code: mkdir -p $WERCKER_REPORT_ARTIFACTS_DIR/rspec $WERCKER_REPORT_ARTIFACTS_DIR/coverage
@@ -39,7 +42,7 @@ build:
         webhook_url: $slack_url
 deploy:
   steps:
-    - dsuket/elastic-beanstalk-deploy:
+    - asux/elastic-beanstalk-deploy:
         key: $AWS_ACCESS_KEY_ID
         secret: $AWS_SECRET_ACCESS_KEY
         app_name: $EB_APP

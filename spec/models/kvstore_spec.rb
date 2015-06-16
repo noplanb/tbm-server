@@ -37,7 +37,7 @@ RSpec.describe Kvstore, type: :model do
     end
 
     context 'when connection not exists' do
-      specify { expect { subject }.to raise_error("No connection found between #{sender.name} and #{receiver.name}")}
+      specify { expect { subject }.to raise_error("No connection found between #{sender.name} and #{receiver.name}") }
     end
 
     context 'when user not exists' do
@@ -133,5 +133,4 @@ RSpec.describe Kvstore, type: :model do
       end
     end
   end
-
 end
