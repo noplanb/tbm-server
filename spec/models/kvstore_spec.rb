@@ -49,7 +49,7 @@ RSpec.describe Kvstore, type: :model do
   describe '.generate_id_key' do
     let!(:connection) { create(:established_connection, connection_attributes) }
     subject { described_class.generate_id_key(sender, receiver, connection) }
-    it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-19_21_XxInqAeDqnoS6BlP1M5S-VideoIdKVKey') }
+    it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-d8b49aa0143e0cc66ee154fab6538083-VideoIdKVKey') }
   end
 
   describe '.generate_status_key' do

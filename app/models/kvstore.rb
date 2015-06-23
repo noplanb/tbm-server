@@ -24,7 +24,7 @@ class Kvstore < ActiveRecord::Base
     sender_mkey = sender.is_a?(String) ? sender : sender.mkey
     receiver_mkey = receiver.is_a?(String) ? receiver : receiver.mkey
     connection_ckey = connection.is_a?(String) ? connection : connection.ckey
-    "#{sender_mkey}-#{receiver_mkey}-#{connection_ckey}-VideoIdKVKey"
+    "#{sender_mkey}-#{receiver_mkey}-#{digest(sender_mkey + receiver_mkey + connection_ckey)}-VideoIdKVKey"
   end
 
   def self.generate_status_key(sender, receiver, connection)
