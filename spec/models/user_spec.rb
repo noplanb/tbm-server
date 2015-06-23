@@ -42,9 +42,12 @@ RSpec.describe User, type: :model do
 
   describe '.search' do
     subject { described_class.search(query) }
-    let!(:user1) { create(:user, first_name: 'Alex') }
+    let!(:user1) { create(:user, first_name: 'Alex', last_name: 'Appleseed') }
     let!(:user2) { create(:user, first_name: 'Sergii', last_name: 'Ulianytskyi') }
-    let!(:user3) { create(:user, mobile_number: '+380939523746') }
+    let!(:user3) do
+      create(:user, first_name: 'John', last_name: 'Smith',
+                    mobile_number: '+380939523746')
+    end
 
     context 'Alex' do
       let(:query) { 'Alex' }
