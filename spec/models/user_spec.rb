@@ -7,7 +7,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_db_column(:first_name).of_type(:string) }
     it { is_expected.to have_db_column(:last_name).of_type(:string) }
     it { is_expected.to have_db_column(:mobile_number).of_type(:string) }
-    it { is_expected.to have_db_column(:email).of_type(:string) }
+    it { is_expected.to have_db_column(:emails).of_type(:text) }
     it { is_expected.to have_db_column(:user_name).of_type(:string) }
     it { is_expected.to have_db_column(:device_platform).of_type(:string) }
     it { is_expected.to have_db_column(:auth).of_type(:string) }
@@ -24,6 +24,10 @@ RSpec.describe User, type: :model do
   describe 'indexes' do
     it { is_expected.to have_db_index(:mkey) }
     it { is_expected.to have_db_index(:mobile_number) }
+  end
+
+  describe 'serialize' do
+    it { is_expected.to serialize(:emails).as(Array) }
   end
 
   describe '.find_by_raw_mobile_number' do

@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
   include AASM
   include EventNotifiable
 
+  serialize :emails, Array
+
   has_many :connections_as_creator, class_name: 'Connection', foreign_key: :creator_id, dependent: :destroy
   has_many :connections_as_target, class_name: 'Connection', foreign_key: :target_id, dependent: :destroy
 
