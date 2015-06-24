@@ -136,6 +136,16 @@ RSpec.describe User, type: :model do
         it { is_expected.to eq('Justin Michael') }
       end
     end
+
+    context 'eliminate_invalid_emails' do
+      let(:attributes) { attributes_for(:user, emails: ['valid@example.com', 'invalid@example']) }
+      let(:instance) { described_class.create(attributes) }
+
+      context '#emails' do
+        subject { instance.emails }
+        it { is_expected.to eq(['valid@example.com']) }
+      end
+    end
   end
 
   describe '#name' do
