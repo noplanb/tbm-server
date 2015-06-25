@@ -106,7 +106,7 @@ class User < ActiveRecord::Base
       key1.split('-').first
     end
     data.map do |mkey, values|
-      video_ids = values.map { |v| JSON.parse(v)['videoId'] }
+      video_ids = values.map { |v| v['videoId'] }
       { mkey: mkey, video_ids: video_ids }
     end
   end
@@ -116,9 +116,8 @@ class User < ActiveRecord::Base
       key1.split('-').second
     end
     data.map do |mkey, values|
-      value = values.last || { 'videoId' => '', 'status' => '' }.to_json
-      decoded = JSON.parse(value)
-      { mkey: mkey, video_id: decoded['videoId'], status: decoded['status'] }
+      value = values.last || { 'videoId' => '', 'status' => '' }
+      { mkey: mkey, video_id: value['videoId'], status: value['status'] }
     end
   end
 

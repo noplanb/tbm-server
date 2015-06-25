@@ -77,7 +77,7 @@ RSpec.describe UsersController, type: :controller do
             raw_params: {
               'key1' => Kvstore.generate_id_key(sender, user, connection),
               'key2' => video_id,
-              'value' => { 'videoId' => video_id }.to_json
+              'value' => { 'videoId' => video_id }
             }
           }
         end

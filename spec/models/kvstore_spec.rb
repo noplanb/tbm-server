@@ -18,6 +18,10 @@ RSpec.describe Kvstore, type: :model do
     it { is_expected.to have_db_column(:value).of_type(:string) }
   end
 
+  describe 'serialization' do
+    it { is_expected.to serialize(:value).as(ActiveRecord::Coders::JSON) }
+  end
+
   describe '.digest' do
     subject { described_class.digest('foo') }
     it { is_expected.to eq('acbd18db4cc2f85cedef654fccc4a4d8') }
@@ -78,7 +82,7 @@ RSpec.describe Kvstore, type: :model do
     context 'video id' do
       let(:params) do
         { key1: described_class.generate_id_key(sender, receiver, connection),
-          key2: video_id, value: { 'videoId' => video_id }.to_json }
+          key2: video_id, value: { 'videoId' => video_id } }
       end
 
       specify do
@@ -107,7 +111,7 @@ RSpec.describe Kvstore, type: :model do
     context 'video status' do
       let(:params) do
         { key1: described_class.generate_status_key(sender, receiver, connection),
-          key2: nil, value: { 'status' => 'downloaded', 'videoId' => video_id }.to_json }
+          key2: nil, value: { 'status' => 'downloaded', 'videoId' => video_id } }
       end
 
       specify do

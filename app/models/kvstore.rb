@@ -1,7 +1,10 @@
 class Kvstore < ActiveRecord::Base
   after_save :trigger_event
 
+  serialize :value, JSON
+
   def self.create_or_update(params)
+    params[:value] = JSON.parse(params[:value]) if params[:value].is_a?(String)
     if params[:key2].blank?
       kvs = where('key1 = ? and key2 is null', params[:key1])
     else
@@ -40,7 +43,7 @@ class Kvstore < ActiveRecord::Base
     params = {}
     params[:key1] = generate_id_key(sender, receiver, connection)
     params[:key2] = video_id
-    params[:value] = { 'videoId' => video_id }.to_json
+    params[:value] = { 'videoId' => video_id }
     Kvstore.create_or_update(params)
   end
 
@@ -49,7 +52,7 @@ class Kvstore < ActiveRecord::Base
     fail 'no live connections found' if connection.nil?
     params = {}
     params[:key1] = generate_status_key(sender, receiver, connection)
-    params[:value] = { 'videoId' => video_id, 'status' => status }.to_json
+    params[:value] = { 'videoId' => video_id, 'status' => status }
     Kvstore.create_or_update(params)
   end
 
@@ -66,9 +69,8 @@ class Kvstore < ActiveRecord::Base
   def trigger_event
     return false if key1.blank? && value.blank?
     sender_id, receiver_id, _hash, _type = key1.split('-')
-    parsed_value = JSON.parse(value)
-    status = parsed_value.fetch('status', 'received')
-    video_id = parsed_value['videoId']
+    status = value.fetch('status', 'received')
+    video_id = value['videoId']
     video_filename = self.class.video_filename(sender_id, receiver_id, video_id)
     name = ['video', self.class.name.underscore, status]
     event = {
