@@ -4,7 +4,8 @@ class InvitationController < ApplicationController
 
   def invite
     invitee = User.find_by_raw_mobile_number(params[:mobile_number]) || User.create(invitee_params)
-    invitee.update(invitee_params)
+    invitee.emails += invitee_params[:emails]
+    invitee.save
     Connection.find_or_create(@user.id, invitee.id)
     invitee.invite! if invitee.may_invite?
     trigger_invitation_sent(current_user, invitee)

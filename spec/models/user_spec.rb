@@ -138,7 +138,7 @@ RSpec.describe User, type: :model do
     end
 
     context 'eliminate_invalid_emails' do
-      let(:attributes) { attributes_for(:user, emails: ['valid@example.com', 'invalid@example']) }
+      let(:attributes) { attributes_for(:user, emails: ['valid@example.com', 'invalid@example', 'valid@example.com']) }
       let(:instance) { described_class.create(attributes) }
 
       context '#emails' do

@@ -213,6 +213,7 @@ class User < ActiveRecord::Base
 
   def eliminate_invalid_emails
     emails.select! { |email| email.to_s =~ EMAIL_REGEXP }
+    emails.uniq!
   end
 
   # =========================

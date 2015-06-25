@@ -110,6 +110,20 @@ RSpec.describe InvitationController, type: :controller do
           expect { subject }.to change { invitee.reload.emails }.from([]).to(['test@example.com'])
         end
 
+        context 'preserves existed emails' do
+          let!(:invitee) { create(:user, invitee_params.merge(emails: ['test1@example.com'])) }
+          specify do
+            expect { subject }.to change { invitee.reload.emails }.from(['test1@example.com']).to(['test1@example.com', 'test@example.com'])
+          end
+
+          context 'only unique' do
+            let!(:invitee) { create(:user, invitee_params.merge(emails: ['test1@example.com', 'test@example.com'])) }
+            specify do
+              expect { subject }.to_not change { invitee.reload.emails }
+            end
+          end
+        end
+
         context 'emails is not array' do
           let(:params) do
             { first_name: 'John',
