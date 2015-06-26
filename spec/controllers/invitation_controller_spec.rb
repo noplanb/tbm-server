@@ -3,11 +3,10 @@ require 'rails_helper'
 RSpec.describe InvitationController, type: :controller do
   describe 'GET #invite' do
     let(:params) do
-      {
-        first_name: 'John',
+      { first_name: 'John',
         last_name: 'Appleseed',
-        mobile_number: '+1 650-111-0000'
-      }
+        mobile_number: '+1 650-111-0000',
+        emails: ['test@example.com'] }
     end
     let(:user) { create(:user) }
 
@@ -45,10 +44,45 @@ RSpec.describe InvitationController, type: :controller do
           subject
         end
       end
+
+      context 'emails' do
+        context 'emails is not array' do
+          let(:params) do
+            { first_name: 'John',
+              last_name: 'Appleseed',
+              mobile_number: '+1 650-111-0000',
+              emails: 'test@example.com' }
+          end
+
+          specify do
+            subject
+            expect(invitee.emails).to eq(['test@example.com'])
+          end
+        end
+
+        context 'with invalid' do
+          let(:params) do
+            { first_name: 'John',
+              last_name: 'Appleseed',
+              mobile_number: '+1 650-111-0000',
+              emails: ['valid@example.com', 'invalid@example'] }
+          end
+
+          it 'saves only valid emails' do
+            subject
+            expect(invitee.emails).to eq(['valid@example.com'])
+          end
+        end
+      end
     end
 
     context 'when invitee already exists with given mobile_number' do
-      let(:invitee) { create(:user, params) }
+      let(:invitee_params) do
+        { first_name: 'John',
+          last_name: 'Appleseed',
+          mobile_number: '+1 650-111-0000' }
+      end
+      let!(:invitee) { create(:user, invitee_params) }
 
       it 'returns http success' do
         subject
@@ -62,11 +96,59 @@ RSpec.describe InvitationController, type: :controller do
       end
 
       context 'when registered or verified' do
-        let!(:invitee) { create(:user, params.merge(status: :verified)) }
+        let!(:invitee) { create(:user, invitee_params.merge(status: :verified)) }
 
         context 'invitee status' do
           specify do
             expect { subject }.to_not change { invitee.status }
+          end
+        end
+      end
+
+      context 'emails' do
+        specify do
+          expect { subject }.to change { invitee.reload.emails }.from([]).to(['test@example.com'])
+        end
+
+        context 'preserves existed emails' do
+          let!(:invitee) { create(:user, invitee_params.merge(emails: ['test1@example.com'])) }
+          specify do
+            expect { subject }.to change { invitee.reload.emails }.from(['test1@example.com']).to(['test1@example.com', 'test@example.com'])
+          end
+
+          context 'only unique' do
+            let!(:invitee) { create(:user, invitee_params.merge(emails: ['test1@example.com', 'test@example.com'])) }
+            specify do
+              expect { subject }.to_not change { invitee.reload.emails }
+            end
+          end
+        end
+
+        context 'emails is not array' do
+          let(:params) do
+            { first_name: 'John',
+              last_name: 'Appleseed',
+              mobile_number: '+1 650-111-0000',
+              emails: 'test@example.com' }
+          end
+
+          specify do
+            subject
+            expect(invitee.reload.emails).to eq(['test@example.com'])
+          end
+        end
+
+        context 'with invalid' do
+          let(:params) do
+            { first_name: 'John',
+              last_name: 'Appleseed',
+              mobile_number: '+1 650-111-0000',
+              emails: ['valid@example.com', 'invalid@example'] }
+          end
+
+          it 'saves only valid emails' do
+            subject
+            expect(invitee.reload.emails).to eq(['valid@example.com'])
           end
         end
       end
@@ -90,7 +172,7 @@ RSpec.describe InvitationController, type: :controller do
               inviter_id: user.event_id,
               invitee_id: invitee.event_id
             },
-            raw_params: params }
+            raw_params: params.stringify_keys }
         end
 
         it 'emits 3 events' do

@@ -1,9 +1,11 @@
 class InvitationController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authenticate, :validate_phone
+  before_action :authenticate, :validate_phone, :ensure_emails_is_array
 
   def invite
     invitee = User.find_by_raw_mobile_number(params[:mobile_number]) || User.create(invitee_params)
+    invitee.emails += invitee_params[:emails]
+    invitee.save
     Connection.find_or_create(@user.id, invitee.id)
     invitee.invite! if invitee.may_invite?
     trigger_invitation_sent(current_user, invitee)
@@ -21,8 +23,12 @@ class InvitationController < ApplicationController
 
   private
 
+  def ensure_emails_is_array
+    params[:emails] = Array.wrap(params[:emails])
+  end
+
   def invitee_params
-    params.permit(:first_name, :last_name, :mobile_number)
+    params.permit(:first_name, :last_name, :mobile_number, :emails, emails: [])
   end
 
   def validate_phone
