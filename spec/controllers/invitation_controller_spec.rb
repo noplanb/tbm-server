@@ -157,7 +157,7 @@ RSpec.describe InvitationController, type: :controller do
       context 'events notification' do
         let(:event_params1) do
           { initiator: 'user',
-            initiator_id: invitee.event_id,
+            initiator_id: invitee.id_for_events,
             data: {
               event: :invite!,
               from_state: :initialized,
@@ -166,12 +166,12 @@ RSpec.describe InvitationController, type: :controller do
         end
         let(:event_params2) do
           { initiator: 'user',
-            initiator_id: user.event_id,
+            initiator_id: user.id_for_events,
             target: 'user',
-            target_id: invitee.event_id,
+            target_id: invitee.id_for_events,
             data: {
-              inviter_id: user.event_id,
-              invitee_id: invitee.event_id
+              inviter_id: user.id_for_events,
+              invitee_id: invitee.id_for_events
             },
             raw_params: params.stringify_keys }
         end

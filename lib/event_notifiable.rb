@@ -1,5 +1,5 @@
 module EventNotifiable
-  def event_id
+  def id_for_events
     id
   end
 
@@ -7,7 +7,7 @@ module EventNotifiable
     initiator = self.class.name.underscore
     EventDispatcher.emit([initiator, aasm.current_state],
                          initiator: initiator,
-                         initiator_id: event_id,
+                         initiator_id: id_for_events,
                          data: { event: aasm.current_event,
                                  from_state: aasm.from_state,
                                  to_state: aasm.to_state })

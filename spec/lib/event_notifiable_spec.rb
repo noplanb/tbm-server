@@ -27,7 +27,7 @@ RSpec.describe EventNotifiable do
   end
   let(:event_params) do
      { initiator: 'test_class',
-       initiator_id: instance.event_id,
+       initiator_id: instance.id_for_events,
        data: data }
   end
 
