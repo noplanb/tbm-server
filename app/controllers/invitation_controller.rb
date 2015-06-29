@@ -23,7 +23,7 @@ class InvitationController < ApplicationController
   end
 
   def direct_invite_message
-    render json: trigger_direct_invite_message(current_user).to_h
+    render json: trigger_direct_invite_message(current_user)
   end
 
   private
