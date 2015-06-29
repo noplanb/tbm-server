@@ -1,5 +1,6 @@
 class KvstoreController < ApplicationController
   skip_before_action :verify_authenticity_token
+  before_action :authenticate, only: [:received_videos, :video_status]
 
   def set
     Kvstore.create_or_update(kvstore_params)
@@ -33,6 +34,14 @@ class KvstoreController < ApplicationController
 
   def load_test_write
     set
+  end
+
+  def received_videos
+    render json: current_user.received_videos
+  end
+
+  def video_status
+    render json: current_user.video_status
   end
 
   private

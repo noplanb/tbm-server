@@ -42,6 +42,8 @@ ThreebymeServer::Application.routes.draw do
   get 'kvstore/delete'
   get 'kvstore/load_test_read'
   get 'kvstore/load_test_write'
+  get 'kvstore/received_videos'
+  get 'kvstore/video_status'
 
   get 'kvstore_admin' => 'kvstore_admin#index'
   get 'kvstore_admin/delete_all' => 'kvstore_admin#delete_all'

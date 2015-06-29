@@ -14,6 +14,9 @@ table.table
     td Mobile number
     td = @user.mobile_number
   tr
+    td Emails
+    td = @user.emails.join(', ')
+  tr
     td Device platform
     td = human_device_platform @user.device_platform
   tr
