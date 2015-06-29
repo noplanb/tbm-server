@@ -1,4 +1,4 @@
-class EventDispatcher
+module EventDispatcher
   @send_message_enabled = true
 
   def self.queue_url
@@ -10,15 +10,26 @@ class EventDispatcher
   end
 
   def self.enable_send_message!
+    Rails.logger.info "[#{self}] Enabling #{self}"
     @send_message_enabled = true
   end
 
   def self.disable_send_message!
+    Rails.logger.info "[#{self}] Disabling #{self}"
     @send_message_enabled = false
   end
 
   def self.send_message_enabled?
-    @send_message_enabled
+    !!@send_message_enabled
+  end
+
+  def self.with_state(state)
+    original = send_message_enabled?
+    Rails.logger.debug "[#{self}] #{original} => #{state}"
+    @send_message_enabled = state
+    yield if block_given?
+    Rails.logger.debug "[#{self}] #{state} => #{original}"
+    @send_message_enabled = original
   end
 
   def self.build_message(name, params = {})
@@ -32,6 +43,11 @@ class EventDispatcher
   def self.emit(name, params = {})
     message = build_message(name, params)
     Rails.logger.info "[#{self}] Attemt to sent message to SQS queue #{queue_url}: #{message}"
-    sqs_client.send_message(queue_url: queue_url, message_body: message.to_json) if send_message_enabled?
+    if send_message_enabled?
+      sqs_client.send_message(queue_url: queue_url, message_body: message.to_json)
+    else
+      Rails.logger.info "[#{self}] Message not sent to SQS because #{self} is disabled"
+      {}
+    end
   end
 end
