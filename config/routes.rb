@@ -55,6 +55,7 @@ ThreebymeServer::Application.routes.draw do
 
   get 'invitation/invite'
   get 'invitation/has_app'
+  post 'invitation/direct_invite_message'
 
   get 'verification_code/say_code'
   get 'verification_code/call_fallback'

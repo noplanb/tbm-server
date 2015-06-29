@@ -1,6 +1,7 @@
 class InvitationController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authenticate, :validate_phone, :ensure_emails_is_array
+  before_action :authenticate
+  before_action :validate_phone, :ensure_emails_is_array, except: [:direct_invite_message]
 
   def invite
     invitee = User.find_by_raw_mobile_number(params[:mobile_number]) || User.create(invitee_params)
@@ -21,6 +22,10 @@ class InvitationController < ApplicationController
     end
   end
 
+  def direct_invite_message
+    render json: trigger_direct_invite_message(current_user).to_h
+  end
+
   private
 
   def ensure_emails_is_array
@@ -29,6 +34,10 @@ class InvitationController < ApplicationController
 
   def invitee_params
     params.permit(:first_name, :last_name, :mobile_number, :emails, emails: [])
+  end
+
+  def direct_invite_message_params
+    params.permit(:mkey, :messaging_platform, :message_status)
   end
 
   def validate_phone
@@ -53,5 +62,22 @@ class InvitationController < ApplicationController
                                                      invitee_id: invitee.event_id
                                                    },
                                                    raw_params: invitee_params)
+  end
+
+  def trigger_direct_invite_message(inviter)
+    invitee_event_id = direct_invite_message_params[:mkey]
+    messaging_platform = direct_invite_message_params[:messaging_platform]
+    message_status = direct_invite_message_params[:message_status]
+    EventDispatcher.emit(%w(user invitation direct_invite_message), initiator: 'user',
+                                                                    initiator_id: inviter.event_id,
+                                                                    target: 'user',
+                                                                    target_id: invitee_event_id,
+                                                                    data: {
+                                                                      inviter_id: inviter.event_id,
+                                                                      invitee_id: invitee_event_id,
+                                                                      messaging_platform: messaging_platform,
+                                                                      message_status: message_status
+                                                                    },
+                                                                    raw_params: direct_invite_message_params)
   end
 end

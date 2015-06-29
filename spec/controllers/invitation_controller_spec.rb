@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe InvitationController, type: :controller do
+  let(:user) { create(:user) }
+
   describe 'GET #invite' do
     let(:params) do
       { first_name: 'John',
@@ -8,7 +10,6 @@ RSpec.describe InvitationController, type: :controller do
         mobile_number: '+1 650-111-0000',
         emails: ['test@example.com'] }
     end
-    let(:user) { create(:user) }
 
     subject do
       authenticate_with_http_digest(user.mkey, user.auth) do
@@ -186,6 +187,54 @@ RSpec.describe InvitationController, type: :controller do
           expect(EventDispatcher.sqs_client).to receive(:send_message).exactly(3).times
           subject
         end
+      end
+    end
+  end
+
+  describe 'POST #direct_invite_message' do
+    let(:invitee) { create(:user) }
+    let(:params) do
+      { mkey: invitee.mkey,
+        messaging_platform: 'sms',
+        message_status: 'success' }
+    end
+
+    context 'when authenticated' do
+      subject do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          get :direct_invite_message, params
+        end
+      end
+
+      it 'returns http success' do
+        subject
+        expect(response).to have_http_status(:success)
+      end
+
+      context 'event notification' do
+        let(:event_params) do
+          { initiator: 'user',
+            initiator_id: user.mkey,
+            target: 'user',
+            target_id: invitee.mkey,
+            data: {
+              inviter_id: user.mkey,
+              invitee_id: invitee.mkey,
+              messaging_platform: 'sms',
+              message_status: 'success'
+            },
+            raw_params: params.stringify_keys }
+        end
+        it_behaves_like 'event dispatchable', %w(user invitation direct_invite_message)
+      end
+    end
+
+    context 'when not authenticated' do
+      subject { get :direct_invite_message, params }
+
+      it 'returns http unauthorized' do
+        subject
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
