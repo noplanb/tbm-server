@@ -17,11 +17,11 @@ RSpec.describe EventDispatcher do
       end
     end
 
-    it { is_expected.to be_a(Aws::PageableResponse) }
+    it { is_expected.to be_a(Seahorse::Client::Response) }
 
     context 'when name is string' do
       let(:name) { 'zazo:test' }
-      it { is_expected.to be_a(Aws::PageableResponse) }
+      it { is_expected.to be_a(Seahorse::Client::Response) }
     end
   end
 

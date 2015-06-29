@@ -20,7 +20,7 @@ module EventDispatcher
   end
 
   def self.send_message_enabled?
-    !!@send_message_enabled
+    @send_message_enabled
   end
 
   def self.with_state(state)
