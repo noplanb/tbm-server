@@ -185,7 +185,7 @@ class User < ActiveRecord::Base
     false
   end
 
-  def event_id
+  def id_for_events
     mkey
   end
 

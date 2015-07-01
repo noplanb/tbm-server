@@ -60,7 +60,7 @@ class Connection < ActiveRecord::Base
       Kvstore.where('key1 LIKE ?', "#{key_search(target, creator)}%").count > 0
   end
 
-  def event_id
+  def id_for_events
     ckey
   end
 
