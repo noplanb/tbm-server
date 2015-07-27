@@ -184,4 +184,28 @@ RSpec.describe RegController, type: :controller do
       expect(response).to have_http_status(:success)
     end
   end
+
+  describe 'GET #get_friends' do
+    let!(:user) { create(:user) }
+    let!(:friend) { create(:user) }
+    let!(:connection) { Connection.find_or_create(friend.id, user.id) }
+
+    before do
+      authenticate_with_http_digest(user.mkey, user.auth) do
+        get :get_friends
+      end
+    end
+
+    specify do
+      expect(response).to have_http_status(:ok)
+    end
+
+    specify do
+      expect(json_response.first.keys).to eq(%w(id mkey first_name last_name
+                                                mobile_number device_platform
+                                                emails has_app ckey cid
+                                                connection_created_on
+                                                connection_creator_mkey))
+    end
+  end
 end
