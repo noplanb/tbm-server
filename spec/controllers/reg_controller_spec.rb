@@ -187,13 +187,8 @@ RSpec.describe RegController, type: :controller do
 
   describe 'GET #get_friends' do
     let!(:user) { create(:user) }
-    let!(:user_1) { create(:user) }
-    let!(:user_2) { create(:user) }
-    let!(:user_3) { create(:user) }
-    let!(:connection_1) { Connection.find_or_create(user.id, user_1.id) }
-    let!(:connection_2) { Connection.find_or_create(user.id, user_2.id) }
-    let!(:connection_3) { Connection.find_or_create(user_3.id, user.id) }
-    let(:attributes) { %w(id mkey first_name last_name mobile_number device_platform emails ckey cid) }
+    let!(:friend) { create(:user) }
+    let!(:connection) { Connection.find_or_create(friend.id, user.id) }
 
     before do
       authenticate_with_http_digest(user.mkey, user.auth) do
@@ -205,19 +200,12 @@ RSpec.describe RegController, type: :controller do
       expect(response).to have_http_status(:ok)
     end
 
-    context 'last' do
-      specify nil, focus: true do
-        expect(json_response.last).to eq('id' => user_3.id.to_s,
-                                         'mkey' => user_3.mkey,
-                                         'first_name' => user_3.first_name,
-                                         'last_name' => user_3.last_name,
-                                         'mobile_number' => user_3.mobile_number,
-                                         'device_platform' => nil,
-                                         'emails' => [],
-                                         'has_app' => 'false',
-                                         'ckey' => connection_3.ckey,
-                                         'cid' => connection_3.id)
-      end
+    specify do
+      expect(json_response.first.keys).to eq(%w(id mkey first_name last_name
+                                                mobile_number device_platform
+                                                emails has_app ckey cid
+                                                connection_created_on
+                                                connection_creator_mkey))
     end
   end
 end
