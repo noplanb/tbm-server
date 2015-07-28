@@ -149,7 +149,7 @@ class User < ActiveRecord::Base
     fail 'No connection found with connected user. This should never happen.' if conn.nil?
     only_app_attrs_for_friend.merge(ckey: conn.ckey,
                                     cid: conn.id,
-                                    connection_created_on: conn.created_at,
+                                    connection_created_on: conn.created_at.to_datetime,
                                     connection_creator_mkey: conn.creator.mkey)
   end
 
