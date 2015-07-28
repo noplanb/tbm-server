@@ -200,7 +200,7 @@ RSpec.describe RegController, type: :controller do
         'has_app' => 'false',
         'ckey' => connection.ckey,
         'cid' => connection.id,
-        'connection_created_on' => connection.created_at.to_datetime,
+        'connection_created_on' => connection.created_at,
         'connection_creator_mkey' => friend.mkey }
     end
 
