@@ -119,4 +119,5 @@ group :test do
   gem 'webmock'
   gem 'vcr'
   gem 'timecop'
+  gem 'json_spec'
 end

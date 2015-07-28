@@ -189,6 +189,20 @@ RSpec.describe RegController, type: :controller do
     let!(:user) { create(:user) }
     let!(:friend) { create(:user) }
     let!(:connection) { Connection.find_or_create(friend.id, user.id) }
+    let(:data) do
+      { 'id' => friend.id.to_s,
+        'mkey' => friend.mkey,
+        'first_name' => friend.first_name,
+        'last_name' => friend.last_name,
+        'mobile_number' => friend.mobile_number,
+        'device_platform' => friend.device_platform,
+        'emails' => friend.emails,
+        'has_app' => 'false',
+        'ckey' => connection.ckey,
+        'cid' => connection.id,
+        'connection_created_on' => connection.created_at,
+        'connection_creator_mkey' => friend.mkey }
+    end
 
     before do
       authenticate_with_http_digest(user.mkey, user.auth) do
@@ -201,11 +215,7 @@ RSpec.describe RegController, type: :controller do
     end
 
     specify do
-      expect(json_response.first.keys).to eq(%w(id mkey first_name last_name
-                                                mobile_number device_platform
-                                                emails has_app ckey cid
-                                                connection_created_on
-                                                connection_creator_mkey))
+      expect(response.body).to include_json(data.to_json)
     end
   end
 end
