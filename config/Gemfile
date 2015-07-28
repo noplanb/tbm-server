@@ -81,6 +81,7 @@ gem 'rack-attack'
 gem 'newrelic_rpm'
 gem 'kaminari'
 gem 'aasm'
+gem 'activerecord-colored_log_subscriber'
 
 group :development do
   gem 'better_errors'
