@@ -1,0 +1,154 @@
+FORMAT: 1A
+HOST: http://zazoapp.com
+
+# Zazo Main API
+
+## Authentication
+
+Authentication - **HTTP Digest** with `mkey` and `auth` as username and password.
+In *development* environment authentication method is **HTTP Basic** with same parameters (like in this document).
+
+## Group Kvstore
+
+### Received videos [GET /kvstore/received_videos]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ZnhWUFJrR0lDd25yQXd5bTUyZ0s6emtBZ054YVhpbVlTdXB6VjA4cmg=
+
++ Response 200 (application/json; charset=utf-8)
+
+        [
+            {
+                "mkey": "7qdanSEmctZ2jPnYA0a1",
+                "video_ids": []
+            },
+            {
+                "mkey": "dz4X0EvprPJO6fGysT8X",
+                "video_ids": []
+            },
+            {
+                "mkey": "fxVPRkGICwnrAwym52gK",
+                "video_ids": []
+            },
+            {
+                "mkey": "0DAQEVtmNKQiW6aoQrvo",
+                "video_ids": []
+            },
+            {
+                "mkey": "hZb26lMVPAsWcfHnqjva",
+                "video_ids": []
+            },
+            {
+                "mkey": "Yf5Y1cz3BKGo2kiCfngK",
+                "video_ids": []
+            },
+            {
+                "mkey": "v4ptwhOdy1HlKcwMGfaF",
+                "video_ids": []
+            },
+            {
+                "mkey": "4QTMK4alDINqxCT4B44Z",
+                "video_ids": []
+            },
+            {
+                "mkey": "AzohvSTJC8qSA550Y3GO",
+                "video_ids": []
+            },
+            {
+                "mkey": "Kvs358jTxha4urYvXnz2",
+                "video_ids": []
+            },
+            {
+                "mkey": "epOt7F15KKUxuq6plPo4",
+                "video_ids": []
+            },
+            {
+                "mkey": "pBl2dJ5CeHqz2NgbXBlz",
+                "video_ids": []
+            },
+            {
+                "mkey": "Александр_Ульяницкий__mkey_J16xpWSx6lDMWQPkvrpC",
+                "video_ids": []
+            }
+        ]
+
+### Video status [GET /kvstore/video_status]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ZnhWUFJrR0lDd25yQXd5bTUyZ0s6emtBZ054YVhpbVlTdXB6VjA4cmg=
+
++ Response 200 (application/json; charset=utf-8)
+
+        [
+            {
+                "mkey": "7qdanSEmctZ2jPnYA0a1",
+                "video_id": "1433341825862",
+                "status": "viewed"
+            },
+            {
+                "mkey": "dz4X0EvprPJO6fGysT8X",
+                "video_id": "1426442999187",
+                "status": "viewed"
+            },
+            {
+                "mkey": "fxVPRkGICwnrAwym52gK",
+                "video_id": "",
+                "status": ""
+            },
+            {
+                "mkey": "0DAQEVtmNKQiW6aoQrvo",
+                "video_id": "1432757543833",
+                "status": "viewed"
+            },
+            {
+                "mkey": "hZb26lMVPAsWcfHnqjva",
+                "video_id": "1428824541866",
+                "status": "downloaded"
+            },
+            {
+                "mkey": "Yf5Y1cz3BKGo2kiCfngK",
+                "video_id": "",
+                "status": ""
+            },
+            {
+                "mkey": "v4ptwhOdy1HlKcwMGfaF",
+                "video_id": "1433226625628",
+                "status": "viewed"
+            },
+            {
+                "mkey": "4QTMK4alDINqxCT4B44Z",
+                "video_id": "1428824536342",
+                "status": "viewed"
+            },
+            {
+                "mkey": "AzohvSTJC8qSA550Y3GO",
+                "video_id": "",
+                "status": ""
+            },
+            {
+                "mkey": "Kvs358jTxha4urYvXnz2",
+                "video_id": "1432755715192",
+                "status": "viewed"
+            },
+            {
+                "mkey": "epOt7F15KKUxuq6plPo4",
+                "video_id": "",
+                "status": ""
+            },
+            {
+                "mkey": "pBl2dJ5CeHqz2NgbXBlz",
+                "video_id": "",
+                "status": ""
+            },
+            {
+                "mkey": "Александр_Ульяницкий__mkey_J16xpWSx6lDMWQPkvrpC",
+                "video_id": "",
+                "status": ""
+            }
+        ]
