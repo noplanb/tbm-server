@@ -8,6 +8,207 @@ HOST: http://zazoapp.com
 Authentication - **HTTP Digest** with `mkey` and `auth` as username and password.
 In *development* environment authentication method is **HTTP Basic** with same parameters (like in this document).
 
+## Group Registration
+
+### Get friends [GET /reg/get_friends]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ZnhWUFJrR0lDd25yQXd5bTUyZ0s6emtBZ054YVhpbVlTdXB6VjA4cmg=
+
++ Response 200 (application/json; charset=utf-8)
+
+        [
+            {
+                "id": "1",
+                "mkey": "7qdanSEmctZ2jPnYA0a1",
+                "first_name": "Sani",
+                "last_name": "Elfishawy",
+                "mobile_number": "+16502453537",
+                "device_platform": "ios",
+                "emails": [],
+                "has_app": "true",
+                "ckey": "54_1_PQ44HnqyfJdPE5RhM7kc",
+                "cid": 177,
+                "connection_created_on": "2015-03-14T18:00:28Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
+            },
+            {
+                "id": "15",
+                "mkey": "dz4X0EvprPJO6fGysT8X",
+                "first_name": "Alex",
+                "last_name": "Android",
+                "mobile_number": "+380919295770",
+                "device_platform": "android",
+                "emails": [],
+                "has_app": "true",
+                "ckey": "15_54_C0sHe1LOyDEOK7wK6W8c",
+                "cid": 174,
+                "connection_created_on": "2015-03-14T16:57:26Z",
+                "connection_creator_mkey": "dz4X0EvprPJO6fGysT8X"
+            },
+            {
+                "id": "54",
+                "mkey": "fxVPRkGICwnrAwym52gK",
+                "first_name": "Alex",
+                "last_name": "Ios",
+                "mobile_number": "+380939523746",
+                "device_platform": "ios",
+                "emails": [
+                    "a.ulyanitsky@gmail.com"
+                ],
+                "has_app": "true",
+                "ckey": "54_54_G1BA3Y0cw4Q4kc7eDtBC",
+                "cid": 3508,
+                "connection_created_on": "2015-06-24T13:44:50Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
+            },
+            {
+                "id": "101",
+                "mkey": "0DAQEVtmNKQiW6aoQrvo",
+                "first_name": "Andrey",
+                "last_name": "Azimov",
+                "mobile_number": "+380937454329",
+                "device_platform": "ios",
+                "emails": [],
+                "has_app": "true",
+                "ckey": "54_101_W3OTlzxT5cbPiS2gVtvT",
+                "cid": 175,
+                "connection_created_on": "2015-03-14T17:50:02Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
+            },
+            {
+                "id": "353",
+                "mkey": "hZb26lMVPAsWcfHnqjva",
+                "first_name": "Tanja",
+                "last_name": "Tanja",
+                "mobile_number": "+380503875236",
+                "device_platform": "ios",
+                "emails": [],
+                "has_app": "true",
+                "ckey": "54_353_8nCr8jZ1cDb4qK5A5HNb",
+                "cid": 495,
+                "connection_created_on": "2015-03-18T17:56:19Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
+            },
+            {
+                "id": "408",
+                "mkey": "Yf5Y1cz3BKGo2kiCfngK",
+                "first_name": "Kirill",
+                "last_name": "Kirikov",
+                "mobile_number": "+380508891332",
+                "device_platform": "ios",
+                "emails": [],
+                "has_app": "true",
+                "ckey": "54_408_fAk9yOkZwnlIH3i7GfGP",
+                "cid": 949,
+                "connection_created_on": "2015-04-01T12:54:02Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
+            },
+            {
+                "id": "677",
+                "mkey": "v4ptwhOdy1HlKcwMGfaF",
+                "first_name": "Andrey",
+                "last_name": "Malin",
+                "mobile_number": "+380938680938",
+                "device_platform": "android",
+                "emails": [],
+                "has_app": "true",
+                "ckey": "54_677_FYrcwomgyAsrsnrRtp38",
+                "cid": 1524,
+                "connection_created_on": "2015-04-23T19:19:09Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
+            },
+            {
+                "id": "750",
+                "mkey": "4QTMK4alDINqxCT4B44Z",
+                "first_name": "Yuliia",
+                "last_name": "Ulianytska",
+                "mobile_number": "+380667439979",
+                "device_platform": "ios",
+                "emails": [],
+                "has_app": "true",
+                "ckey": "54_750_qGNMhcucFOKHtNIwpAUt",
+                "cid": 862,
+                "connection_created_on": "2015-03-26T21:48:51Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
+            },
+            {
+                "id": "824",
+                "mkey": "AzohvSTJC8qSA550Y3GO",
+                "first_name": "Виктор",
+                "last_name": "Филиппенко",
+                "mobile_number": "+491636955777",
+                "device_platform": null,
+                "emails": [],
+                "has_app": "false",
+                "ckey": "54_824_yVs2hE9IC6K7GL3uge8i",
+                "cid": 936,
+                "connection_created_on": "2015-03-31T15:13:35Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
+            },
+            {
+                "id": "3222",
+                "mkey": "Kvs358jTxha4urYvXnz2",
+                "first_name": "Maksim",
+                "last_name": "Bazarov",
+                "mobile_number": "+79296477424",
+                "device_platform": "ios",
+                "emails": [],
+                "has_app": "true",
+                "ckey": "3222_54_E0572OdHNLfym625kmEh",
+                "cid": 3423,
+                "connection_created_on": "2015-05-27T19:38:31Z",
+                "connection_creator_mkey": "Kvs358jTxha4urYvXnz2"
+            },
+            {
+                "id": "3719",
+                "mkey": "epOt7F15KKUxuq6plPo4",
+                "first_name": "Aleksandr",
+                "last_name": "Struchaiev",
+                "mobile_number": "+380934989171",
+                "device_platform": null,
+                "emails": [],
+                "has_app": "false",
+                "ckey": "54_3719_GAlVPqllNC2R6ydUGGYS",
+                "cid": 3424,
+                "connection_created_on": "2015-05-27T20:11:56Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
+            },
+            {
+                "id": "3720",
+                "mkey": "pBl2dJ5CeHqz2NgbXBlz",
+                "first_name": "Maksim",
+                "last_name": "Bazarov",
+                "mobile_number": "+79205972084",
+                "device_platform": "ios",
+                "emails": [],
+                "has_app": "true",
+                "ckey": "3720_54_e7KSA8DqGeUFDKGGZLxr",
+                "cid": 3444,
+                "connection_created_on": "2015-05-29T14:59:28Z",
+                "connection_creator_mkey": "pBl2dJ5CeHqz2NgbXBlz"
+            },
+            {
+                "id": "3818",
+                "mkey": "Александр_Ульяницкий__mkey_J16xpWSx6lDMWQPkvrpC",
+                "first_name": "Александр",
+                "last_name": "Ульяницкий",
+                "mobile_number": "+380939523748",
+                "device_platform": null,
+                "emails": [
+                    "asux@yandex.ua"
+                ],
+                "has_app": "false",
+                "ckey": "54_3818_QzGBdbJSgw3BcT7dzqq8",
+                "cid": 3507,
+                "connection_created_on": "2015-06-24T13:44:41Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
+            }
+        ]
+
 ## Group Kvstore
 
 ### Received videos [GET /kvstore/received_videos]
