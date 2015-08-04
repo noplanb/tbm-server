@@ -1,4 +1,5 @@
 class Kvstore < ActiveRecord::Base
+  SUFFIXES_FOR_EVENTS = %w(VideoIdKVKey VideoStatusKVKey).freeze
   after_save :trigger_event
 
   def self.create_or_update(params)
@@ -20,18 +21,27 @@ class Kvstore < ActiveRecord::Base
     Digest::MD5.new.update(string).hexdigest
   end
 
-  def self.generate_id_key(sender, receiver, connection)
+  def self.generate_key(suffix, sender, receiver, connection)
     sender_mkey = sender.is_a?(String) ? sender : sender.mkey
     receiver_mkey = receiver.is_a?(String) ? receiver : receiver.mkey
     connection_ckey = connection.is_a?(String) ? connection : connection.ckey
-    "#{sender_mkey}-#{receiver_mkey}-#{digest(sender_mkey + receiver_mkey + connection_ckey)}-VideoIdKVKey"
+    [sender_mkey,
+     receiver_mkey,
+     digest(sender_mkey + receiver_mkey + connection_ckey),
+     suffix].join('-')
+  end
+
+  def self.generate_id_key(sender, receiver, connection)
+    generate_key 'VideoIdKVKey', sender, receiver, connection
   end
 
   def self.generate_status_key(sender, receiver, connection)
-    sender_mkey = sender.is_a?(String) ? sender : sender.mkey
-    receiver_mkey = receiver.is_a?(String) ? receiver : receiver.mkey
-    connection_ckey = connection.is_a?(String) ? connection : connection.ckey
-    "#{sender_mkey}-#{receiver_mkey}-#{digest(sender_mkey + receiver_mkey + connection_ckey)}-VideoStatusKVKey"
+    generate_key 'VideoStatusKVKey', sender, receiver, connection
+  end
+
+  def self.generate_welcomed_friends_key(user)
+    user_mkey = user.is_a?(String) ? user : user.mkey
+    "#{user_mkey}-WelcomedFriends"
   end
 
   def self.add_id_key(sender, receiver, video_id)
@@ -65,6 +75,7 @@ class Kvstore < ActiveRecord::Base
 
   def trigger_event
     return false if key1.blank? && value.blank?
+    return false unless SUFFIXES_FOR_EVENTS.any? { |suffix| key1.include?(suffix) }
     sender_id, receiver_id, _hash, _type = key1.split('-')
     parsed_value = JSON.parse(value)
     status = parsed_value.fetch('status', 'received')
