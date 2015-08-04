@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   # ==================
   # = Before filters =
   # ==================
+
   def authenticate_with_digest
     authenticate_or_request_with_http_digest(REALM) do |mkey|
       @user = @current_user = User.find_by_mkey(mkey)
@@ -22,19 +23,27 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authenticate_with_token
-    authenticate_with_http_token do |token, _options|
-      @user = @current_user = User.find_by_mkey(token)
-      @user && @user.auth
+  def authenticate_with_basic
+    authenticate_or_request_with_http_basic(REALM) do |username, password|
+      @user = @current_user = User.find_by_mkey(username)
+      @user.auth == password
     end
   end
 
-  def authenticate
-    if Settings.allow_authentication_with_token
-      authenticate_with_token || authenticate_with_digest
-    else
-      authenticate_with_digest
+  def authenticate_with_token
+    authenticate_or_request_with_http_token do |token, _options|
+      @user = @current_user = User.find_by_mkey(token)
+      @user.present?
     end
+  end
+
+  def authentication_method
+    Settings.authentication_method || :digest
+  end
+
+  def authenticate
+    Rails.logger.debug "Trying authenticate with #{authentication_method.inspect}"
+    send("authenticate_with_#{authentication_method}")
   end
 
   def notify_error(error)
