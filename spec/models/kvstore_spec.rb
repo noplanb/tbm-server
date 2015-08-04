@@ -58,6 +58,11 @@ RSpec.describe Kvstore, type: :model do
     it { is_expected.to eq('smRug5xj8J469qX5XvGk-IUed5vP9n4qzW6jY8wSu-d8b49aa0143e0cc66ee154fab6538083-VideoStatusKVKey') }
   end
 
+  describe '.generate_welcomed_friends_key' do
+    subject { described_class.generate_welcomed_friends_key(sender) }
+    it { is_expected.to eq('smRug5xj8J469qX5XvGk-WelcomedFriends') }
+  end
+
   describe '.add_id_key' do
     let!(:connection) { create(:established_connection, connection_attributes) }
     subject { described_class.add_id_key(sender, receiver, video_id) }
@@ -130,6 +135,24 @@ RSpec.describe Kvstore, type: :model do
         end
 
         it_behaves_like 'event dispatchable', %w(video kvstore downloaded)
+      end
+    end
+
+    context 'welcomed friends' do
+      let(:params) do
+        { key1: described_class.generate_welcomed_friends_key(sender),
+          key2: nil, value: %w(mkey1 mkey2).to_json }
+      end
+
+      specify do
+        expect { subject }.to change { described_class.count }.by(1)
+      end
+
+      context 'event notification' do
+        specify 'EventDispatcher not receives :emit' do
+          expect(EventDispatcher).to_not receive(:emit)
+          subject
+        end
       end
     end
   end
