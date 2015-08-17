@@ -31,3 +31,6 @@ config/app_config_local.yml
 
 # Specs coverage
 coverage/
+
+# Ignore RubyMine files
+/.idea

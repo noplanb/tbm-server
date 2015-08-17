@@ -16,6 +16,9 @@ class Connection < ActiveRecord::Base
   aasm column: :status do
     state :voided, initial: true
     state :established
+    state :hidden_by_creator
+    state :hidden_by_target
+    state :hidden_by_both
 
     event :establish, after: :notify_state_changed do
       transitions from: :voided, to: :established

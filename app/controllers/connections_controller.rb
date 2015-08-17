@@ -61,6 +61,18 @@ class ConnectionsController < AdminController
     end
   end
 
+  def set_visibility
+    service = Connection::SetVisibility.new params, current_user
+
+    respond_to do |format|
+      if service.do
+        format.json { head :ok }
+      else
+        format.json { render json: service.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
