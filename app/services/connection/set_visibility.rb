@@ -18,7 +18,7 @@ class Connection::SetVisibility
     @user       = current_user ? current_user.mkey : find_user(params[:user_mkey])
     @friend     = find_user(params[:friend_mkey])
     @visibility = params[:visibility]
-    @connection = Connection.between(user.id, friend.id).first
+    @connection = Connection.between(user.id, friend.id).first if user && friend
   end
 
   def do
@@ -63,6 +63,6 @@ class Connection::SetVisibility
   #
 
   def status_not_voided
-    errors.add(:status, 'must be not voided to perform this operation') if connection.status == 'voided'
+    errors.add(:status, 'must be not voided to perform this operation') if connection && connection.status == 'voided'
   end
 end
