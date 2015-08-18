@@ -12,6 +12,7 @@ class Connection::SetVisibility
 
   validates :user, :friend, :connection, :visibility, presence: true
   validates :visibility, inclusion: { in: %w(hidden visible), message: '%{value} is not a valid visibility state' }, allow_nil: true
+  validate :status_not_voided
 
   def initialize(params, current_user = nil)
     @user       = current_user ? current_user.mkey : find_user(params[:user_mkey])
@@ -55,5 +56,13 @@ class Connection::SetVisibility
 
   def find_user(mkey)
     User.find_by mkey: mkey
+  end
+
+  #
+  # custom validations
+  #
+
+  def status_not_voided
+    errors.add(:status, 'must be not voided to perform this operation') if connection.status == 'voided'
   end
 end
