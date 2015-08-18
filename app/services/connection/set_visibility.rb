@@ -15,9 +15,9 @@ class Connection::SetVisibility
   validate :status_not_voided
 
   def initialize(params, current_user = nil)
-    @user       = current_user ? current_user.mkey : find_user(params[:user_mkey])
-    @friend     = find_user(params[:friend_mkey])
-    @visibility = params[:visibility]
+    @user       = current_user ? current_user : find_user(params['user_mkey'])
+    @friend     = find_user(params['friend_mkey'])
+    @visibility = params['visibility']
     @connection = Connection.between(user.id, friend.id).first if user && friend
   end
 

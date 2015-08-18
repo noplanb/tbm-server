@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Connection::SetVisibility do
   let(:connection) { create :established_connection }
-  let(:instance)   { described_class.new params }
+  let(:instance)   { described_class.new params.stringify_keys }
 
   describe '#get_from_map' do
     let(:params) {{

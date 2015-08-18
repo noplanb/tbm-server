@@ -3,12 +3,14 @@ ThreebymeServer::Application.routes.draw do
   get 's3_credentials/info'
 
   resources :s3_credentials
-  resources :connections do
-    post :set_visibility, on: :collection
-  end
+  resources :connections
   resources :users
   resources :version_compatibilities
   resources :documentation, only: [:show]
+
+  resources :connection, only: [] do
+    post :set_visibility, on: :collection
+  end
 
   root 'landing#index'
   get 'landing' => 'landing#index'

@@ -85,11 +85,11 @@ class User < ActiveRecord::Base
   end
 
   def live_connections
-    connections.established
+    connections.where.not(status: :voided)
   end
 
   def live_connection_count
-    connections.established.count
+    live_connections.count
   end
 
   def connection_count
@@ -150,7 +150,8 @@ class User < ActiveRecord::Base
     only_app_attrs_for_friend.merge(ckey: conn.ckey,
                                     cid: conn.id,
                                     connection_created_on: conn.created_at,
-                                    connection_creator_mkey: conn.creator.mkey)
+                                    connection_creator_mkey: conn.creator.mkey,
+                                    status: conn.status)
   end
 
   # =====================
