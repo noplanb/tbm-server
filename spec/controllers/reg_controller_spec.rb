@@ -201,7 +201,8 @@ RSpec.describe RegController, type: :controller do
         'ckey' => connection.ckey,
         'cid' => connection.id,
         'connection_created_on' => connection.created_at,
-        'connection_creator_mkey' => friend.mkey }
+        'connection_creator_mkey' => friend.mkey,
+        'status' => connection.status }
     end
 
     before do
