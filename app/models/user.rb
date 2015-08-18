@@ -151,7 +151,7 @@ class User < ActiveRecord::Base
                                     cid: conn.id,
                                     connection_created_on: conn.created_at,
                                     connection_creator_mkey: conn.creator.mkey,
-                                    status: conn.status)
+                                    connection_status: conn.status)
   end
 
   # =====================
