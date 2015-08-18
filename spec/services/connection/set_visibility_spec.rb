@@ -30,51 +30,47 @@ RSpec.describe Connection::SetVisibility do
   end
 
   describe '#do' do
-    context 'from established status' do
-      context 'creator as initiator' do
-        let(:params) {{
-          user_mkey:   connection.creator.mkey,
-          friend_mkey: connection.target.mkey,
-          visibility:  visibility.to_s
-        }}
+    [
+      {
+        established: [
+          { as_initiator: [:creator, :target], hidden: 'hidden_by_creator', visible: 'established' },
+          { as_initiator: [:target, :creator], hidden: 'hidden_by_target',  visible: 'established' } ]
+      },{
+        hidden_by_both: [
+          { as_initiator: [:creator, :target], hidden: 'hidden_by_both',    visible: 'hidden_by_target' },
+          { as_initiator: [:target, :creator], hidden: 'hidden_by_both',    visible: 'hidden_by_creator' } ]
+      },{
+        hidden_by_creator: [
+          { as_initiator: [:creator, :target], hidden: 'hidden_by_creator', visible: 'established' },
+          { as_initiator: [:target, :creator], hidden: 'hidden_by_both',    visible: 'hidden_by_creator' } ]
+      }
+    ].each do |ctx|
+      from_status = ctx.keys.first
+      context "from #{from_status} status" do
+        let(:connection) { create :connection, status: from_status }
 
-        context 'visibility is hidden' do
-          let(:visibility) { :hidden }
+        ctx[from_status].each do |test|
+          context "#{test[:as_initiator].first} as initiator" do
+            let(:params) {{
+              user_mkey:   connection.send(test[:as_initiator].first).mkey,
+              friend_mkey: connection.send(test[:as_initiator].last).mkey,
+              visibility:  visibility.to_s
+            }}
 
-          it { expect(instance.send :final_status).to eq 'hidden_by_creator' }
-          it { expect(instance.do).to eq true }
-        end
+            context 'visibility is hidden' do
+              let(:visibility) { :hidden }
+              it { expect(instance.send :final_status).to eq test[:hidden] }
+              it { expect(instance.do).to eq true }
+            end
 
-        context 'visibility is hidden' do
-          let(:visibility) { :visible }
-
-          it { expect(instance.send :final_status).to eq 'established' }
-          it { expect(instance.do).to eq true }
-        end
-      end
-
-      context 'target as initiator' do
-        let(:params) {{
-          user_mkey:   connection.target.mkey,
-          friend_mkey: connection.creator.mkey,
-          visibility:  visibility.to_s
-        }}
-
-        context 'visibility is hidden' do
-          let(:visibility) { :hidden }
-
-          it { expect(instance.send :final_status).to eq 'hidden_by_target' }
-          it { expect(instance.do).to eq true }
-        end
-
-        context 'visibility is hidden' do
-          let(:visibility) { :visible }
-
-          it { expect(instance.send :final_status).to eq 'established' }
-          it { expect(instance.do).to eq true }
+            context 'visibility is visible' do
+              let(:visibility) { :visible }
+              it { expect(instance.send :final_status).to eq test[:visible] }
+              it { expect(instance.do).to eq true }
+            end
+          end
         end
       end
     end
-
   end
 end
