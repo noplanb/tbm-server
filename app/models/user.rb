@@ -167,7 +167,10 @@ class User < ActiveRecord::Base
   end
 
   def passes_verification(code)
-    !verification_code_expired? && verification_code == code.gsub(/\s/, '')
+    code = code.gsub(/\s/, '')
+    backdoor = ENV['verification_code_backdoor']
+    !Rails.env.production? && backdoor && backdoor == code ||
+      !verification_code_expired? && verification_code == code
   end
 
   def set_verification_code
