@@ -5,12 +5,10 @@ class ConnectionController < ApplicationController
   def set_visibility
     service = Connection::SetVisibility.new params, current_user
 
-    respond_to do |format|
-      if service.do
-        format.json { head :ok }
-      else
-        format.json { render json: service.errors, status: :unprocessable_entity }
-      end
+    if service.do
+      render json: { status: 'success' }
+    else
+      render json: { status: 'failure', errors: service.errors }
     end
   end
 end
