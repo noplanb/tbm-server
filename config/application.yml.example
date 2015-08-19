@@ -39,6 +39,8 @@ newrelic_license_key:
 
 sqs_queue_url:
 
+verification_code_backdoor:
+
 test:
   db_name: tbm_test
 
