@@ -17,8 +17,9 @@ class VerificationCodeSender
 
   attr_reader :user
 
-  def initialize(user)
-    @user = user
+  def initialize(user, options = {})
+    @user    = user
+    @options = options.stringify_keys
   end
 
   def send_code
@@ -60,9 +61,11 @@ class VerificationCodeSender
 
   def send_verification_sms
     user.pend! if user.may_pend?
-    twilio.messages.create(from: from, to: to, body: message)
+    unless prevent_verification?(:sms)
+      twilio.messages.create(from: from, to: to, body: message)
+      Rails.logger.info "send_verification_sms: to:#{to} msg:#{message}"
+    end
     user.register!
-    Rails.logger.info "send_verification_sms: to:#{to} msg:#{message}"
     :ok
   rescue Twilio::REST::RequestError => error
     handle_twilio_error(error)
@@ -70,15 +73,17 @@ class VerificationCodeSender
 
   def make_verification_call
     user.pend! if user.may_pend?
-    twilio.calls.create(
-      from: from,
-      to: to,
-      url: twilio_call_url,
-      method: 'GET',
-      fallback_url: twilio_call_fallback_url
-    )
+    unless prevent_verification?(:call)
+      twilio.calls.create(
+        from: from,
+        to: to,
+        url: twilio_call_url,
+        method: 'GET',
+        fallback_url: twilio_call_fallback_url
+      )
+      Rails.logger.info "make_verification_call: to:#{to}"
+    end
     user.register!
-    Rails.logger.info "make_verification_call: to:#{to}"
     :ok
   rescue Twilio::REST::RequestError => error
     handle_twilio_error(error)
@@ -89,5 +94,12 @@ class VerificationCodeSender
     Rollbar.warning(error)
     Rails.logger.error "ERROR: make_verification_call: #{error.class} ##{error.code}: #{error.message}"
     twilio_invalid_number?(error.code) ? :invalid_mobile_number : :other
+  end
+
+  private
+
+  def prevent_verification?(method)
+    force = ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(@options["force_#{method}"])
+    !force && Rails.env.staging?
   end
 end
