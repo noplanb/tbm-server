@@ -4,7 +4,8 @@ RSpec.describe VerificationCodeSender do
   MESSAGE_PREFIX = "#{Settings.app_name} access code:"
   let(:mobile_number) { Figaro.env.twilio_to_number }
   let(:user) { create(:user, mobile_number: mobile_number) }
-  let(:instance) { described_class.new(user) }
+  let(:instance) { described_class.new(user, options) }
+  let(:options)  { Hash.new }
 
   describe '#send_code' do
     subject { instance.send_code }
@@ -75,6 +76,7 @@ RSpec.describe VerificationCodeSender do
       end
 
       it { is_expected.to eq(:ok) }
+      it_behaves_like 'verification code on staging', :sms, :ok
 
       context 'user status' do
         specify do
@@ -99,6 +101,7 @@ RSpec.describe VerificationCodeSender do
       end
 
       it { is_expected.to eq(:invalid_mobile_number) }
+      it_behaves_like 'verification code on staging', :sms, :invalid_mobile_number
 
       context 'user status' do
         specify do
@@ -122,6 +125,7 @@ RSpec.describe VerificationCodeSender do
       end
 
       it { is_expected.to eq(:other) }
+      it_behaves_like 'verification code on staging', :sms, :other
 
       context 'user status' do
         specify do
@@ -166,6 +170,7 @@ RSpec.describe VerificationCodeSender do
       end
 
       it { is_expected.to eq(:ok) }
+      it_behaves_like 'verification code on staging', :call, :ok
     end
 
     context 'on invalid number' do
@@ -186,6 +191,7 @@ RSpec.describe VerificationCodeSender do
       end
 
       it { is_expected.to eq(:invalid_mobile_number) }
+      it_behaves_like 'verification code on staging', :call, :invalid_mobile_number
 
       context 'user status' do
         specify do
@@ -221,6 +227,7 @@ RSpec.describe VerificationCodeSender do
       end
 
       it { is_expected.to eq(:other) }
+      it_behaves_like 'verification code on staging', :call, :other
 
       context 'user status' do
         specify do
