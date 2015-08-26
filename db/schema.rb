@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150624105446) do
+ActiveRecord::Schema.define(version: 20150826164305) do
 
   create_table "connections", force: :cascade do |t|
     t.integer  "creator_id", limit: 4
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 20150624105446) do
   create_table "kvstores", force: :cascade do |t|
     t.string   "key1",       limit: 255
     t.string   "key2",       limit: 255
-    t.string   "value",      limit: 255
+    t.text     "value",      limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
