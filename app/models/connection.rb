@@ -16,6 +16,9 @@ class Connection < ActiveRecord::Base
   aasm column: :status do
     state :voided, initial: true
     state :established
+    state :hidden_by_creator
+    state :hidden_by_target
+    state :hidden_by_both
 
     event :establish, after: :notify_state_changed do
       transitions from: :voided, to: :established
@@ -30,7 +33,7 @@ class Connection < ActiveRecord::Base
   scope :between_creator_and_target, ->(creator_id, target_id) { where ['creator_id = ? AND target_id = ?', creator_id, target_id] }
 
   def self.live_between(user1_id, user2_id)
-    between_creator_and_target(user1_id, user2_id).established + between_creator_and_target(user2_id, user1_id).established
+    between_creator_and_target(user1_id, user2_id).where.not(status: :voided) + between_creator_and_target(user2_id, user1_id).where.not(status: :voided)
   end
 
   def self.between(user1_id, user2_id)
@@ -55,12 +58,12 @@ class Connection < ActiveRecord::Base
   end
 
   def active?
-    return false unless established?
+    return false if voided?
     Kvstore.where('key1 LIKE ?', "#{key_search(creator, target)}%").count > 0 &&
       Kvstore.where('key1 LIKE ?', "#{key_search(target, creator)}%").count > 0
   end
 
-  def event_id
+  def id_for_events
     ckey
   end
 

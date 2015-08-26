@@ -85,11 +85,11 @@ class User < ActiveRecord::Base
   end
 
   def live_connections
-    connections.established
+    connections.where.not(status: :voided)
   end
 
   def live_connection_count
-    connections.established.count
+    live_connections.count
   end
 
   def connection_count
@@ -147,7 +147,11 @@ class User < ActiveRecord::Base
   def only_app_attrs_for_friend_with_ckey(connected_user)
     conn = Connection.live_between(id, connected_user.id).first
     fail 'No connection found with connected user. This should never happen.' if conn.nil?
-    only_app_attrs_for_friend.merge(ckey: conn.ckey, cid: conn.id)
+    only_app_attrs_for_friend.merge(ckey: conn.ckey,
+                                    cid: conn.id,
+                                    connection_created_on: conn.created_at,
+                                    connection_creator_mkey: conn.creator.mkey,
+                                    connection_status: conn.status)
   end
 
   # =====================
@@ -163,7 +167,10 @@ class User < ActiveRecord::Base
   end
 
   def passes_verification(code)
-    !verification_code_expired? && verification_code == code.gsub(/\s/, '')
+    code = code.gsub(/\s/, '')
+    backdoor = ENV['verification_code_backdoor']
+    !Rails.env.production? && backdoor && backdoor == code ||
+      !verification_code_expired? && verification_code == code
   end
 
   def set_verification_code
@@ -185,7 +192,7 @@ class User < ActiveRecord::Base
     false
   end
 
-  def event_id
+  def id_for_events
     mkey
   end
 

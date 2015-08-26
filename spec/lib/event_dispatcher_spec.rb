@@ -17,11 +17,11 @@ RSpec.describe EventDispatcher do
       end
     end
 
-    it { is_expected.to be_a(Aws::PageableResponse) }
+    it { is_expected.to be_a(Seahorse::Client::Response) }
 
     context 'when name is string' do
       let(:name) { 'zazo:test' }
-      it { is_expected.to be_a(Aws::PageableResponse) }
+      it { is_expected.to be_a(Seahorse::Client::Response) }
     end
   end
 
@@ -58,10 +58,24 @@ RSpec.describe EventDispatcher do
     end
   end
 
-  describe '.enable_send_message!' do
+  describe '.enable_send_message!', event_dispatcher: false do
     subject { described_class.enable_send_message! }
     specify do
       expect { subject }.to change { described_class.send_message_enabled? }.from(false).to(true)
+    end
+  end
+
+  describe '.with_state' do
+    context 'true' do
+      specify 'send_message_enabled should be truthy' do
+        described_class.with_state(true) { expect(described_class.send_message_enabled?).to be_truthy }
+      end
+    end
+
+    context 'false' do
+      specify 'send_message_enabled should be falsey' do
+        described_class.with_state(false) { expect(described_class.send_message_enabled?).to be_falsey }
+      end
     end
   end
 end

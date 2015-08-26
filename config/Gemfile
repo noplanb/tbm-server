@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails'
+gem 'rails', '~> 4.2.3'
 
 gem 'mysql2'
 # gem 'multi_json', '1.7.8'
@@ -81,6 +81,7 @@ gem 'rack-attack'
 gem 'newrelic_rpm'
 gem 'kaminari'
 gem 'aasm'
+gem 'activerecord-colored_log_subscriber'
 
 group :development do
   gem 'better_errors'
@@ -118,4 +119,5 @@ group :test do
   gem 'webmock'
   gem 'vcr'
   gem 'timecop'
+  gem 'json_spec'
 end

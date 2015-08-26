@@ -1,10 +1,16 @@
 ThreebymeServer::Application.routes.draw do
+
   get 's3_credentials/info'
 
   resources :s3_credentials
   resources :connections
   resources :users
   resources :version_compatibilities
+  resources :documentation, only: [:show]
+
+  resources :connection, only: [] do
+    post :set_visibility, on: :collection
+  end
 
   root 'landing#index'
   get 'landing' => 'landing#index'
@@ -55,6 +61,7 @@ ThreebymeServer::Application.routes.draw do
 
   get 'invitation/invite'
   get 'invitation/has_app'
+  post 'invitation/direct_invite_message'
 
   get 'verification_code/say_code'
   get 'verification_code/call_fallback'

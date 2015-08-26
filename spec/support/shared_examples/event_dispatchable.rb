@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.shared_examples 'event dispatchable' do |event|
   it "EventDispatcher receives :emit with #{event.inspect}" do
-    expect(EventDispatcher).to receive(:emit).with(event, event_params)
+    expect(EventDispatcher).to receive(:emit).with(event, event_params).and_call_original
     subject
   end
 

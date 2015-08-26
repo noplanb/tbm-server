@@ -1,5 +1,5 @@
 defaults: &settings
-  version: 2.6.0
+  version: 2.7.0
   android_store_url: https://play.google.com/store/apps/details?id=com.zazoapp.client
   iphone_store_url: https://itunes.apple.com/us/app/zazo/id922294638?mt=8
   domain_name: zazoapp.com
@@ -9,7 +9,7 @@ defaults: &settings
   support_email: support@zazoapp.com
   app_schema: zazo://
   use_s3: false
-  allow_authentication_with_token: false
+  authentication_method: digest
   verification_code_length: 4
   verification_code_lifetime_minutes: 120
   verification_code_sms_countries:
@@ -33,7 +33,7 @@ defaults: &settings
 
 development:
   <<: *settings
-  allow_authentication_with_token: true
+  authentication_method: basic
 
 test:
   <<: *settings

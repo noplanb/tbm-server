@@ -229,9 +229,33 @@ RSpec.describe User, type: :model do
     end
 
     describe '#passes_verification(code)' do
-      it 'passes with a fresh code' do
-        code = user.get_verification_code
-        expect(user.passes_verification(code))
+      context 'with correct fresh code' do
+        it 'passes with a fresh code' do
+          code = user.get_verification_code
+          expect(user.passes_verification(code)).to be true
+        end
+
+        it 'fails with a incorrect code' do
+          expect(user.passes_verification('1234')).to be false
+        end
+      end
+
+      context 'with backdoor' do
+        let(:backdoor_code) { '4567' }
+        before { ENV['verification_code_backdoor'] = backdoor_code }
+
+        it 'passes with a correct backdoor code' do
+          expect(user.passes_verification(backdoor_code)).to be true
+        end
+
+        it 'fails with a incorrect backdoor code' do
+          expect(user.passes_verification('1234')).to be false
+        end
+
+        it 'fails on production' do
+          allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+          expect(user.passes_verification(backdoor_code)).to be false
+        end
       end
     end
 

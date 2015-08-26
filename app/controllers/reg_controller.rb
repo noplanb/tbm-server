@@ -14,7 +14,7 @@ class RegController < ApplicationController
              else
                :send_code
              end
-    opts = case VerificationCodeSender.new(@user).send(method)
+    opts = case VerificationCodeSender.new(@user, params).send(method)
            when :ok
              { status: 'success',
                auth: @user.auth,
