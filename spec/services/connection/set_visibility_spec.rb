@@ -5,11 +5,13 @@ RSpec.describe Connection::SetVisibility do
   let(:instance)   { described_class.new params.stringify_keys }
 
   describe '#get_from_map' do
-    let(:params) {{
-      user_mkey:   connection.target.mkey,
-      friend_mkey: connection.creator.mkey,
-      visibility:  'hidden'
-    }}
+    let(:params) do
+      {
+        user_mkey:   connection.target.mkey,
+        friend_mkey: connection.creator.mkey,
+        visibility:  'hidden'
+      }
+    end
     subject { instance.send :get_from_map, attr[:by], attr[:key] }
 
     [
@@ -34,15 +36,15 @@ RSpec.describe Connection::SetVisibility do
       {
         established: [
           { as_initiator: [:creator, :target], hidden: 'hidden_by_creator', visible: 'established' },
-          { as_initiator: [:target, :creator], hidden: 'hidden_by_target',  visible: 'established' } ]
-      },{
+          { as_initiator: [:target, :creator], hidden: 'hidden_by_target',  visible: 'established' }]
+      }, {
         hidden_by_both: [
           { as_initiator: [:creator, :target], hidden: 'hidden_by_both',    visible: 'hidden_by_target' },
-          { as_initiator: [:target, :creator], hidden: 'hidden_by_both',    visible: 'hidden_by_creator' } ]
-      },{
+          { as_initiator: [:target, :creator], hidden: 'hidden_by_both',    visible: 'hidden_by_creator' }]
+      }, {
         hidden_by_creator: [
           { as_initiator: [:creator, :target], hidden: 'hidden_by_creator', visible: 'established' },
-          { as_initiator: [:target, :creator], hidden: 'hidden_by_both',    visible: 'hidden_by_creator' } ]
+          { as_initiator: [:target, :creator], hidden: 'hidden_by_both',    visible: 'hidden_by_creator' }]
       }
     ].each do |ctx|
       from_status = ctx.keys.first
@@ -51,11 +53,13 @@ RSpec.describe Connection::SetVisibility do
 
         ctx[from_status].each do |test|
           context "#{test[:as_initiator].first} as initiator" do
-            let(:params) {{
-              user_mkey:   connection.send(test[:as_initiator].first).mkey,
-              friend_mkey: connection.send(test[:as_initiator].last).mkey,
-              visibility:  visibility.to_s
-            }}
+            let(:params) do
+              {
+                user_mkey:   connection.send(test[:as_initiator].first).mkey,
+                friend_mkey: connection.send(test[:as_initiator].last).mkey,
+                visibility:  visibility.to_s
+              }
+            end
 
             context 'visibility is hidden' do
               let(:visibility) { :hidden }
