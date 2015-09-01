@@ -1,7 +1,9 @@
 class InvitationController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authenticate
-  before_action :validate_phone, :ensure_emails_is_array, except: [:direct_invite_message]
+  before_action :find_friend, only: [:update_friend]
+  before_action :validate_phone, except: [:direct_invite_message, :update_friend]
+  before_action :ensure_emails_is_array, except: [:direct_invite_message]
 
   def invite
     invitee = User.find_by_raw_mobile_number(params[:mobile_number]) || User.create(invitee_params)
@@ -11,6 +13,13 @@ class InvitationController < ApplicationController
     invitee.invite! if invitee.may_invite?
     trigger_invitation_sent(current_user, invitee)
     render json: invitee.only_app_attrs_for_friend_with_ckey(@user)
+  end
+
+  def update_friend
+    @friend.attributes = friend_params.except(:emails)
+    @friend.emails += friend_params[:emails]
+    @friend.save
+    render json: @friend.only_app_attrs_for_friend_with_ckey(@user)
   end
 
   def has_app
@@ -38,6 +47,15 @@ class InvitationController < ApplicationController
 
   def direct_invite_message_params
     params.permit(:mkey, :messaging_platform, :message_status)
+  end
+
+  def friend_params
+    params.permit(:mkey, :first_name, :last_name, :mobile_number, :emails, emails: [])
+  end
+
+  def find_friend
+    @friend = User.find_by_mkey(friend_params[:mkey])
+    render json: { error: 'user not found' }, status: :not_found if @friend.nil?
   end
 
   def validate_phone
