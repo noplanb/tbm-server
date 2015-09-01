@@ -91,9 +91,9 @@ class Kvstore < ActiveRecord::Base
       target_id: video_filename,
       data: {
         sender_id: sender_id,
-        sender_platform: sender.device_platform,
+        sender_platform: sender.try(:device_platform),
         receiver_id: receiver_id,
-        receiver_platform: receiver.device_platform,
+        receiver_platform: receiver.try(:device_platform),
         video_filename: video_filename,
         video_id: video_id
       },
