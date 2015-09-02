@@ -196,6 +196,10 @@ class User < ActiveRecord::Base
     mkey
   end
 
+  def add_emails(emails)
+    self.emails += Array.wrap(emails)
+  end
+
   private
 
   # ==================
