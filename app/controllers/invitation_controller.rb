@@ -16,7 +16,6 @@ class InvitationController < ApplicationController
   end
 
   def update_friend
-    @friend.attributes = friend_params.except(:emails)
     @friend.emails += friend_params[:emails]
     @friend.save
     render json: @friend.only_app_attrs_for_friend_with_ckey(@user)

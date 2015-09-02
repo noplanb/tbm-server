@@ -303,19 +303,6 @@ RSpec.describe InvitationController, type: :controller do
           end
         end
       end
-
-      context 'last_name' do
-        let(:params) { { mkey: friend.mkey, last_name: 'Test' } }
-
-        it 'returns http success' do
-          subject
-          expect(response).to have_http_status(:success)
-        end
-
-        specify do
-          expect { subject }.to change { friend.reload.last_name }.to('Test')
-        end
-      end
     end
   end
 end
