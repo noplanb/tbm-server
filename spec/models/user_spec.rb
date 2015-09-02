@@ -485,8 +485,15 @@ RSpec.describe User, type: :model do
   end
 
   describe '#add_emails' do
-    let(:user) { create(:user, emails: ['test@example.com'])}
-    subject { user.add_emails('other@example.com') }
-    it { is_expected.to eq(['test@example.com', 'other@example.com']) }
+    let(:user) { create(:user, emails: ['test@example.com']) }
+    subject { user.add_emails(emails) }
+    context 'with string given' do
+      let(:emails) { 'other@example.com' }
+      it { is_expected.to eq(['test@example.com', 'other@example.com']) }
+    end
+    context 'with array given' do
+      let(:emails) { ['other@example.com'] }
+      it { is_expected.to eq(['test@example.com', 'other@example.com']) }
+    end
   end
 end
