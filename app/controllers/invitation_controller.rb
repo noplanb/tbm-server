@@ -44,7 +44,7 @@ class InvitationController < ApplicationController
   end
 
   def friend_params
-    params.permit(:mkey, :first_name, :last_name, :mobile_number, :emails, emails: [])
+    params.permit(:mkey, :emails, emails: [])
   end
 
   def find_friend
