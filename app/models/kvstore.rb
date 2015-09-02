@@ -77,6 +77,8 @@ class Kvstore < ActiveRecord::Base
     return false if key1.blank? && value.blank?
     return false unless SUFFIXES_FOR_EVENTS.any? { |suffix| key1.include?(suffix) }
     sender_id, receiver_id, _hash, _type = key1.split('-')
+    sender = User.find_by_mkey(sender_id)
+    receiver = User.find_by_mkey(receiver_id)
     parsed_value = JSON.parse(value)
     status = parsed_value.fetch('status', 'received')
     video_id = parsed_value['videoId']
@@ -89,7 +91,9 @@ class Kvstore < ActiveRecord::Base
       target_id: video_filename,
       data: {
         sender_id: sender_id,
+        sender_platform: sender.try(:device_platform),
         receiver_id: receiver_id,
+        receiver_platform: receiver.try(:device_platform),
         video_filename: video_filename,
         video_id: video_id
       },

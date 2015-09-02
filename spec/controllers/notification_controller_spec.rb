@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe NotificationController, type: :controller do
   let(:video_id) { (Time.now.to_f * 1000).to_i.to_s }
-  let(:sender) { create(:user) }
-  let(:receiver) { create(:user) }
+  let(:sender) { create(:android_user) }
+  let(:receiver) { create(:ios_user) }
   let(:target) do
     create(:push_user,
            mkey: user.mkey,
@@ -12,7 +12,7 @@ RSpec.describe NotificationController, type: :controller do
   let(:push_user_params) do
     { mkey: target.mkey,
       push_token: 'push_token',
-      device_platform: target.device_platform,
+      device_platform: target.device_platform.to_s,
       device_build: 'dev' }
   end
   let(:video_filename) { Kvstore.video_filename(sender, receiver, video_id) }
@@ -77,7 +77,9 @@ RSpec.describe NotificationController, type: :controller do
           target_id: video_filename,
           data: {
             sender_id: params[:from_mkey],
+            sender_platform: sender.device_platform,
             receiver_id: params[:target_mkey],
+            receiver_platform: receiver.device_platform,
             video_filename: video_filename,
             video_id: video_id
           },
@@ -195,7 +197,9 @@ RSpec.describe NotificationController, type: :controller do
           target_id: video_filename,
           data: {
             sender_id: params[:target_mkey],
+            sender_platform: sender.device_platform,
             receiver_id: params[:to_mkey],
+            receiver_platform: receiver.device_platform,
             video_filename: video_filename,
             video_id: video_id
           },

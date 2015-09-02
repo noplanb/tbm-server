@@ -74,7 +74,9 @@ class NotificationController < ApplicationController
                          target_id: video_filename,
                          data: {
                            sender_id: params[:target_mkey],
+                           sender_platform: User.find_by_mkey(params[:target_mkey]).try(:device_platform),
                            receiver_id: params[:to_mkey],
+                           receiver_platform: User.find_by_mkey(params[:to_mkey]).try(:device_platform),
                            video_filename: video_filename,
                            video_id: params[:video_id]
                          },
