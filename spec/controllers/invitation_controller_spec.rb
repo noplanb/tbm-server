@@ -260,7 +260,7 @@ RSpec.describe InvitationController, type: :controller do
       context 'emails' do
         let(:params) do
           { mkey: friend.mkey,
-            emails: ['test@example.com'] }
+            emails: ['Test@example.com'] }
         end
 
         specify do

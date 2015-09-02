@@ -381,9 +381,9 @@ RSpec.describe User, type: :model do
       describe "##{options[:event]}" do
         subject { instance.send options[:event] }
         let(:event_params) do
-           { initiator: 'user',
-             initiator_id: instance.mkey,
-             data: options }
+          { initiator: 'user',
+            initiator_id: instance.mkey,
+            data: options }
         end
 
         it_behaves_like 'event dispatchable', ['user', options[:to_state]]
@@ -397,11 +397,11 @@ RSpec.describe User, type: :model do
         instance.register!
       end
       let(:event_params) do
-         { initiator: 'user',
-           initiator_id: instance.mkey,
-           data: { event: :verify,
-                   from_state: :registered,
-                   to_state: :verified } }
+        { initiator: 'user',
+          initiator_id: instance.mkey,
+          data: { event: :verify,
+                  from_state: :registered,
+                  to_state: :verified } }
       end
 
       it_behaves_like 'event dispatchable', ['user', :verified]
@@ -414,11 +414,11 @@ RSpec.describe User, type: :model do
         instance.register!
       end
       let(:event_params) do
-         { initiator: 'user',
-           initiator_id: instance.mkey,
-           data: { event: :pend,
-                   from_state: :registered,
-                   to_state: :initialized } }
+        { initiator: 'user',
+          initiator_id: instance.mkey,
+          data: { event: :pend,
+                  from_state: :registered,
+                  to_state: :initialized } }
       end
 
       it_behaves_like 'event dispatchable', ['user', :initialized]

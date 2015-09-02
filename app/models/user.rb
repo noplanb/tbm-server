@@ -219,6 +219,7 @@ class User < ActiveRecord::Base
   end
 
   def eliminate_invalid_emails
+    emails.map!(&:downcase)
     emails.select! { |email| email.to_s =~ EMAIL_REGEXP }
     emails.uniq!
   end
