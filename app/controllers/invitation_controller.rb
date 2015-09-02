@@ -5,7 +5,7 @@ class InvitationController < ApplicationController
   before_action :validate_phone, except: [:direct_invite_message, :update_friend]
 
   def invite
-    invitee = User.find_by_raw_mobile_number(params[:mobile_number]) || User.create(invitee_params)
+    invitee = User.find_by_raw_mobile_number(params[:mobile_number]) || User.create(invitee_params.except(:emails))
     invitee.add_emails(invitee_params[:emails])
     invitee.save
     Connection.find_or_create(@user.id, invitee.id)

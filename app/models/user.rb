@@ -197,6 +197,7 @@ class User < ActiveRecord::Base
   end
 
   def add_emails(emails)
+    self.emails ||= []
     self.emails += Array.wrap(emails)
   end
 
