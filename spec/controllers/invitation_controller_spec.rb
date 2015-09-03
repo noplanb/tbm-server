@@ -238,4 +238,71 @@ RSpec.describe InvitationController, type: :controller do
       end
     end
   end
+
+  describe 'POST #update_friend' do
+    let(:friend) { create(:user) }
+    let!(:connection) { Connection.find_or_create(user.id, friend.id) }
+    let(:params) { {} }
+    subject do
+      authenticate_with_http_digest(user.mkey, user.auth) do
+        post :update_friend, params
+      end
+    end
+
+    context 'when authenticated' do
+      context 'when no mkey given' do
+        it 'returns http not_found' do
+          subject
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+
+      context 'emails' do
+        let(:params) do
+          { mkey: friend.mkey,
+            emails: ['Test@example.com'] }
+        end
+
+        specify do
+          expect { subject }.to change { friend.reload.emails }.from([]).to(['test@example.com'])
+        end
+
+        context 'preserves existed emails' do
+          let!(:friend) { create(:user, emails: ['test1@example.com']) }
+          specify do
+            expect { subject }.to change { friend.reload.emails }.from(['test1@example.com']).to(['test1@example.com', 'test@example.com'])
+          end
+
+          context 'only unique' do
+            let!(:friend) { create(:user, emails: ['test1@example.com', 'test@example.com']) }
+            specify do
+              expect { subject }.to_not change { friend.reload.emails }
+            end
+          end
+        end
+
+        context 'emails is not array' do
+          let(:params) do
+            { mkey: friend.mkey,
+              emails: 'test@example.com' }
+          end
+
+          specify do
+            expect { subject }.to change { friend.reload.emails }.to(['test@example.com'])
+          end
+        end
+
+        context 'with invalid' do
+          let(:params) do
+            { mkey: friend.mkey,
+              emails: ['valid@example.com', 'invalid@example'] }
+          end
+
+          it 'saves only valid emails' do
+            expect { subject }.to change { friend.reload.emails }.to(['valid@example.com'])
+          end
+        end
+      end
+    end
+  end
 end

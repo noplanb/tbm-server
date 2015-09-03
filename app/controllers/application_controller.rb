@@ -69,7 +69,9 @@ class ApplicationController < ActionController::Base
                            target_id: video_filename,
                            data: {
                              sender_id: sender_mkey,
+                             sender_platform: User.find_by_mkey(sender_mkey).try(:device_platform),
                              receiver_id: push_user.mkey,
+                             receiver_platform: push_user.try(:device_platform),
                              video_filename: video_filename,
                              video_id: video_id
                            },

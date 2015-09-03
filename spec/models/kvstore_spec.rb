@@ -4,8 +4,8 @@ RSpec.describe Kvstore, type: :model do
   let(:video_id) { '1426622544176' }
   let(:sender_mkey) { 'smRug5xj8J469qX5XvGk' }
   let(:receiver_mkey) { 'IUed5vP9n4qzW6jY8wSu' }
-  let(:sender) { create(:user, mkey: sender_mkey) }
-  let(:receiver) { create(:user, mkey: receiver_mkey) }
+  let(:sender) { create(:ios_user, mkey: sender_mkey) }
+  let(:receiver) { create(:android_user, mkey: receiver_mkey) }
   let(:connection_attributes) do
     { creator: sender,
       target: receiver,
@@ -98,7 +98,9 @@ RSpec.describe Kvstore, type: :model do
             target_id: video_filename,
             data: {
               sender_id: sender.mkey,
+              sender_platform: sender.device_platform,
               receiver_id: receiver.mkey,
+              receiver_platform: receiver.device_platform,
               video_filename: video_filename,
               video_id: video_id
             },
@@ -127,7 +129,9 @@ RSpec.describe Kvstore, type: :model do
             target_id: video_filename,
             data: {
               sender_id: sender.mkey,
+              sender_platform: sender.device_platform,
               receiver_id: receiver.mkey,
+              receiver_platform: receiver.device_platform,
               video_filename: video_filename,
               video_id: video_id
             },

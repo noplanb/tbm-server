@@ -13,8 +13,14 @@ table.table
     td = link_to "#{@connection.target.name} [#{@connection.target_id}]", user_path(@connection.target)
     td = @connection.target.mobile_number
   tr
+    td CKey
+    td
+      code = @connection.ckey
+    td
+  tr
     td Status
     td = status_tag @connection.status
+    td
   tr
     td Active?
     td

@@ -353,3 +353,48 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "status": ""
             }
         ]
+
+## Group Invitation
+
+### Update friend [POST /invitation/update_friend]
+
+Update friends attributes:
++ emails
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic ZnhWUFJrR0lDd25yQXd5bTUyZ0s6emtBZ054YVhpbVlTdXB6VjA4cmg=
+
+    + Body
+
+            {
+                "mkey": "7qdanSEmctZ2jPnYA0a1",
+                "emails": [
+                  "elfishawy.sani@gmail.com"
+                ]
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "id": "1",
+                "mkey": "7qdanSEmctZ2jPnYA0a1",
+                "first_name": "Sani",
+                "last_name": "Elfishawy",
+                "mobile_number": "+16502453537",
+                "device_platform": "ios",
+                "emails": [
+                    "test@example.com",
+                    "elfishawy.sani@gmail.com"
+                ],
+                "has_app": "true",
+                "ckey": "54_1_PQ44HnqyfJdPE5RhM7kc",
+                "cid": 177,
+                "connection_created_on": "2015-03-14T18:00:28Z",
+                "connection_creator_mkey": "fxVPRkGICwnrAwym52gK",
+                "connection_status": "established"
+            }

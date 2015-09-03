@@ -70,7 +70,9 @@ RSpec.describe UsersController, type: :controller do
             target_id: video_filename,
             data: {
               sender_id: sender.mkey,
+              sender_platform: sender.device_platform,
               receiver_id: user.mkey,
+              receiver_platform: user.device_platform,
               video_filename: video_filename,
               video_id: video_id
             },
@@ -88,7 +90,9 @@ RSpec.describe UsersController, type: :controller do
             target_id: video_filename,
             data: {
               sender_id: sender.mkey,
+              sender_platform: sender.device_platform,
               receiver_id: user.mkey,
+              receiver_platform: user.device_platform,
               video_filename: video_filename,
               video_id: video_id
             },
