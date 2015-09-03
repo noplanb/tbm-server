@@ -260,7 +260,7 @@ RSpec.describe InvitationController, type: :controller do
       context 'emails' do
         let(:params) do
           { mkey: friend.mkey,
-            emails: ['test@example.com'] }
+            emails: ['Test@example.com'] }
         end
 
         specify do
@@ -301,19 +301,6 @@ RSpec.describe InvitationController, type: :controller do
           it 'saves only valid emails' do
             expect { subject }.to change { friend.reload.emails }.to(['valid@example.com'])
           end
-        end
-      end
-
-      context 'last_name' do
-        let(:params) { { mkey: friend.mkey, last_name: 'Test' } }
-
-        it 'returns http success' do
-          subject
-          expect(response).to have_http_status(:success)
-        end
-
-        specify do
-          expect { subject }.to change { friend.reload.last_name }.to('Test')
         end
       end
     end

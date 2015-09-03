@@ -381,9 +381,9 @@ RSpec.describe User, type: :model do
       describe "##{options[:event]}" do
         subject { instance.send options[:event] }
         let(:event_params) do
-           { initiator: 'user',
-             initiator_id: instance.mkey,
-             data: options }
+          { initiator: 'user',
+            initiator_id: instance.mkey,
+            data: options }
         end
 
         it_behaves_like 'event dispatchable', ['user', options[:to_state]]
@@ -397,11 +397,11 @@ RSpec.describe User, type: :model do
         instance.register!
       end
       let(:event_params) do
-         { initiator: 'user',
-           initiator_id: instance.mkey,
-           data: { event: :verify,
-                   from_state: :registered,
-                   to_state: :verified } }
+        { initiator: 'user',
+          initiator_id: instance.mkey,
+          data: { event: :verify,
+                  from_state: :registered,
+                  to_state: :verified } }
       end
 
       it_behaves_like 'event dispatchable', ['user', :verified]
@@ -414,11 +414,11 @@ RSpec.describe User, type: :model do
         instance.register!
       end
       let(:event_params) do
-         { initiator: 'user',
-           initiator_id: instance.mkey,
-           data: { event: :pend,
-                   from_state: :registered,
-                   to_state: :initialized } }
+        { initiator: 'user',
+          initiator_id: instance.mkey,
+          data: { event: :pend,
+                  from_state: :registered,
+                  to_state: :initialized } }
       end
 
       it_behaves_like 'event dispatchable', ['user', :initialized]
@@ -481,6 +481,19 @@ RSpec.describe User, type: :model do
       is_expected.to include({ mkey: friend_1.mkey, video_id: video_12, status: 'downloaded' },
                              { mkey: friend_2.mkey, video_id: video_23, status: 'viewed' },
                              mkey: friend_3.mkey, video_id: '', status: '')
+    end
+  end
+
+  describe '#add_emails' do
+    let(:user) { create(:user, emails: ['test@example.com']) }
+    subject { user.add_emails(emails) }
+    context 'with string given' do
+      let(:emails) { 'other@example.com' }
+      it { is_expected.to eq(['test@example.com', 'other@example.com']) }
+    end
+    context 'with array given' do
+      let(:emails) { ['other@example.com'] }
+      it { is_expected.to eq(['test@example.com', 'other@example.com']) }
     end
   end
 end

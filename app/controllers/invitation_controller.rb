@@ -3,11 +3,10 @@ class InvitationController < ApplicationController
   before_action :authenticate
   before_action :find_friend, only: [:update_friend]
   before_action :validate_phone, except: [:direct_invite_message, :update_friend]
-  before_action :ensure_emails_is_array, except: [:direct_invite_message]
 
   def invite
-    invitee = User.find_by_raw_mobile_number(params[:mobile_number]) || User.create(invitee_params)
-    invitee.emails += invitee_params[:emails]
+    invitee = User.find_by_raw_mobile_number(params[:mobile_number]) || User.create(invitee_params.except(:emails))
+    invitee.add_emails(invitee_params[:emails])
     invitee.save
     Connection.find_or_create(@user.id, invitee.id)
     invitee.invite! if invitee.may_invite?
@@ -16,8 +15,7 @@ class InvitationController < ApplicationController
   end
 
   def update_friend
-    @friend.attributes = friend_params.except(:emails)
-    @friend.emails += friend_params[:emails]
+    @friend.add_emails(friend_params[:emails])
     @friend.save
     render json: @friend.only_app_attrs_for_friend_with_ckey(@user)
   end
@@ -37,10 +35,6 @@ class InvitationController < ApplicationController
 
   private
 
-  def ensure_emails_is_array
-    params[:emails] = Array.wrap(params[:emails])
-  end
-
   def invitee_params
     params.permit(:first_name, :last_name, :mobile_number, :emails, emails: [])
   end
@@ -50,7 +44,7 @@ class InvitationController < ApplicationController
   end
 
   def friend_params
-    params.permit(:mkey, :first_name, :last_name, :mobile_number, :emails, emails: [])
+    params.permit(:mkey, :emails, emails: [])
   end
 
   def find_friend

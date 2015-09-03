@@ -196,6 +196,11 @@ class User < ActiveRecord::Base
     mkey
   end
 
+  def add_emails(emails)
+    self.emails ||= []
+    self.emails += Array.wrap(emails)
+  end
+
   private
 
   # ==================
@@ -219,6 +224,7 @@ class User < ActiveRecord::Base
   end
 
   def eliminate_invalid_emails
+    emails.map!(&:downcase)
     emails.select! { |email| email.to_s =~ EMAIL_REGEXP }
     emails.uniq!
   end
