@@ -103,7 +103,7 @@ class UsersController < AdminController
     video_id = create_test_video(sender, @user, file_name)
     Kvstore.add_id_key(sender, @user, video_id)
     @push_user = PushUser.find_by_mkey(@user.mkey) || not_found
-    NotificationService.new(@push_user, request, current_user).send_video_received_notification(params, sender.mkey, sender.first_name, video_id)
+    Notification::VideoReceived.new(@push_user, request.host, current_user).process(params, sender.mkey, sender.first_name, video_id)
     redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
 

@@ -12,12 +12,12 @@ class NotificationController < ApplicationController
   end
 
   def send_video_received
-    NotificationService.new(@push_user, request, current_user).send_video_received_notification(params, params[:from_mkey], params[:sender_name], params[:video_id])
+    Notification::VideoReceived.new(@push_user, request.host, current_user).process(params, params[:from_mkey], params[:sender_name], params[:video_id])
     render json: { status: '200' }
   end
 
   def send_video_status_update
-    NotificationService.new(@push_user, request, current_user).send_video_status_updated_notification(params)
+    Notification::VideoStatusUpdated.new(@push_user, request.host).process(params)
     render json: { status: '200' }
   end
 
