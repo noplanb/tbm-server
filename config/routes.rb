@@ -12,6 +12,12 @@ ThreebymeServer::Application.routes.draw do
     post :set_visibility, on: :collection
   end
 
+  namespace :api do
+    namespace :v1 do
+      resources :events, only: [:create]
+    end
+  end
+
   root 'landing#index'
   get 'landing' => 'landing#index'
   get 'l/:id' => 'landing#invite'
