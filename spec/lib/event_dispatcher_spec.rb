@@ -8,14 +8,12 @@ RSpec.describe EventDispatcher do
         initiator_id: '1' }
     end
     subject { described_class.emit(name, params) }
-    around do |example|
-      VCR.use_cassette('sqs_send_message', erb: {
-                         queue_url: described_class.queue_url,
-                         region: described_class.sqs_client.config.region,
-                         access_key: described_class.sqs_client.config.credentials.access_key_id }) do
-        example.run
-      end
-    end
+
+    use_vcr_cassette 'sqs_send_message', erb: {
+      queue_url: described_class.queue_url,
+      region: described_class.sqs_client.config.region,
+      access_key: described_class.sqs_client.config.credentials.access_key_id
+    }
 
     it { is_expected.to be_a(Seahorse::Client::Response) }
 

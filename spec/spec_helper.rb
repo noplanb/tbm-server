@@ -12,6 +12,9 @@
 # the additional setup, and require it from the spec files that actually need
 # it.
 #
+
+require 'vcr'
+
 # The `.rspec` file also contains a few flags that are not defaults but that
 # users commonly want.
 #
@@ -83,4 +86,12 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
+
+  module VCR::RSpec::Macros
+    def self.extended(base)
+    end
+  end
+
+  # right above the existing:
+  config.extend(VCR::RSpec::Macros)
 end
