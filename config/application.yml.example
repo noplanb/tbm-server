@@ -2,6 +2,9 @@ AWS_REGION: us-west-1
 AWS_ACCESS_KEY_ID:
 AWS_SECRET_ACCESS_KEY:
 
+s3_access_key_id:
+s3_secret_access_key:
+
 db_host:
 db_name:
 db_password:

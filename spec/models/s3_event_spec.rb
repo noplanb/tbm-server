@@ -11,9 +11,10 @@ RSpec.describe S3Event do
 
     context 'with correct event data' do
       let(:s3_event_data) { json_fixture('s3_event')['Records'] }
+      let(:expected_sample) { FactoryGirl.build :s3_event }
 
-      it { expect(instance.bucket_name).to eq 'staging-videos.zazo.com' }
-      it { expect(instance.file_name).to   eq 'ZcAK4dM9S4m0IFui6ok6-lpb8DcispONUSfdMOT9g-4361c3a95265a9e4a06b0fd501485ed4' }
+      it { expect(instance.bucket_name).to eq expected_sample.bucket_name }
+      it { expect(instance.file_name).to   eq expected_sample.file_name }
       it { expect(instance).to be_valid  }
     end
 

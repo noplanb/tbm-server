@@ -3,6 +3,8 @@ class HandleOutgoingVideo
 
   def initialize(s3_event_params)
     @s3_event = S3Event.new s3_event_params
+
+
   end
 
   def do
