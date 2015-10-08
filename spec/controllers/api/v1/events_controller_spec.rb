@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::EventsController, type: :controller do
   describe 'POST #create' do
+    use_vcr_cassette 's3_get_metadata'
     before { post :create, params }
 
     context 'correct s3 event' do

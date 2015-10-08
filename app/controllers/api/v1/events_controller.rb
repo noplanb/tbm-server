@@ -10,10 +10,6 @@ class Api::V1::EventsController < ActionController::Base
   private
 
   def service
-    @event_service ||= HandleOutgoingVideo.new event_params
-  end
-
-  def event_params
-    params.require('Records')
+    @event_service ||= HandleOutgoingVideo.new params.require('Records')
   end
 end
