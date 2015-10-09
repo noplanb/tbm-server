@@ -19,8 +19,17 @@ class HandleOutgoingVideo
   private
 
   def handle_outgoing_video
-    # update kv-store with video_id
-    # send notification to receiver
+    update_kvstore_with_video_id
+    send_notification_to_receiver
+  end
+
+  def update_kvstore_with_video_id
+    Kvstore.create_or_update key1: "#{s3_event.file_name}-VideoIdKVKey", key2: s3_metadata.video_id,
+                             value: { 'videoId' => s3_metadata.video_id }.to_json
+  end
+
+  def send_notification_to_receiver
+
   end
 
   def client_version_correspond?
