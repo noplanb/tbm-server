@@ -11,8 +11,8 @@ class HandleOutgoingVideo
     @s3_metadata = S3Metadata.create_by_event s3_event
     handle_outgoing_video if client_version_correspond?
     true
-  rescue ActiveRecord::RecordNotFound => e
-    @errors[:mkeys] = e.message
+  rescue ActiveRecord::RecordNotFound
+    @errors[:mkeys] = ['couldn\'t find user by mkey']
     false
   end
 
