@@ -8,7 +8,7 @@ RSpec.describe S3Metadata do
       use_vcr_cassette 's3_get_metadata'
       let(:s3_event) { FactoryGirl.build :s3_event }
 
-      it { expect(instance.client_version).to  eq 110 }
+      it { expect(instance.client_version).to  eq 111 }
       it { expect(instance.client_platform).to eq 'android' }
       it { expect(instance.sender_mkey).to     eq 'ZcAK4dM9S4m0IFui6ok6' }
       it { expect(instance.receiver_mkey).to   eq 'lpb8DcispONUSfdMOT9g' }

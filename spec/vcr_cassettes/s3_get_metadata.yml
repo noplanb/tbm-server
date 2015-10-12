@@ -40,7 +40,7 @@ http_interactions:
       X-Amz-Meta-Client-Platform:
       - android
       X-Amz-Meta-Client-Version:
-      - '110'
+      - '111'
       X-Amz-Meta-Video-Id:
       - '1444235919617'
       X-Amz-Meta-Receiver-Mkey:
@@ -62,6 +62,6 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-    http_version: 
+    http_version:
   recorded_at: Thu, 08 Oct 2015 11:56:58 GMT
 recorded_with: VCR 2.9.3
