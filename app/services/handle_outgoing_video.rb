@@ -39,7 +39,7 @@ class HandleOutgoingVideo
   end
 
   def client_version_correspond?
-    return true if s3_metadata.client_platform == 'android' && s3_metadata.client_version >= 110
+    return true if s3_metadata.client_platform == 'android' && s3_metadata.client_version >= 111
     false
   end
 end
