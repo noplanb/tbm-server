@@ -50,8 +50,4 @@ module EventDispatcher
       {}
     end
   end
-
-  def self.resend_s3_event(params)
-    sqs_client.send_message(queue_url: queue_url, message_body: params.to_json)
-  end
 end

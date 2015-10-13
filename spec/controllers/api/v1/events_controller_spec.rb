@@ -5,7 +5,6 @@ RSpec.describe Api::V1::EventsController, type: :controller do
     use_vcr_cassette 's3_get_metadata'
 
     before do
-      allow(EventDispatcher).to receive(:resend_s3_event).and_return true
       allow_any_instance_of(HandleOutgoingVideo).to receive(:send_notification_to_receiver).and_return true
       allow_any_instance_of(Kvstore).to receive(:trigger_event).and_return true
       post :create, params
