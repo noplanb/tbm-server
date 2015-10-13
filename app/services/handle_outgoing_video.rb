@@ -12,7 +12,10 @@ class HandleOutgoingVideo
     handle_outgoing_video if client_version_correspond?
     true
   rescue ActiveRecord::RecordNotFound
-    @errors[:mkeys] = ['couldn\'t find user by mkey']
+    @errors[:mkeys] = 'couldn\'t find user by mkey'
+    false
+  rescue Exception => e
+    @errors[e.class] = e.inspect
     false
   end
 
