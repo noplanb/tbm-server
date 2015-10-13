@@ -20,6 +20,13 @@ class HandleOutgoingVideo
     @errors.merge s3_event.errors.messages
   end
 
+  def log_messages(status)
+    case status
+      when :success then WriteLog.info self, "s3 event was handled successfully at #{Time.now}"
+      when :failure then WriteLog.info self, "errors occurred with handle s3 event at #{Time.now}: #{errors.inspect}"
+    end
+  end
+
   private
 
   def handle_outgoing_video

@@ -18,7 +18,11 @@ RSpec.describe Api::V1::EventsController, type: :controller do
 
     context 'incorrect s3 event' do
       let(:params) { json_fixture('s3_event_incorrect') }
-      it { expect(response).to have_http_status :unprocessable_entity }
+      it { expect(response).to have_http_status :ok }
+      it do
+        expect = { 'errors' => { 'bucket_name' => ['can\'t be blank'], 'file_name' => ['can\'t be blank'] } }
+        expect(JSON.parse(response.body)).to eq expect
+      end
     end
   end
 end
