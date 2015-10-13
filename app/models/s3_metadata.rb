@@ -22,4 +22,12 @@ class S3Metadata
     self.receiver_mkey   = attrs['receiver-mkey']
     self.video_id        = attrs['video-id']
   end
+
+  def inspect
+    { client_version: client_version,
+      client_platform: client_platform,
+      sender_mkey: sender_mkey,
+      receiver_mkey: receiver_mkey,
+      video_id: video_id }.inspect
+  end
 end
