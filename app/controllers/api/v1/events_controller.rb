@@ -4,9 +4,8 @@ class Api::V1::EventsController < ActionController::Base
   before_action :log_params
 
   def create
-    s3_params = params.require('Records')
-    handle_with_manager HandleOutgoingVideo.new(s3_params) do
-      EventDispatcher.resend_s3_event 'Records' => s3_params
+    handle_with_manager HandleOutgoingVideo.new(params['Records']) do
+      EventDispatcher.resend_s3_event 'Records' => params['Records']
     end
   end
 

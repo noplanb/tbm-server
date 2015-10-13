@@ -12,4 +12,8 @@ class S3Event
   rescue TypeError, NoMethodError
     nil
   end
+
+  def inspect
+    { bucket_name: bucket_name, file_name: file_name }.inspect
+  end
 end

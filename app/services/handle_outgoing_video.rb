@@ -11,11 +11,9 @@ class HandleOutgoingVideo
     @s3_metadata = S3Metadata.create_by_event s3_event
     handle_outgoing_video if client_version_correspond?
     true
-  rescue ActiveRecord::RecordNotFound
-    @errors[:mkeys] = 'couldn\'t find user by mkey'
-    false
+  #rescue ActiveRecord::RecordNotFound => e
   rescue Exception => e
-    @errors[e.class] = e.inspect
+    @errors[e.class.name] = e.message
     false
   end
 
@@ -25,8 +23,8 @@ class HandleOutgoingVideo
 
   def log_messages(status)
     case status
-      when :success then WriteLog.info self, "s3 event was handled successfully at #{Time.now}"
-      when :failure then WriteLog.info self, "errors occurred with handle s3 event at #{Time.now}: #{errors.inspect}"
+      when :success then WriteLog.info self, "s3 event was handled successfully at #{Time.now}, s3 event: #{@s3_event.inspect}"
+      when :failure then WriteLog.info self, "errors occurred with handle s3 event at #{Time.now}: #{errors.inspect}, s3 event: #{@s3_event.inspect}"
     end
   end
 
@@ -49,7 +47,7 @@ class HandleOutgoingVideo
   end
 
   def client_version_correspond?
-    return true if s3_metadata.client_platform == 'android' && s3_metadata.client_version >= 111
+    return true if s3_metadata.client_platform == 'android' && s3_metadata.client_version >= 112
     false
   end
 end

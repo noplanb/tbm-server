@@ -45,7 +45,7 @@ RSpec.describe HandleOutgoingVideo do
 
       it { expect(subject).to be false }
       it 'has specific errors', :do_before do
-        expect = { mkeys: 'couldn\'t find user by mkey' }
+        expect = { 'ActiveRecord::RecordNotFound' => 'Couldn\'t find User' }
         expect(instance.errors).to eq expect
       end
     end

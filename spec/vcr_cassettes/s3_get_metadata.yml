@@ -40,7 +40,7 @@ http_interactions:
       X-Amz-Meta-Client-Platform:
       - android
       X-Amz-Meta-Client-Version:
-      - '111'
+      - '112'
       X-Amz-Meta-Video-Id:
       - '1444235919617'
       X-Amz-Meta-Receiver-Mkey:
