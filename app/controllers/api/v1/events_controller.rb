@@ -1,12 +1,9 @@
 class Api::V1::EventsController < ActionController::Base
   include HandleWithManager
-
   before_action :log_params
 
   def create
-    handle_with_manager HandleOutgoingVideo.new(params['Records']) do
-      EventDispatcher.resend_s3_event 'Records' => params['Records']
-    end
+    handle_with_manager HandleOutgoingVideo.new(params['Records'])
   end
 
   private
