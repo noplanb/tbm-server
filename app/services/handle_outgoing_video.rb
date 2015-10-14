@@ -9,9 +9,8 @@ class HandleOutgoingVideo
   def do
     return false unless s3_event.valid?
     @s3_metadata = S3Metadata.create_by_event s3_event
-    handle_outgoing_video if client_version_correspond?
+    handle_outgoing_video if client_version_allowed?
     true
-  #rescue ActiveRecord::RecordNotFound => e
   rescue Exception => e
     @errors[e.class.name] = e.message
     false
@@ -25,7 +24,7 @@ class HandleOutgoingVideo
     debug_info = "s3 event: #{@s3_event.inspect}; s3 metadata: #{@s3_metadata.inspect}"
     case status
       when :success then WriteLog.info self, "s3 event was handled successfully at #{Time.now}; #{debug_info}"
-      when :failure then WriteLog.info self, "errors occurred with handle s3 event at #{Time.now}; errors: #{errors.inspect}; #{debug_info}"
+      when :failure then WriteLog.info self, "errors occurred with handle s3 event at #{Time.now}; errors: #{errors.inspect}; #{debug_info}", rollbar: :error
     end
   end
 
@@ -42,12 +41,12 @@ class HandleOutgoingVideo
 
   def send_notification_to_receiver
     push_user = PushUser.find_by! mkey: s3_metadata.receiver_mkey
-    current_user  = User.find_by! mkey: s3_metadata.sender_mkey
+    current_user = User.find_by! mkey: s3_metadata.sender_mkey
     params = { target_mkey: s3_metadata.receiver_mkey, from_mkey: current_user.mkey, sender_name: current_user.name, video_id: s3_metadata.video_id }
     Notification::VideoReceived.new(push_user, Figaro.env.domain_name, current_user).process(params, params[:from_mkey], params[:sender_name], params[:video_id])
   end
 
-  def client_version_correspond?
+  def client_version_allowed?
     return true if s3_metadata.client_platform == 'android' && s3_metadata.client_version >= 112
     false
   end
