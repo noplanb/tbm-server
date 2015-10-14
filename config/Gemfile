@@ -75,13 +75,16 @@ gem 'slim-rails'
 
 gem 'bootstrap-sass'
 gem 'simple_form'
-gem 'rollbar'
+
 gem 'settingslogic'
 gem 'rack-attack'
 gem 'newrelic_rpm'
 gem 'kaminari'
 gem 'aasm'
 gem 'activerecord-colored_log_subscriber'
+
+gem 'remote_syslog_logger'
+gem 'rollbar'
 
 group :development do
   gem 'better_errors'

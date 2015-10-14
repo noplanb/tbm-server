@@ -3,6 +3,7 @@ class HandleOutgoingVideo
 
   def initialize(s3_event_params)
     @s3_event = S3Event.new s3_event_params
+    @errors   = {}
   end
 
   def do
@@ -10,10 +11,13 @@ class HandleOutgoingVideo
     @s3_metadata = S3Metadata.create_by_event s3_event
     handle_outgoing_video if client_version_allowed?
     true
+  rescue ActiveRecord::RecordNotFound => e
+    @errors[e.class.name] = e.message
+    false
   end
 
   def errors
-    s3_event.errors.messages
+    @errors.merge s3_event.errors.messages
   end
 
   def log_messages(status)
