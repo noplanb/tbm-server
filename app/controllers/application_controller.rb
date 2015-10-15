@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_with_digest
     authenticate_or_request_with_http_digest(REALM) do |mkey|
-      @user = @current_user = User.find_by_mkey(mkey)
+      @user = @current_user = Rails.env.staging? ? User.find_by_mkey!(mkey) : User.find_by_mkey(mkey)
       @user && @user.auth
     end
   end
