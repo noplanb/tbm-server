@@ -56,14 +56,16 @@ class GenericPushNotification
 
   def send_ios
     apns.push(ios_notification)
-    if ios_notification.error
-      Rollbar.error(ios_notification.error, notification: ios_notification)
+    is_notification_sent = ios_notification.sent?
+    unregistered_tokens = unregistered_devices
+    unregistered_users = PushUser.where(push_token: unregistered_tokens.map { |row| row[:token] }).map do |u|
+      { mkey: u.mkey, push_token: u.push_token, device_platform: u.device_platform, device_build: u.device_build }
     end
-    unless unregistered_devices.empty?
-      Rollbar.info 'APNS returned non-empty unregistered devices',
-                   unregistered_devices: unregistered_devices
+    Rollbar.error(ios_notification.error, notification: ios_notification) unless is_notification_sent
+    unless unregistered_tokens.empty?
+      Rollbar.info('APNS returned non-empty unregistered devices', unregistered_devices: unregistered_tokens, unregistered_users: unregistered_users)
     end
-    ios_notification.sent?
+    is_notification_sent
   end
 
   def send_android

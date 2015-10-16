@@ -75,13 +75,12 @@ RSpec.describe GenericPushNotification do
       context 'with empty token' do
         let(:target_push_user) { build(:ios_push_user, push_token: '') }
         before do
-          allow(instance.ios_notification).to receive(:error)
-            .and_return(Houston::Notification::APNSError.new(2))
+          allow(instance.ios_notification).to receive(:error).and_return Houston::Notification::APNSError.new(2)
         end
 
         it 'notifies Rollbar with error' do
-          expect(Rollbar).to receive(:error).with(instance.ios_notification.error,
-                                                  notification: instance.ios_notification)
+          allow(instance.ios_notification).to receive(:sent?).and_return false
+          expect(Rollbar).to receive(:error).with(instance.ios_notification.error, notification: instance.ios_notification)
           subject
         end
         it { is_expected.to be_truthy }
@@ -92,7 +91,8 @@ RSpec.describe GenericPushNotification do
         before { allow(instance).to receive(:unregistered_devices).and_return(unregistered_devices) }
         specify do
           expect(Rollbar).to receive(:info).with('APNS returned non-empty unregistered devices',
-                                                 unregistered_devices: unregistered_devices)
+                                                 unregistered_devices: unregistered_devices,
+                                                 unregistered_users: [])
           subject
         end
       end
