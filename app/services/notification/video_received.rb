@@ -22,6 +22,7 @@ class Notification::VideoReceived
                                            from_mkey: sender_mkey,
                                            video_id: video_id,
                                            host: host })
+
   end
 
   protected

@@ -1,9 +1,7 @@
 class NotificationController < ApplicationController
   before_action :authenticate
-  before_action :send_notification_enabled, only: [:send_video_received,
-                                                   :send_video_status_update]
-  before_action :find_target_push_user, only: [:send_video_received,
-                                               :send_video_status_update]
+  before_action :send_notification_enabled, only: [:send_video_received, :send_video_status_update]
+  before_action :find_target_push_user, only: [:send_video_received, :send_video_status_update]
 
   def set_push_token
     PushUser.create_or_update(push_user_params)

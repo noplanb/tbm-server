@@ -3,6 +3,7 @@ class Kvstore < ActiveRecord::Base
   after_save :trigger_event
 
   def self.create_or_update(params)
+    WriteLog.debug self, "params: #{params}"
     if params[:key2].blank?
       kvs = where('key1 = ? and key2 is null', params[:key1])
     else
