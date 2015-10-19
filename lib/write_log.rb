@@ -1,29 +1,29 @@
 class WriteLog
   def self.info(context, message, settings = {})
-    prefix = get_class_name context
-    logging_local   prefix, message
-    logging_syslog  prefix, message
-    logging_rollbar prefix, message, settings[:rollbar] if settings[:rollbar]
+    tag = get_class_name context
+    logging_local   :info, tag, message
+    logging_syslog  :info, tag, message
+    logging_rollbar settings[:rollbar], tag, message if settings[:rollbar]
   end
 
   def self.debug(context, message)
-    prefix = "#{get_class_name context} [DEBUG]"
-    logging_local  prefix, message
-    logging_syslog prefix, message
+    tag = "#{get_class_name context} [DEBUG]"
+    logging_local  :debug, tag, message
+    logging_syslog :debug, tag, message
   end
 
   private
 
-  def self.logging_local(prefix, message)
-    Rails.logger.tagged(prefix) { Rails.logger.info message }
+  def self.logging_local(log_level, tag, message)
+    Rails.logger.tagged(tag) { Rails.logger.send log_level, message } if Rails.logger.respond_to? log_level
   end
 
-  def self.logging_syslog(prefix, message)
-    Rails.syslogger.info("[#{prefix}] #{message}") if %w(production staging).include? Rails.env
+  def self.logging_syslog(log_level, tag, message)
+    Rails.syslogger.send log_level, "[#{tag}] #{message}" if %w(production staging).include?(Rails.env) && Rails.syslogger.respond_to?(log_level)
   end
 
-  def self.logging_rollbar(prefix, message, method = :error)
-    Rollbar.send(method, "[#{prefix}] #{message}") if Rollbar.respond_to? method
+  def self.logging_rollbar(log_level, tag, message)
+    Rollbar.send log_level, "[#{tag}] #{message}" if Rollbar.respond_to? log_level
   end
 
   def self.get_class_name(context)

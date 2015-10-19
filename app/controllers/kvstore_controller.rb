@@ -29,6 +29,7 @@ class KvstoreController < ApplicationController
   # = Load testing =
   # ================
   # These dont require auth rememeber to remove them from routes after testing.
+
   def load_test_read
     get_all
   end
