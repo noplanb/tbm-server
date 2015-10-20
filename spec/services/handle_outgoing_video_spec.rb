@@ -30,8 +30,7 @@ RSpec.describe HandleOutgoingVideo do
       it { expect(subject).to be true }
       it { expect { subject }.to change { Kvstore.count }.by 1 }
       it 'specific kvstore placed in database', :do_before do
-        expect = %w(ZcAK4dM9S4m0IFui6ok6-lpb8DcispONUSfdMOT9g-da6f35c931ea53de0e24fb4c76beb5f3-VideoIdKVKey 1444235919617)
-        expect(Kvstore.pluck(:key1, :key2).last).to eq expect
+        expect(Kvstore.last.key2).to eq '1444235919617'
       end
     end
 
