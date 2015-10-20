@@ -3,7 +3,6 @@ class KvstoreController < ApplicationController
   before_action :authenticate, only: [:received_videos, :video_status]
 
   def set
-    WriteLog.debug self, "kvstore_params: #{kvstore_params}"
     Kvstore.create_or_update(kvstore_params)
     render json: { status: '200' }
   end
@@ -39,9 +38,7 @@ class KvstoreController < ApplicationController
   end
 
   def received_videos
-    result = current_user.received_videos
-    WriteLog.debug self, "current_user: #{current_user.mkey}, received_videos: #{result}"
-    render json: result
+    render json: current_user.received_videos
   end
 
   def video_status
