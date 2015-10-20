@@ -39,7 +39,7 @@ class KvstoreController < ApplicationController
   end
 
   def received_videos
-    WriteLog.debug self, "received_videos: #{current_user.received_videos}"
+    WriteLog.debug self, "current_user: #{current_user.mkey}, received_videos: #{current_user.received_videos}"
     render json: current_user.received_videos
   end
 
