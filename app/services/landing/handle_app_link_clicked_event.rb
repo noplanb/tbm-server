@@ -14,8 +14,6 @@ class Landing::HandleAppLinkClickedEvent
     yield redirect_path if block_given? && redirect_path
   end
 
-  private
-
   def get_platform_and_path
     platform, redirect_path = :unknown, nil
     if user_agent.android? && user_agent.ios?
@@ -32,6 +30,8 @@ class Landing::HandleAppLinkClickedEvent
     return platform, redirect_path
   end
 
+  private
+
   def fire_sqs_event(platform)
     connection = Connection.find_by_id connection_id
     EventDispatcher.emit(%w(user app_link_clicked),
@@ -42,7 +42,7 @@ class Landing::HandleAppLinkClickedEvent
         connection_target_mkey: connection.target.mkey,
         platform: platform
       },
-      raw_params: { user_agent: request.user_agent }
+      raw_params: { user_agent: user_agent.raw }
     ) if connection
   end
 
