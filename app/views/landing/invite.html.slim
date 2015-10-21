@@ -1,19 +1,13 @@
 #landing
-  section#top class=('no-inviter' if @inviter.blank?)
+  section#top class=('no-inviter')
     .column
-      - if @inviter
-        .salutation Hi,
-        .message I sent you a message on #{app_name}
-        .closing ~#{@inviter.name}
-        .arrow = link_to image_tag('down-arrow.png'), store_url
-      - else
-        #logo
-          = link_to image_tag('zazo-type.png'), store_url
-        #title
-          span #{app_name.titleize} is Face Messaging
-        .tag-line
-          em There ain't nothing like it.
-        #screenshot = image_tag 'phone.png'
+      #logo
+        = link_to image_tag('zazo-type.png'), store_url
+      #title
+        span #{app_name.titleize} is Face Messaging
+      .tag-line
+        em There ain't nothing like it.
+      #screenshot = image_tag 'phone.png'
   section#middle
     .column
       - if ios? || android?
@@ -21,10 +15,7 @@
       - else
         h2 Get the App!
       #text-download
-        - if @inviter
-          | Download the #{app_name} app today to receive #{@inviter.first_name}'s message.
-        - else
-          | Download the #{app_name} app today!
+        | Download the #{app_name} app today!
       .store-buttons
         = link_to image_tag('apple-store-badge.png'), iphone_store_url, class: 'store_icon'
         = link_to image_tag('google-play-badge.png'), android_store_url, class: 'store_icon'
