@@ -11,3 +11,5 @@ nav.navbar.navbar-inverse.navbar-fixed-top
     .collapse.navbar-collapse
       ul.nav.navbar-nav
         == render 'layouts/navigation_links'
+      ul.nav.navbar-nav.navbar-right
+        li.version-info = Settings.version

@@ -1,0 +1,5 @@
+v2.9.0
+:star: Implemented AutoNotification feature
+:bulb: Added logging to papertrail service
+:bulb: Added more information for houston errors
+:bulb: Added exceptions when digest auth fails on staging
