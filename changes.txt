@@ -1,3 +1,7 @@
+v2.9.1
+:bulb: Fire sqs event when user clicks on app link
+:hammer: Refactored code regarding landing page
+
 v2.9.0
 :star: Implemented AutoNotification feature
 :bulb: Added logging to papertrail service
