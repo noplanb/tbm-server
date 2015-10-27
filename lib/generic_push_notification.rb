@@ -66,7 +66,8 @@ class GenericPushNotification
     unregistered_devs = unregistered_devices
     unregistered_tokens = unregistered_devs.map { |row| row[:token].delete(' ') }
     unregistered_users = PushUser.where(push_token: unregistered_tokens).map do |u|
-      { id: u.id, mkey: u.mkey, device_platform: u.device_platform, device_build: u.device_build }
+      { id: u.id, mkey: u.mkey, push_token: u.push_token,
+        device_platform: u.device_platform, device_build: u.device_build }
     end
     unless unregistered_devs.empty?
       Rollbar.info('APNS returned non-empty unregistered devices',
