@@ -2,14 +2,22 @@ class LandingController < ApplicationController
   include LandingHelper
 
   layout 'landing'
-  before_action :set_inviter, only: :invite
+  before_action :set_inviter, only: [:invite, :legacy]
 
   def index
     render :invite
   end
 
   def invite
-    Landing::HandleAppLinkClickedEvent.new(request.user_agent, params[:id]).do { |path| redirect_to path }
+    Landing::HandleAppLinkClickedEvent.new(request.user_agent, connection: @connection).do do |path|
+      path && redirect_to(path)
+    end
+  end
+
+  def legacy
+    Landing::HandleAppLinkClickedEvent.new(request.user_agent, inviter: @inviter).do do |path|
+      path ? redirect_to(path) : render(:invite)
+    end
   end
 
   def privacy
@@ -18,7 +26,12 @@ class LandingController < ApplicationController
   private
 
   def set_inviter
-    connection = Connection.find_by_id params[:id]
-    @inviter = connection.creator if connection
+    case params[:action]
+      when 'invite'
+        @connection = Connection.find_by_id params[:id]
+        @inviter = @connection.creator if @connection
+      when 'legacy'
+        @inviter = User.find_by_id params[:id]
+    end
   end
 end

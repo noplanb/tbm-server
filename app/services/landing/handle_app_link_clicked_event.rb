@@ -1,17 +1,17 @@
 class Landing::HandleAppLinkClickedEvent
   include Rails.application.routes.url_helpers
 
-  attr_reader :user_agent, :connection_id
+  attr_reader :user_agent, :additions
 
-  def initialize(user_agent, connection_id)
-    @user_agent    = DeviceByUserAgent.new user_agent
-    @connection_id = connection_id
+  def initialize(user_agent, additions)
+    @user_agent = DeviceByUserAgent.new user_agent
+    @additions  = additions
   end
 
   def do
     platform, redirect_path = get_platform_and_path
     fire_sqs_event platform
-    yield redirect_path if block_given? && redirect_path
+    yield redirect_path if block_given?
   end
 
   def get_platform_and_path
@@ -33,17 +33,26 @@ class Landing::HandleAppLinkClickedEvent
   private
 
   def fire_sqs_event(platform)
-    connection = Connection.find_by_id connection_id
     EventDispatcher.emit(%w(user app_link_clicked),
       initiator: 'user',
-      data: {
-        connection_id: connection.id,
-        connection_creator_mkey: connection.creator.mkey,
-        connection_target_mkey: connection.target.mkey,
-        platform: platform
-      },
-      raw_params: { user_agent: user_agent.raw }
-    ) if connection
+      data: { platform: platform }.merge(sqs_event_data),
+      raw_params: { user_agent: user_agent.raw })
+  end
+
+  def sqs_event_data
+    data = {}
+    data.merge!({
+      link_key: 'c',
+      connection_id: additions[:connection].id,
+      connection_creator_mkey: additions[:connection].creator.mkey,
+      connection_target_mkey: additions[:connection].target.mkey,
+    }) if additions[:connection]
+    data.merge!({
+      link_key: 'l',
+      inviter_id: additions[:inviter].id,
+      inviter_mkey: additions[:inviter].mkey,
+    }) if additions[:inviter]
+    data
   end
 
   def send_warning(message)
