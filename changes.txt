@@ -1,3 +1,6 @@
+v2.9.2
+:hammer: Reverted back legacy app link with events tracking
+
 v2.9.1
 :bulb: Fire sqs event when user clicks on app link
 :hammer: Refactored code regarding landing page
