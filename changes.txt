@@ -1,3 +1,6 @@
+v2.9.3
+:hammer: Fixed rollbar logging of APNS unregistered users
+
 v2.9.2
 :hammer: Reverted back legacy app link with events tracking
 
