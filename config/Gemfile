@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2.3'
 
-gem 'mysql2'
+gem 'mysql2', '~> 0.3.18'
 # gem 'multi_json', '1.7.8'
 
 # Use SCSS for stylesheets
@@ -75,13 +75,16 @@ gem 'slim-rails'
 
 gem 'bootstrap-sass'
 gem 'simple_form'
-gem 'rollbar'
+
 gem 'settingslogic'
 gem 'rack-attack'
 gem 'newrelic_rpm'
 gem 'kaminari'
 gem 'aasm'
 gem 'activerecord-colored_log_subscriber'
+
+gem 'remote_syslog_logger'
+gem 'rollbar'
 
 group :development do
   gem 'better_errors'
@@ -114,7 +117,7 @@ group :test do
   gem 'faker'
   gem 'capybara'
   gem 'launchy'
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '~> 2.8'
   gem 'simplecov', require: false
   gem 'webmock'
   gem 'vcr'
