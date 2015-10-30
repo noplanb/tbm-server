@@ -1,3 +1,6 @@
+v2.9.4
+:hammer: API: changed type of connection id from integer to string
+
 v2.9.3
 :hammer: Fixed rollbar logging of APNS unregistered users
 
