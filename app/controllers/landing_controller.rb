@@ -29,7 +29,7 @@ class LandingController < ApplicationController
     case params[:action]
       when 'invite'
         @connection = Connection.find_by_id params[:id]
-        @inviter = @connection.creator if @connection
+        @invitee, @inviter = @connection.target, @connection.creator if @connection
       when 'legacy'
         @inviter = User.find_by_id params[:id]
     end
