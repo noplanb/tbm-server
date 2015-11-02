@@ -8,6 +8,14 @@ HOST: http://zazoapp.com
 Authentication - **HTTP Digest** with `mkey` and `auth` as username and password.
 In *development* environment authentication method is **HTTP Basic** with same parameters (like in this document).
 
+## Group Landing
+
+Render langing html page and fire event to sqs-worker.
+
+### By connection id [GET /c/:connection_id]
+
+### By inviter id [GET /l/:inviter_id]
+
 ## Group Registration
 
 ### Get friends [GET /reg/get_friends]
