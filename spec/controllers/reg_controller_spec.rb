@@ -199,7 +199,7 @@ RSpec.describe RegController, type: :controller do
         'emails' => friend.emails,
         'has_app' => 'false',
         'ckey' => connection.ckey,
-        'cid' => connection.id,
+        'cid' => connection.id.to_s,
         'connection_created_on' => connection.created_at,
         'connection_creator_mkey' => friend.mkey,
         'connection_status' => connection.status }

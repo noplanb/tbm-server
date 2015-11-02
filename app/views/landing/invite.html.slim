@@ -2,7 +2,7 @@
   section#top class=('no-inviter' if @inviter.blank?)
     .column
       - if @inviter
-        .salutation Hi,
+        .salutation = @invitee ? "Hi, #{@invitee.first_name}" : 'Hi,'
         .message I sent you a message on #{app_name}
         .closing ~#{@inviter.name}
         .arrow = link_to image_tag('down-arrow.png'), store_url

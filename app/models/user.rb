@@ -148,7 +148,7 @@ class User < ActiveRecord::Base
     conn = Connection.live_between(id, connected_user.id).first
     fail 'No connection found with connected user. This should never happen.' if conn.nil?
     only_app_attrs_for_friend.merge(ckey: conn.ckey,
-                                    cid: conn.id,
+                                    cid: conn.id.to_s,
                                     connection_created_on: conn.created_at,
                                     connection_creator_mkey: conn.creator.mkey,
                                     connection_status: conn.status)

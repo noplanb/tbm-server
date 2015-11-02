@@ -1,3 +1,7 @@
+v2.9.4
+:hammer: API: changed type of connection id from integer to string
+:hammer: Added invitee name to landing connection page (/c/:id requests)
+
 v2.9.3
 :hammer: Fixed rollbar logging of APNS unregistered users
 

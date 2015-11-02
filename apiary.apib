@@ -8,6 +8,14 @@ HOST: http://zazoapp.com
 Authentication - **HTTP Digest** with `mkey` and `auth` as username and password.
 In *development* environment authentication method is **HTTP Basic** with same parameters (like in this document).
 
+## Group Landing
+
+Render langing html page and fire event to sqs-worker.
+
+### By connection id [GET /c/:connection_id]
+
+### By inviter id [GET /l/:inviter_id]
+
 ## Group Registration
 
 ### Get friends [GET /reg/get_friends]
@@ -31,7 +39,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "true",
                 "ckey": "54_1_PQ44HnqyfJdPE5RhM7kc",
-                "cid": 177,
+                "cid": "177",
                 "connection_created_on": "2015-03-14T18:00:28Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
             },
@@ -45,7 +53,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "true",
                 "ckey": "15_54_C0sHe1LOyDEOK7wK6W8c",
-                "cid": 174,
+                "cid": "174",
                 "connection_created_on": "2015-03-14T16:57:26Z",
                 "connection_creator_mkey": "dz4X0EvprPJO6fGysT8X"
             },
@@ -61,7 +69,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 ],
                 "has_app": "true",
                 "ckey": "54_54_G1BA3Y0cw4Q4kc7eDtBC",
-                "cid": 3508,
+                "cid": "3508",
                 "connection_created_on": "2015-06-24T13:44:50Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
             },
@@ -75,7 +83,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "true",
                 "ckey": "54_101_W3OTlzxT5cbPiS2gVtvT",
-                "cid": 175,
+                "cid": "175",
                 "connection_created_on": "2015-03-14T17:50:02Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
             },
@@ -89,7 +97,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "true",
                 "ckey": "54_353_8nCr8jZ1cDb4qK5A5HNb",
-                "cid": 495,
+                "cid": "495",
                 "connection_created_on": "2015-03-18T17:56:19Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
             },
@@ -103,7 +111,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "true",
                 "ckey": "54_408_fAk9yOkZwnlIH3i7GfGP",
-                "cid": 949,
+                "cid": "949",
                 "connection_created_on": "2015-04-01T12:54:02Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
             },
@@ -117,7 +125,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "true",
                 "ckey": "54_677_FYrcwomgyAsrsnrRtp38",
-                "cid": 1524,
+                "cid": "1524",
                 "connection_created_on": "2015-04-23T19:19:09Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
             },
@@ -131,7 +139,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "true",
                 "ckey": "54_750_qGNMhcucFOKHtNIwpAUt",
-                "cid": 862,
+                "cid": "862",
                 "connection_created_on": "2015-03-26T21:48:51Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
             },
@@ -145,7 +153,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "false",
                 "ckey": "54_824_yVs2hE9IC6K7GL3uge8i",
-                "cid": 936,
+                "cid": "936",
                 "connection_created_on": "2015-03-31T15:13:35Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
             },
@@ -159,7 +167,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "true",
                 "ckey": "3222_54_E0572OdHNLfym625kmEh",
-                "cid": 3423,
+                "cid": "3423",
                 "connection_created_on": "2015-05-27T19:38:31Z",
                 "connection_creator_mkey": "Kvs358jTxha4urYvXnz2"
             },
@@ -173,7 +181,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "false",
                 "ckey": "54_3719_GAlVPqllNC2R6ydUGGYS",
-                "cid": 3424,
+                "cid": "3424",
                 "connection_created_on": "2015-05-27T20:11:56Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
             },
@@ -187,7 +195,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 "emails": [],
                 "has_app": "true",
                 "ckey": "3720_54_e7KSA8DqGeUFDKGGZLxr",
-                "cid": 3444,
+                "cid": "3444",
                 "connection_created_on": "2015-05-29T14:59:28Z",
                 "connection_creator_mkey": "pBl2dJ5CeHqz2NgbXBlz"
             },
@@ -203,7 +211,7 @@ In *development* environment authentication method is **HTTP Basic** with same p
                 ],
                 "has_app": "false",
                 "ckey": "54_3818_QzGBdbJSgw3BcT7dzqq8",
-                "cid": 3507,
+                "cid": "3507",
                 "connection_created_on": "2015-06-24T13:44:41Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK"
             }
@@ -393,7 +401,7 @@ Update friends attributes:
                 ],
                 "has_app": "true",
                 "ckey": "54_1_PQ44HnqyfJdPE5RhM7kc",
-                "cid": 177,
+                "cid": "177",
                 "connection_created_on": "2015-03-14T18:00:28Z",
                 "connection_creator_mkey": "fxVPRkGICwnrAwym52gK",
                 "connection_status": "established"
