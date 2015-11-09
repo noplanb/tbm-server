@@ -32,7 +32,6 @@ ThreebymeServer::Application.routes.draw do
   get 'users/new_connection/:id' => 'users#new_connection'
   get 'users/establish_connection/:id' => 'users#establish_connection'
   get 'users/receive_test_video/:id' => 'users#receive_test_video', as: :receive_test_video
-  get 'users/receive_long_test_video/:id' => 'users#receive_long_test_video', as: :receive_long_test_video
   get 'users/receive_corrupt_video/:id' => 'users#receive_corrupt_video', as: :receive_corrupt_video
   get 'users/receive_permanent_error_video/:id' => 'users#receive_permanent_error_video', as: :receive_permanent_error_video
 

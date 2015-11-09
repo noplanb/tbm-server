@@ -1,8 +1,7 @@
 class UsersController < AdminController
   before_action :set_user, only: [:show, :edit, :update, :destroy,
                                   :new_connection, :establish_connection,
-                                  :receive_test_video, :receive_long_test_video,
-                                  :receive_corrupt_video, :receive_permanent_error_video]
+                                  :receive_test_video, :receive_corrupt_video, :receive_permanent_error_video]
   # GET /users
   # GET /users.json
   def index
@@ -91,7 +90,12 @@ class UsersController < AdminController
   # Send test_video
 
   def receive_test_video
-    receive_video Rails.root.join('test_video.mp4')
+    file = Rails.root.join "#{params[:file]}.mp4"
+    if file.exist?
+      receive_video file
+    else
+      redirect_to @user, alert: 'Video file not found'
+    end
   end
 
   def receive_long_test_video
