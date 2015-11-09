@@ -102,14 +102,14 @@ class UsersController < AdminController
   end
 
   def receive_permanent_error_video
-    receive_video nil, fake_video: true
+    receive_video nil, without_s3_upload: true
   end
 
   private
 
   def receive_video(file_name, options = {})
     sender = User.find params[:sender_id]
-    video_id = options[:fake_video] ? test_video_id : create_test_video(sender, @user, file_name)
+    video_id = options[:without_s3_upload] ? test_video_id : create_test_video(sender, @user, file_name)
     Kvstore.add_id_key(sender, @user, video_id)
     @push_user = PushUser.find_by_mkey(@user.mkey) || not_found
     Notification::VideoReceived.new(@push_user, request.host, current_user).process(params, sender.mkey, sender.first_name, video_id)
