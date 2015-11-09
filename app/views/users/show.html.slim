@@ -63,7 +63,9 @@ table.table border="0" cellspacing="5" cellpadding="5"
         = link_to 'Test Video', receive_test_video_path(id: @user.id, sender_id: u.id)
         '  |
         = link_to 'Corrupt Video', receive_corrupt_video_path(id: @user.id, sender_id: u.id)
-        
+        '  |
+        = link_to 'Permanent Error Video', receive_permanent_error_video_path(id: @user.id, sender_id: u.id)
+
 h4
   ' Connections
   span.badge = @user.connections.count
@@ -80,7 +82,7 @@ table.table
       td
         span class="#{connection.active?}-value"
       td = link_to 'Show', connection
-      
+
 
 = link_to 'Add a connection', "/users/new_connection/#{@user.id}", class: 'btn btn-default'
 ' &nbsp;
