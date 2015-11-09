@@ -93,6 +93,10 @@ class UsersController < AdminController
     receive_video Rails.root.join('test_video.mp4')
   end
 
+  def receive_long_test_video
+    receive_video Rails.root.join('long_test_video.mp4')
+  end
+
   def receive_corrupt_video
     receive_video Rails.root.join('app/assets/images/orange-background.jpg')
   end

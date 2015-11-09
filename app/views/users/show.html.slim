@@ -62,6 +62,8 @@ table.table border="0" cellspacing="5" cellpadding="5"
         '  |
         = link_to 'Test Video', receive_test_video_path(id: @user.id, sender_id: u.id)
         '  |
+        = link_to 'Long Test Video', receive_long_test_video_path(id: @user.id, sender_id: u.id)
+        '  |
         = link_to 'Corrupt Video', receive_corrupt_video_path(id: @user.id, sender_id: u.id)
         '  |
         = link_to 'Permanent Error Video', receive_permanent_error_video_path(id: @user.id, sender_id: u.id)
