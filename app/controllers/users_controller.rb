@@ -90,16 +90,12 @@ class UsersController < AdminController
   # Send test_video
 
   def receive_test_video
-    file = Rails.root.join "#{params[:file]}.mp4"
+    file = Rails.root.join "#{params[:file] ? params[:file] : 'test_video_sani'}.mp4"
     if file.exist?
       receive_video file
     else
       redirect_to @user, alert: 'Video file not found'
     end
-  end
-
-  def receive_long_test_video
-    receive_video Rails.root.join('long_test_video.mp4')
   end
 
   def receive_corrupt_video
