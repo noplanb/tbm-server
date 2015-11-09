@@ -1,7 +1,8 @@
 class UsersController < AdminController
   before_action :set_user, only: [:show, :edit, :update, :destroy,
                                   :new_connection, :establish_connection,
-                                  :receive_test_video, :receive_corrupt_video, :receive_permanent_error_video]
+                                  :receive_test_video, :receive_long_test_video,
+                                  :receive_corrupt_video, :receive_permanent_error_video]
   # GET /users
   # GET /users.json
   def index
