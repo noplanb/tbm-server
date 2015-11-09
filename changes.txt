@@ -1,3 +1,6 @@
+v2.9.7
+:bulb: Added more test videos
+
 v2.9.6
 :bulb: Implemented receive_permanent_error_video link for connection
 :bulb: Implemented receive_long_test_video_path link for connection
