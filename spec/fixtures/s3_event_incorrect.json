@@ -19,7 +19,7 @@
         "arn":"arn:aws:s3:::staging-videos.zazo.com"
       },
       "object":{
-        "size":859495,
+        "size":0,
         "eTag":"c5a240785afd911979f9061924b74ee6",
         "sequencer":"0056138EA11954C8D2"
       }
