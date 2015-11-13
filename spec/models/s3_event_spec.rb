@@ -4,6 +4,7 @@ RSpec.describe S3Event do
   describe 'validations' do
     it { is_expected.to validate_presence_of :bucket_name }
     it { is_expected.to validate_presence_of :file_name }
+    it { is_expected.to validate_presence_of :file_size }
   end
 
   describe 'mapping s3 event params' do
