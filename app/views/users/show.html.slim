@@ -60,10 +60,18 @@ table.table border="0" cellspacing="5" cellpadding="5"
       td
         = link_to 'Destroy', connection, method: :delete, data: { confirm: 'Are you sure?' }
         '  |
-        = link_to 'Test Video', receive_test_video_path(id: @user.id, sender_id: u.id)
+        = link_to 'Test Video Sani', receive_test_video_path(id: @user.id, sender_id: u.id, file: 'test_video_sani')
+        '  |
+        = link_to 'Test Video Long', receive_test_video_path(id: @user.id, sender_id: u.id, file: 'test_video_1')
+        '  |
+        = link_to 'Test Video 2', receive_test_video_path(id: @user.id, sender_id: u.id, file: 'test_video_2')
+        '  |
+        = link_to 'Test Video 3', receive_test_video_path(id: @user.id, sender_id: u.id, file: 'test_video_3')
         '  |
         = link_to 'Corrupt Video', receive_corrupt_video_path(id: @user.id, sender_id: u.id)
-        
+        '  |
+        = link_to 'Permanent Error Video', receive_permanent_error_video_path(id: @user.id, sender_id: u.id)
+
 h4
   ' Connections
   span.badge = @user.connections.count
@@ -80,7 +88,7 @@ table.table
       td
         span class="#{connection.active?}-value"
       td = link_to 'Show', connection
-      
+
 
 = link_to 'Add a connection', "/users/new_connection/#{@user.id}", class: 'btn btn-default'
 ' &nbsp;

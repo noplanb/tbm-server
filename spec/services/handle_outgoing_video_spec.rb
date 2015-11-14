@@ -59,7 +59,7 @@ RSpec.describe HandleOutgoingVideo do
 
       it { expect(subject).to be false }
       it 'has specific errors', :do_before do
-        expect = { bucket_name: ['can\'t be blank'], file_name: ['can\'t be blank'] }
+        expect = { bucket_name: ['can\'t be blank'], file_name: ['can\'t be blank'], file_size: ['can\'t be zero, probably error with s3 upload'] }
         expect(instance.errors).to eq expect
       end
     end
