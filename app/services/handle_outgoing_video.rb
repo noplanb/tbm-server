@@ -31,8 +31,13 @@ class HandleOutgoingVideo
   private
 
   def handle_outgoing_video
+    store_video_file_name
     update_kvstore_with_video_id
     send_notification_to_receiver
+  end
+
+  def store_video_file_name
+    NotifiedS3Object.create file_name: s3_event.file_name
   end
 
   def update_kvstore_with_video_id
@@ -44,10 +49,13 @@ class HandleOutgoingVideo
     Notification::VideoReceived.new(receiver_push_user, Figaro.env.domain_name, sender_user).process(params, params[:from_mkey], params[:sender_name], params[:video_id])
   end
 
+  #
+  # helpers
+  #
+
   def client_version_allowed?
-    return true if s3_metadata.client_platform == 'android' && s3_metadata.client_version >= 112
-    return true if s3_metadata.client_platform == 'ios'     && s3_metadata.client_version >= 38
-    false
+    (s3_metadata.client_platform == 'android' && s3_metadata.client_version >= 112) ||
+    (s3_metadata.client_platform == 'ios'     && s3_metadata.client_version >= 38) ? true : false
   end
 
   def sender_user
