@@ -27,15 +27,15 @@ RSpec.describe HandleOutgoingVideo do
     end
 
     before do |example|
-      create_users_and_connection && stub_kvstore  if example.metadata[:common_behavior]
-      VCR.use_cassette(vcr_cassette) { instance.do if example.metadata[:do_before] }
+      create_users_and_connection && stub_kvstore    if example.metadata[:common_behavior]
+      VCR.use_cassette(vcr_cassette) { instance.do } if example.metadata[:do_before]
     end
 
     context 'success case' do
       let(:vcr_cassette)  { 's3_get_metadata' }
       let(:s3_event_file) { 's3_event' }
 
-      it(nil, :common_behavior) { expect(subject).to be true }
+      it('#do', :common_behavior) { expect(subject).to be true }
       it(nil, :common_behavior) { expect { subject }.to change { Kvstore.count }.by 1 }
 
       it 'specific kvstore placed in database', :common_behavior, :do_before do
@@ -56,11 +56,12 @@ RSpec.describe HandleOutgoingVideo do
         expect(subject).to be false
       end
 
-      it 'has specific errors', skip_before: true do
+      it 'has specific errors' do
         FactoryGirl.create :notified_s3_object, file_name: s3_event_params.first['s3']['object']['key']
         create_users_and_connection && stub_kvstore
+        expect(Rollbar).to receive(:error)
         subject
-        expect(instance.errors).to eq file_name: ['already persisted in database, duplication case']
+        expect(instance.errors_messages).to eq file_name: ['already persisted in database, duplication case']
       end
     end
 
@@ -71,7 +72,7 @@ RSpec.describe HandleOutgoingVideo do
       it { expect(subject).to be false }
 
       it 'has specific errors', :do_before do
-        expect(instance.errors).to eq 'ActiveRecord::RecordNotFound' => 'Couldn\'t find User'
+        expect(instance.errors_messages).to eq :'ActiveRecord::RecordNotFound' => ['couldn\'t find user']
       end
     end
 
@@ -82,9 +83,27 @@ RSpec.describe HandleOutgoingVideo do
       it { expect(subject).to be false }
 
       it 'has specific errors', :do_before do
-        expect(instance.errors).to eq bucket_name: ['can\'t be blank'],
-                                      file_name:   ['can\'t be blank'],
-                                      file_size:   ['can\'t be zero, probably error with s3 upload']
+        expect(instance.errors_messages).to eq bucket_name: ['can\'t be blank'],
+                                               file_name:   ['can\'t be blank'],
+                                               file_size:   ['can\'t be zero, probably error with s3 upload']
+      end
+    end
+
+    context 'file sizes comparison' do
+      let(:s3_event_file) { 's3_event' }
+
+      context 'equal' do
+        let(:vcr_cassette) { 's3_get_metadata_file_sizes_same' }
+
+        it('#do', :common_behavior) { expect(subject).to be true }
+        it('should not fire rollbar error') { expect(Rollbar).to_not receive(:error); subject }
+      end
+
+      context 'not equal' do
+        let(:vcr_cassette) { 's3_get_metadata_file_sizes_different' }
+
+        it('#do', :common_behavior)     { expect(subject).to be true }
+        it('should fire rollbar error') { expect(Rollbar).to receive(:error); subject }
       end
     end
   end

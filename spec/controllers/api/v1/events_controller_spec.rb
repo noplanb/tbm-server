@@ -12,16 +12,14 @@ RSpec.describe Api::V1::EventsController, type: :controller do
 
     context 'correct s3 event' do
       let(:params) { json_fixture('s3_event') }
+
       it { expect(response).to have_http_status :ok }
     end
 
     context 'incorrect s3 event' do
       let(:params) { json_fixture('s3_event_incorrect') }
+
       it { expect(response).to have_http_status :ok }
-      it do
-        expect = { 'errors' => { 'bucket_name' => ['can\'t be blank'], 'file_name' => ['can\'t be blank'], 'file_size' => ['can\'t be zero, probably error with s3 upload'] } }
-        expect(JSON.parse(response.body)).to eq expect
-      end
     end
   end
 end

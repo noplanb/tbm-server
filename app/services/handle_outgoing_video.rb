@@ -1,30 +1,35 @@
 class HandleOutgoingVideo
+  include ActiveModel::Validations
+
   attr_reader :s3_event, :s3_metadata
+
+  validates_with DuplicationCaseValidator
+  validates_with SameFileSizesValidator
 
   def initialize(s3_event_params)
     @s3_event = S3Event.new s3_event_params
-    @errors   = {}
   end
 
   def do
     return false unless s3_event.valid?
     @s3_metadata = S3Metadata.create_by_event s3_event
+    return false unless valid?
     handle_outgoing_video if client_version_allowed?
     true
   rescue ActiveRecord::RecordNotFound => e
-    @errors[e.class.name] = e.message
+    errors.add e.class.name, e.message.downcase
     false
   end
 
-  def errors
-    @errors.merge s3_event.errors.messages
+  def errors_messages
+    errors.messages.merge s3_event.errors.messages
   end
 
   def log_messages(status)
     debug_info = "s3 event: #{@s3_event.inspect}; s3 metadata: #{@s3_metadata.inspect}"
     case status
       when :success then WriteLog.info self, "s3 event was handled successfully at #{Time.now}; #{debug_info}"
-      when :failure then WriteLog.info self, "errors occurred with handle s3 event at #{Time.now}; errors: #{errors.inspect}; #{debug_info}", rollbar: :error
+      when :failure then WriteLog.info self, "errors occurred with handle s3 event at #{Time.now}; errors: #{errors_messages.inspect}; #{debug_info}"
     end
   end
 

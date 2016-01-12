@@ -1,9 +1,10 @@
 class Api::V1::EventsController < ActionController::Base
-  include HandleWithManager
   before_action :log_params
 
   def create
-    handle_with_manager HandleOutgoingVideo.new(params['Records'])
+    manager = HandleOutgoingVideo.new params['Records']
+    manager.log_messages manager.do ? :success : :failure
+    head :ok
   end
 
   private

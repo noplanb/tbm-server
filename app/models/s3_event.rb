@@ -5,7 +5,6 @@ class S3Event
 
   validates_presence_of :bucket_name, :file_name, :file_size
   validate :file_size_should_not_be_zero, if: Proc.new { |e| !e.errors.key?(:file_size) }
-  validate :file_name_should_be_uniq,     if: Proc.new { |e| !e.errors.key?(:file_name) }
 
   def initialize(params = [])
     params = params.first['s3']
@@ -24,9 +23,5 @@ class S3Event
 
   def file_size_should_not_be_zero
     errors.add :file_size, 'can\'t be zero, probably error with s3 upload' unless file_size > 0
-  end
-
-  def file_name_should_be_uniq
-    errors.add :file_name, 'already persisted in database, duplication case' if NotifiedS3Object.persisted? file_name
   end
 end
