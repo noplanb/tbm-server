@@ -10,11 +10,11 @@ RSpec.describe HandleOutgoingVideo do
   let(:s3_event_params) { json_fixture(s3_event_file)['Records'] }
   let(:instance) { described_class.new s3_event_params }
 
-  RSpec.shared_examples 'common behavior' do |params|
-    let(:action) { params[:is_should_performs] ? :to : :to_not }
+  RSpec.shared_examples 'expect common behavior' do |params|
+    let(:action) { params[:perform] ? :to : :to_not }
 
     it '#do', :common_behavior do
-      expect(subject).to be !!params[:is_should_performs]
+      expect(subject).to be !!params[:perform]
     end
 
     it 'should send notification normally', :common_behavior do
@@ -39,8 +39,8 @@ RSpec.describe HandleOutgoingVideo do
     allow_any_instance_of(Kvstore).to receive(:trigger_event).and_return true
   end
 
-  def rollbar_message(type)
-    HandleOutgoingVideo::Notifier.new(instance).send :rollbar_message, type
+  def stub_users_validation
+    allow_any_instance_of(HandleOutgoingVideo::InvalidUsersValidator).to receive(:validate).and_return true
   end
 
   describe '#do' do
@@ -49,7 +49,11 @@ RSpec.describe HandleOutgoingVideo do
     end
 
     before do |example|
-      create_users_and_connection && stub_kvstore    if example.metadata[:common_behavior]
+      if example.metadata[:common_behavior]
+        create_users_and_connection && stub_kvstore
+      else
+        stub_users_validation unless example.metadata[:skip_validation_stubbing]
+      end
       VCR.use_cassette(vcr_cassette) { instance.do } if example.metadata[:do_before]
     end
 
@@ -57,7 +61,7 @@ RSpec.describe HandleOutgoingVideo do
       let(:vcr_cassette)  { 's3_get_metadata' }
       let(:s3_event_file) { 's3_event' }
 
-      include_examples 'common behavior', is_should_performs: true
+      include_examples 'expect common behavior', perform: true
 
       it(nil, :common_behavior) { expect { subject }.to change { Kvstore.count }.by 1 }
 
@@ -76,24 +80,30 @@ RSpec.describe HandleOutgoingVideo do
 
       before { FactoryGirl.create :notified_s3_object, file_name: s3_event_params.first['s3']['object']['key'] }
 
-      include_examples 'common behavior', is_should_performs: false
+      include_examples 'expect common behavior', perform: false
 
       it 'has specific errors' do
+        subject
         create_users_and_connection && stub_kvstore
+        expect(instance.errors_messages).to eq file_name: ['already persisted in database, duplication case']
+      end
+
+      it 'should fire rollbar error' do
         expect(Rollbar).to receive(:error)
         subject
-        expect(instance.errors_messages).to eq file_name: ['already persisted in database, duplication case']
       end
     end
 
-    context 'invalid mkeys case' do
+    context 'invalid mkeys case', :skip_validation_stubbing do
       let(:vcr_cassette)  { 's3_get_metadata' }
       let(:s3_event_file) { 's3_event' }
 
       it { expect(subject).to be false }
 
-      it 'has specific errors', :do_before do
-        expect(instance.errors_messages).to eq :'ActiveRecord::RecordNotFound' => ['couldn\'t find user']
+      it 'has specific errors' do
+        subject
+        users_not_found = 'ZcAK4dM9S4m0IFui6ok6[User];lpb8DcispONUSfdMOT9g[User];lpb8DcispONUSfdMOT9g[PushUser];'
+        expect(instance.errors_messages).to eq users: ["these users are not found: #{users_not_found}"]
       end
     end
 
@@ -109,36 +119,38 @@ RSpec.describe HandleOutgoingVideo do
       end
     end
 
-    context 'file sizes comparison' do
+    context 'file sizes comparison', :common_behavior do
       let(:s3_event_file) { 's3_event' }
+
+      after { subject }
 
       context 'equal' do
         let(:vcr_cassette) { 's3_get_metadata_file_sizes_same' }
 
-        include_examples 'common behavior', is_should_performs: true
+        include_examples 'expect common behavior', perform: true
 
         it 'should not fire rollbar error' do
-          expect(Rollbar).to_not receive(:error); subject
+          expect(Rollbar).to_not receive(:error)
         end
       end
 
       context 'not equal' do
         let(:vcr_cassette) { 's3_get_metadata_file_sizes_different' }
 
-        include_examples 'common behavior', is_should_performs: true
+        include_examples 'expect common behavior', perform: true
 
         it 'should fire rollbar error' do
-          expect(Rollbar).to receive(:error); subject
+          expect(Rollbar).to receive(:error)
         end
       end
 
       context 'when metadata does\'t contains file size' do
         let(:vcr_cassette) { 's3_get_metadata' }
 
-        include_examples 'common behavior', is_should_performs: true
+        include_examples 'expect common behavior', perform: true
 
         it 'should not fire rollbar error' do
-          expect(Rollbar).to_not receive(:error); subject
+          expect(Rollbar).to_not receive(:error)
         end
       end
     end
@@ -147,10 +159,11 @@ RSpec.describe HandleOutgoingVideo do
       let(:vcr_cassette)  { 's3_get_metadata' }
       let(:s3_event_file) { 's3_event_zero_file_size' }
 
-      include_examples 'common behavior', is_should_performs: false
+      include_examples 'expect common behavior', perform: false
 
       it 'should fire rollbar error' do
-        expect(Rollbar).to receive(:error); subject
+        expect(Rollbar).to receive(:error)
+        subject
       end
     end
   end
