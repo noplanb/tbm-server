@@ -47,6 +47,23 @@ RSpec.describe HandleOutgoingVideo do
       end
     end
 
+    context 'duplication case' do
+      let(:vcr_cassette)  { 's3_get_metadata' }
+      let(:s3_event_file) { 's3_event' }
+
+      it(nil, :common_behavior) do
+        FactoryGirl.create :notified_s3_object, file_name: s3_event_params.first['s3']['object']['key']
+        expect(subject).to be false
+      end
+
+      it 'has specific errors', skip_before: true do
+        FactoryGirl.create :notified_s3_object, file_name: s3_event_params.first['s3']['object']['key']
+        create_users_and_connection && stub_kvstore
+        subject
+        expect(instance.errors).to eq file_name: ['already persisted in database, duplication case']
+      end
+    end
+
     context 'invalid mkeys case' do
       let(:vcr_cassette)  { 's3_get_metadata' }
       let(:s3_event_file) { 's3_event' }
