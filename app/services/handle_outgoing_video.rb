@@ -19,9 +19,6 @@ class HandleOutgoingVideo
     return false unless valid?
     handle_outgoing_video if client_version_allowed?
     true
-  rescue ActiveRecord::RecordNotFound => e
-    errors.add e.class.name, e.message.downcase
-    false
   end
 
   def errors_messages

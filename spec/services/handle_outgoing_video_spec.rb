@@ -89,7 +89,7 @@ RSpec.describe HandleOutgoingVideo do
       end
 
       it 'should fire rollbar error' do
-        expect(Rollbar).to receive(:error)
+        expect(Rollbar).to receive(:error).with 'Duplicate upload event', Hash
         subject
       end
     end
@@ -104,6 +104,11 @@ RSpec.describe HandleOutgoingVideo do
         subject
         users_not_found = 'ZcAK4dM9S4m0IFui6ok6[User];lpb8DcispONUSfdMOT9g[User];lpb8DcispONUSfdMOT9g[PushUser];'
         expect(instance.errors_messages).to eq users: ["these users are not found: #{users_not_found}"]
+      end
+
+      it 'should fire rollbar error' do
+        expect(Rollbar).to receive(:error).with 'User or PushUser not found', Hash
+        subject
       end
     end
 
@@ -140,7 +145,7 @@ RSpec.describe HandleOutgoingVideo do
         include_examples 'expect common behavior', perform: true
 
         it 'should fire rollbar error' do
-          expect(Rollbar).to receive(:error)
+          expect(Rollbar).to receive(:error).with 'Upload event with wrong size', Hash
         end
       end
 
@@ -162,7 +167,7 @@ RSpec.describe HandleOutgoingVideo do
       include_examples 'expect common behavior', perform: false
 
       it 'should fire rollbar error' do
-        expect(Rollbar).to receive(:error)
+        expect(Rollbar).to receive(:error).with 'Upload with filesize == 0', Hash
         subject
       end
     end
