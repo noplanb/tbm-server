@@ -13,14 +13,18 @@ RSpec.describe HandleOutgoingVideo do
   RSpec.shared_examples 'common behavior' do |params|
     let(:action) { params[:is_should_performs] ? :to : :to_not }
 
-    after { subject }
+    it '#do', :common_behavior do
+      expect(subject).to be !!params[:is_should_performs]
+    end
 
     it 'should send notification normally', :common_behavior do
       expect_any_instance_of(Notification::VideoReceived).send action, receive(:process)
+      subject
     end
 
     it 'should update kvstore normally', :common_behavior do
       expect(Kvstore).send action, receive(:add_id_key)
+      subject
     end
   end
 
@@ -33,6 +37,10 @@ RSpec.describe HandleOutgoingVideo do
 
   def stub_kvstore
     allow_any_instance_of(Kvstore).to receive(:trigger_event).and_return true
+  end
+
+  def rollbar_message(type)
+    HandleOutgoingVideo::Notifier.new(instance).send :rollbar_message, type
   end
 
   describe '#do' do
@@ -49,7 +57,8 @@ RSpec.describe HandleOutgoingVideo do
       let(:vcr_cassette)  { 's3_get_metadata' }
       let(:s3_event_file) { 's3_event' }
 
-      it('#do', :common_behavior) { expect(subject).to be true }
+      include_examples 'common behavior', is_should_performs: true
+
       it(nil, :common_behavior) { expect { subject }.to change { Kvstore.count }.by 1 }
 
       it 'specific kvstore placed in database', :common_behavior, :do_before do
@@ -59,8 +68,6 @@ RSpec.describe HandleOutgoingVideo do
       it 'specific video_id stored in database', :common_behavior, :do_before do
         expect(NotifiedS3Object.last.file_name).to eq s3_event_params.first['s3']['object']['key']
       end
-
-      include_examples 'common behavior', is_should_performs: true
     end
 
     context 'duplication case' do
@@ -69,7 +76,7 @@ RSpec.describe HandleOutgoingVideo do
 
       before { FactoryGirl.create :notified_s3_object, file_name: s3_event_params.first['s3']['object']['key'] }
 
-      it('#do', :common_behavior) { expect(subject).to be false }
+      include_examples 'common behavior', is_should_performs: false
 
       it 'has specific errors' do
         create_users_and_connection && stub_kvstore
@@ -77,8 +84,6 @@ RSpec.describe HandleOutgoingVideo do
         subject
         expect(instance.errors_messages).to eq file_name: ['already persisted in database, duplication case']
       end
-
-      include_examples 'common behavior', is_should_performs: false
     end
 
     context 'invalid mkeys case' do
@@ -100,8 +105,7 @@ RSpec.describe HandleOutgoingVideo do
 
       it 'has specific errors', :do_before do
         expect(instance.errors_messages).to eq bucket_name: ['can\'t be blank'],
-                                               file_name:   ['can\'t be blank'],
-                                               file_size:   ['can\'t be zero, probably error with s3 upload']
+                                               file_name:   ['can\'t be blank']
       end
     end
 
@@ -111,25 +115,42 @@ RSpec.describe HandleOutgoingVideo do
       context 'equal' do
         let(:vcr_cassette) { 's3_get_metadata_file_sizes_same' }
 
-        it('#do', :common_behavior) { expect(subject).to be true }
-        it('should not fire rollbar error') { expect(Rollbar).to_not receive(:error); subject }
         include_examples 'common behavior', is_should_performs: true
+
+        it 'should not fire rollbar error' do
+          expect(Rollbar).to_not receive(:error); subject
+        end
       end
 
       context 'not equal' do
         let(:vcr_cassette) { 's3_get_metadata_file_sizes_different' }
 
-        it('#do', :common_behavior)     { expect(subject).to be true }
-        it('should fire rollbar error') { expect(Rollbar).to receive(:error); subject }
         include_examples 'common behavior', is_should_performs: true
+
+        it 'should fire rollbar error' do
+          expect(Rollbar).to receive(:error); subject
+        end
       end
 
       context 'when metadata does\'t contains file size' do
         let(:vcr_cassette) { 's3_get_metadata' }
 
-        it('#do', :common_behavior)     { expect(subject).to be true }
-        it('should not fire rollbar error') { expect(Rollbar).to_not receive(:error); subject }
         include_examples 'common behavior', is_should_performs: true
+
+        it 'should not fire rollbar error' do
+          expect(Rollbar).to_not receive(:error); subject
+        end
+      end
+    end
+
+    context 'file size equals zero' do
+      let(:vcr_cassette)  { 's3_get_metadata' }
+      let(:s3_event_file) { 's3_event_zero_file_size' }
+
+      include_examples 'common behavior', is_should_performs: false
+
+      it 'should fire rollbar error' do
+        expect(Rollbar).to receive(:error); subject
       end
     end
   end

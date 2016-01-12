@@ -4,7 +4,8 @@ class HandleOutgoingVideo
   attr_reader :s3_event, :s3_metadata
 
   validates_with DuplicationCaseValidator
-  validates_with SameFileSizesValidator
+  validates_with DifferentFileSizesValidator
+  validates_with ZeroFileSizeValidator
 
   def initialize(s3_event_params)
     @s3_event = S3Event.new s3_event_params
