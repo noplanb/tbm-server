@@ -10,6 +10,20 @@ RSpec.describe HandleOutgoingVideo do
   let(:s3_event_params) { json_fixture(s3_event_file)['Records'] }
   let(:instance) { described_class.new s3_event_params }
 
+  RSpec.shared_examples 'common behavior' do |params|
+    let(:action) { params[:is_should_performs] ? :to : :to_not }
+
+    after { subject }
+
+    it 'should send notification normally', :common_behavior do
+      expect_any_instance_of(Notification::VideoReceived).send action, receive(:process)
+    end
+
+    it 'should update kvstore normally', :common_behavior do
+      expect(Kvstore).send action, receive(:add_id_key)
+    end
+  end
+
   def create_users_and_connection
     creator = FactoryGirl.create :user, mkey: 'ZcAK4dM9S4m0IFui6ok6'
     target  = FactoryGirl.create :user, mkey: 'lpb8DcispONUSfdMOT9g'
@@ -45,24 +59,26 @@ RSpec.describe HandleOutgoingVideo do
       it 'specific video_id stored in database', :common_behavior, :do_before do
         expect(NotifiedS3Object.last.file_name).to eq s3_event_params.first['s3']['object']['key']
       end
+
+      include_examples 'common behavior', is_should_performs: true
     end
 
     context 'duplication case' do
       let(:vcr_cassette)  { 's3_get_metadata' }
       let(:s3_event_file) { 's3_event' }
 
-      it(nil, :common_behavior) do
-        FactoryGirl.create :notified_s3_object, file_name: s3_event_params.first['s3']['object']['key']
-        expect(subject).to be false
-      end
+      before { FactoryGirl.create :notified_s3_object, file_name: s3_event_params.first['s3']['object']['key'] }
+
+      it('#do', :common_behavior) { expect(subject).to be false }
 
       it 'has specific errors' do
-        FactoryGirl.create :notified_s3_object, file_name: s3_event_params.first['s3']['object']['key']
         create_users_and_connection && stub_kvstore
         expect(Rollbar).to receive(:error)
         subject
         expect(instance.errors_messages).to eq file_name: ['already persisted in database, duplication case']
       end
+
+      include_examples 'common behavior', is_should_performs: false
     end
 
     context 'invalid mkeys case' do
@@ -97,6 +113,7 @@ RSpec.describe HandleOutgoingVideo do
 
         it('#do', :common_behavior) { expect(subject).to be true }
         it('should not fire rollbar error') { expect(Rollbar).to_not receive(:error); subject }
+        include_examples 'common behavior', is_should_performs: true
       end
 
       context 'not equal' do
@@ -104,6 +121,15 @@ RSpec.describe HandleOutgoingVideo do
 
         it('#do', :common_behavior)     { expect(subject).to be true }
         it('should fire rollbar error') { expect(Rollbar).to receive(:error); subject }
+        include_examples 'common behavior', is_should_performs: true
+      end
+
+      context 'when metadata does\'t contains file size' do
+        let(:vcr_cassette) { 's3_get_metadata' }
+
+        it('#do', :common_behavior)     { expect(subject).to be true }
+        it('should not fire rollbar error') { expect(Rollbar).to_not receive(:error); subject }
+        include_examples 'common behavior', is_should_performs: true
       end
     end
   end
