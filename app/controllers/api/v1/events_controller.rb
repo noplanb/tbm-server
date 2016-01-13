@@ -3,7 +3,7 @@ class Api::V1::EventsController < ActionController::Base
 
   def create
     manager = HandleOutgoingVideo.new params['Records']
-    manager.log_messages manager.do ? :success : :failure
+    HandleOutgoingVideo::StatusNotifier.new(manager).log_messages manager.do ? :success : :failure
     head :ok
   end
 

@@ -21,18 +21,6 @@ class HandleOutgoingVideo
     true
   end
 
-  def errors_messages
-    errors.messages.merge s3_event.errors.messages
-  end
-
-  def log_messages(status)
-    debug_info = "s3 event: #{@s3_event.inspect}; s3 metadata: #{@s3_metadata.inspect}"
-    case status
-      when :success then WriteLog.info self, "s3 event was handled successfully at #{Time.now}; #{debug_info}"
-      when :failure then WriteLog.info self, "errors occurred with handle s3 event at #{Time.now}; errors: #{errors_messages.inspect}; #{debug_info}"
-    end
-  end
-
   private
 
   def set_metadata

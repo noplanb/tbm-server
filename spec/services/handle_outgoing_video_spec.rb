@@ -44,6 +44,10 @@ RSpec.describe HandleOutgoingVideo do
   end
 
   describe '#do' do
+    let(:errors_messages) do
+      HandleOutgoingVideo::StatusNotifier.new(instance).send :errors_messages
+    end
+
     subject do
       VCR.use_cassette(vcr_cassette) { instance.do }
     end
@@ -85,7 +89,7 @@ RSpec.describe HandleOutgoingVideo do
       it 'has specific errors' do
         subject
         create_users_and_connection && stub_kvstore
-        expect(instance.errors_messages).to eq file_name: ['already persisted in database, duplication case']
+        expect(errors_messages).to eq file_name: ['already persisted in database, duplication case']
       end
 
       it 'should fire rollbar error' do
@@ -103,7 +107,7 @@ RSpec.describe HandleOutgoingVideo do
       it 'has specific errors' do
         subject
         users_not_found = 'ZcAK4dM9S4m0IFui6ok6[User];lpb8DcispONUSfdMOT9g[User];lpb8DcispONUSfdMOT9g[PushUser];'
-        expect(instance.errors_messages).to eq users: ["these users are not found: #{users_not_found}"]
+        expect(errors_messages).to eq users: ["these users are not found: #{users_not_found}"]
       end
 
       it 'should fire rollbar error' do
@@ -119,7 +123,7 @@ RSpec.describe HandleOutgoingVideo do
       it { expect(subject).to be false }
 
       it 'has specific errors', :do_before do
-        expect(instance.errors_messages).to eq bucket_name: ['can\'t be blank'],
+        expect(errors_messages).to eq bucket_name: ['can\'t be blank'],
                                                file_name:   ['can\'t be blank']
       end
     end
