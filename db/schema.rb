@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150826164305) do
+ActiveRecord::Schema.define(version: 20160112101846) do
 
   create_table "connections", force: :cascade do |t|
     t.integer  "creator_id", limit: 4
@@ -44,6 +44,14 @@ ActiveRecord::Schema.define(version: 20150826164305) do
   end
 
   add_index "kvstores", ["key1"], name: "index_kvstores_on_key1", using: :btree
+
+  create_table "notified_s3_objects", force: :cascade do |t|
+    t.string   "file_name",  limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "notified_s3_objects", ["file_name"], name: "index_notified_s3_objects_on_file_name", using: :btree
 
   create_table "push_users", force: :cascade do |t|
     t.string   "mkey",            limit: 255
