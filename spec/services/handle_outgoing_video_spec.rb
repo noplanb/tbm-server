@@ -110,9 +110,8 @@ RSpec.describe HandleOutgoingVideo do
         expect(errors_messages).to eq users: ["these users are not found: #{users_not_found}"]
       end
 
-      it 'should fire rollbar error' do
-        expect(Rollbar).to receive(:error).with 'User or PushUser not found', Hash
-        subject
+      it 'should not fire rollbar error' do
+        expect(Rollbar).to_not receive(:error)
       end
     end
 
