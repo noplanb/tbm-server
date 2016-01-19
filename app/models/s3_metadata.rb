@@ -2,7 +2,8 @@ class S3Metadata
   include ActiveModel::Validations
 
   attr_accessor :client_version, :client_platform,
-                :sender_mkey, :receiver_mkey, :video_id
+                :sender_mkey, :receiver_mkey, :video_id,
+                :file_size
 
   validates_presence_of :client_version, :client_platform,
                         :sender_mkey, :receiver_mkey, :video_id
@@ -21,6 +22,7 @@ class S3Metadata
     self.sender_mkey     = attrs['sender-mkey']
     self.receiver_mkey   = attrs['receiver-mkey']
     self.video_id        = attrs['video-id']
+    self.file_size       = attrs['file-size'] ? attrs['file-size'].to_i : nil
   end
 
   def inspect
@@ -28,6 +30,7 @@ class S3Metadata
       client_platform: client_platform,
       sender_mkey: sender_mkey,
       receiver_mkey: receiver_mkey,
-      video_id: video_id }.inspect
+      video_id: video_id,
+      file_size: file_size }.inspect
   end
 end
