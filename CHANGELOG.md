@@ -1,5 +1,8 @@
 # Changelog
 
+### v2.10.1
+- :hammer: Fixed specs for `HandleOutgoingVideo` service
+
 ### v2.10.0
 - :hammer: Fixed upload duplications problem
 - :hammer: Refactored code regarding `HandleOutgoingVideo` service
