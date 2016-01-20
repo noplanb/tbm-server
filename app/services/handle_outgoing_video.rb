@@ -1,13 +1,11 @@
 class HandleOutgoingVideo
   include ActiveModel::Validations
 
-  attr_reader :s3_event, :s3_metadata,
-              :sender_user, :receiver_user, :receiver_push_user
+  attr_reader :s3_event, :s3_metadata
 
   validates_with DuplicationCaseValidator
   validates_with DifferentFileSizesValidator
   validates_with ZeroFileSizeValidator
-  validates_with InvalidUsersValidator
 
   def initialize(s3_event_params)
     @s3_event = S3Event.new s3_event_params
@@ -15,22 +13,20 @@ class HandleOutgoingVideo
 
   def do
     return false unless s3_event.valid?
-    set_metadata && set_users
+    set_metadata
     return false unless valid?
     handle_outgoing_video if client_version_allowed?
     true
+  rescue ActiveRecord::RecordNotFound
+    # only PushUser may be not persisted
+    errors.add :push_user, "PushUser with mkey '#{s3_metadata.receiver_mkey}' not found"
+    false
   end
 
   private
 
   def set_metadata
     @s3_metadata = S3Metadata.create_by_event s3_event
-  end
-
-  def set_users
-    @sender_user = User.find_by mkey: s3_metadata.sender_mkey
-    @receiver_user = User.find_by mkey: s3_metadata.receiver_mkey
-    @receiver_push_user = PushUser.find_by mkey: s3_metadata.receiver_mkey
   end
 
   def handle_outgoing_video
@@ -55,5 +51,17 @@ class HandleOutgoingVideo
   def client_version_allowed?
     (s3_metadata.client_platform == 'android' && s3_metadata.client_version >= 112) ||
     (s3_metadata.client_platform == 'ios'     && s3_metadata.client_version >= 38) ? true : false
+  end
+
+  def sender_user
+    @sender_user ||= User.find_by! mkey: s3_metadata.sender_mkey
+  end
+
+  def receiver_user
+    @receiver_user ||= User.find_by! mkey: s3_metadata.receiver_mkey
+  end
+
+  def receiver_push_user
+    @receiver_push_user ||= PushUser.find_by! mkey: s3_metadata.receiver_mkey
   end
 end

@@ -39,10 +39,6 @@ RSpec.describe HandleOutgoingVideo do
     allow_any_instance_of(Kvstore).to receive(:trigger_event).and_return true
   end
 
-  def stub_users_validation
-    allow_any_instance_of(HandleOutgoingVideo::InvalidUsersValidator).to receive(:validate).and_return true
-  end
-
   describe '#do' do
     let(:errors_messages) do
       HandleOutgoingVideo::StatusNotifier.new(instance).send :errors_messages
@@ -53,11 +49,7 @@ RSpec.describe HandleOutgoingVideo do
     end
 
     before do |example|
-      if example.metadata[:common_behavior]
-        create_users_and_connection && stub_kvstore
-      else
-        stub_users_validation unless example.metadata[:skip_validation_stubbing]
-      end
+      create_users_and_connection && stub_kvstore if example.metadata[:common_behavior]
       VCR.use_cassette(vcr_cassette) { instance.do } if example.metadata[:do_before]
     end
 
@@ -98,7 +90,7 @@ RSpec.describe HandleOutgoingVideo do
       end
     end
 
-    context 'invalid mkeys case', :skip_validation_stubbing do
+    context 'invalid mkeys case' do
       let(:vcr_cassette)  { 's3_get_metadata' }
       let(:s3_event_file) { 's3_event' }
 
@@ -106,8 +98,7 @@ RSpec.describe HandleOutgoingVideo do
 
       it 'has specific errors' do
         subject
-        users_not_found = 'ZcAK4dM9S4m0IFui6ok6[User];lpb8DcispONUSfdMOT9g[User];lpb8DcispONUSfdMOT9g[PushUser];'
-        expect(errors_messages).to eq users: ["these users are not found: #{users_not_found}"]
+        expect(errors_messages).to eq push_user: ['PushUser with mkey \'lpb8DcispONUSfdMOT9g\' not found']
       end
 
       it 'should not fire rollbar error' do
