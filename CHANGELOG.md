@@ -1,5 +1,8 @@
 # Changelog
 
+### v2.10.2
+- :hammer: Fixed bug with welcome message feature
+
 ### v2.10.1
 - :hammer: Fixed specs for `HandleOutgoingVideo` service
 
