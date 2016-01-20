@@ -17,10 +17,6 @@ class HandleOutgoingVideo
     return false unless valid?
     handle_outgoing_video if client_version_allowed?
     true
-  rescue ActiveRecord::RecordNotFound
-    # only PushUser may be not persisted
-    errors.add :push_user, "PushUser with mkey '#{s3_metadata.receiver_mkey}' not found"
-    false
   end
 
   private
@@ -32,7 +28,7 @@ class HandleOutgoingVideo
   def handle_outgoing_video
     store_video_file_name
     update_kvstore_with_video_id
-    send_notification_to_receiver
+    receiver_push_user && send_notification_to_receiver
   end
 
   def store_video_file_name
@@ -48,20 +44,22 @@ class HandleOutgoingVideo
     Notification::VideoReceived.new(receiver_push_user, Figaro.env.domain_name, sender_user).process(params, params[:from_mkey], params[:sender_name], params[:video_id])
   end
 
+  # helpers
+
   def client_version_allowed?
     (s3_metadata.client_platform == 'android' && s3_metadata.client_version >= 112) ||
     (s3_metadata.client_platform == 'ios'     && s3_metadata.client_version >= 38) ? true : false
   end
 
   def sender_user
-    @sender_user ||= User.find_by! mkey: s3_metadata.sender_mkey
+    @sender_user ||= User.find_by mkey: s3_metadata.sender_mkey
   end
 
   def receiver_user
-    @receiver_user ||= User.find_by! mkey: s3_metadata.receiver_mkey
+    @receiver_user ||= User.find_by mkey: s3_metadata.receiver_mkey
   end
 
   def receiver_push_user
-    @receiver_push_user ||= PushUser.find_by! mkey: s3_metadata.receiver_mkey
+    @receiver_push_user ||= PushUser.find_by mkey: s3_metadata.receiver_mkey
   end
 end
