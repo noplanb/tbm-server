@@ -2,6 +2,7 @@
 
 ### v2.10.2
 - :hammer: Fixed bug with welcome message feature
+- :hammer: Refactored specs for `HandleOutgoingVideo` service
 
 ### v2.10.1
 - :hammer: Fixed specs for `HandleOutgoingVideo` service
