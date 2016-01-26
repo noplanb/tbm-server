@@ -1,5 +1,8 @@
 # Changelog
 
+### v2.10.3
+- :bulb: Added Mixpanel link to landing footer to get free service
+
 ### v2.10.2
 - :hammer: Fixed bug with welcome message feature
 - :hammer: Refactored specs for `HandleOutgoingVideo` service
