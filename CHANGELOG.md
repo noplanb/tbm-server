@@ -1,5 +1,8 @@
 # Changelog
 
+### v2.10.4
+- :hammer: Add new APNS certs
+
 ### v2.10.3
 - :bulb: Added Mixpanel link to landing footer to get free service
 
