@@ -74,30 +74,6 @@ class Kvstore < ActiveRecord::Base
   private
 
   def trigger_event
-    return false if key1.blank? && value.blank?
-    return false unless SUFFIXES_FOR_EVENTS.any? { |suffix| key1.include?(suffix) }
-    sender_id, receiver_id, _hash, _type = key1.split('-')
-    sender = User.find_by_mkey(sender_id)
-    receiver = User.find_by_mkey(receiver_id)
-    parsed_value = JSON.parse(value)
-    status = parsed_value.fetch('status', 'received')
-    video_id = parsed_value['videoId']
-    video_filename = self.class.video_filename(sender_id, receiver_id, video_id)
-    name = ['video', self.class.name.underscore, status]
-    event = {
-      initiator: 'user',
-      initiator_id: sender_id,
-      target: 'video',
-      target_id: video_filename,
-      data: {
-        sender_id: sender_id,
-        sender_platform: sender.try(:device_platform),
-        receiver_id: receiver_id,
-        receiver_platform: receiver.try(:device_platform),
-        video_filename: video_filename,
-        video_id: video_id
-      },
-      raw_params: attributes.slice('key1', 'key2', 'value') }
-    EventDispatcher.emit(name, event)
+    TriggerEvent.new(self).call
   end
 end

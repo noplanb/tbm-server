@@ -1,5 +1,9 @@
 # Changelog
 
+### next release
+- :bulb: Added ability to receive text messages via kvstore/set
+- :hammer: Refactored kvstore code
+
 ### v2.10.4
 - :hammer: Add new APNS certs
 
