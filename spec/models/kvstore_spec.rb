@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Kvstore, type: :model do
   let(:video_id) { '1426622544176' }
-  let(:text_id) { '1426622544176' }
+  let(:message_id) { '1426622544176' }
   let(:sender_mkey) { 'smRug5xj8J469qX5XvGk' }
   let(:receiver_mkey) { 'IUed5vP9n4qzW6jY8wSu' }
   let(:sender) { create(:ios_user, mkey: sender_mkey) }
@@ -114,8 +114,8 @@ RSpec.describe Kvstore, type: :model do
 
     context 'text message' do
       let(:params) do
-        { key1: described_class.generate_id_key(sender, receiver, connection), key2: text_id,
-          value: { 'messageId' => text_id, 'type' => 'text', 'body' => 'Hello World!' }.to_json }
+        { key1: described_class.generate_id_key(sender, receiver, connection), key2: message_id,
+          value: { 'messageId' => message_id, 'type' => 'text', 'body' => 'Hello World!' }.to_json }
       end
 
       specify do
@@ -127,13 +127,13 @@ RSpec.describe Kvstore, type: :model do
           { initiator: 'user',
             initiator_id: sender.mkey,
             target: 'text',
-            target_id: text_id,
+            target_id: message_id,
             data: {
               sender_id: sender.mkey,
               sender_platform: sender.device_platform,
               receiver_id: receiver.mkey,
               receiver_platform: receiver.device_platform,
-              message_id: text_id
+              message_id: message_id
             },
             raw_params: params.stringify_keys }
         end

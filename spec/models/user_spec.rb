@@ -448,7 +448,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#received_messages and #received_texts' do
+  context '#received_messages and #received_texts' do
     let(:user) { create(:user) }
 
     let!(:friend_1) { create(:established_connection, creator: user).target }
@@ -465,7 +465,7 @@ RSpec.describe User, type: :model do
     let!(:video_41)   { Kvstore.add_id_key(friend_4, user, gen_message_id).key2 }
     let!(:video_42)   { Kvstore.add_id_key(friend_4, user, gen_message_id).key2 }
 
-    context '#received_messages' do
+    describe '#received_messages' do
       subject { user.received_messages }
 
       it do
@@ -498,7 +498,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context '#received_texts' do
+    describe '#received_texts' do
       subject { user.received_texts }
 
       it do
@@ -569,6 +569,10 @@ RSpec.describe User, type: :model do
       ]
       is_expected.to include(*expected)
     end
+  end
+
+  describe '#message_status' do
+
   end
 
   describe '#add_emails' do

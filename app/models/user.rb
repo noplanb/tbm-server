@@ -104,7 +104,6 @@ class User < ActiveRecord::Base
     device_platform.present?
   end
 
-  # legacy method
   def received_videos
     data = reduce_by_mkeys(kv_keys_for_received_messages) do |key1|
       key1.split('-').first
