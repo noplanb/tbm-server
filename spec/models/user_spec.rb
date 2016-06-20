@@ -438,10 +438,94 @@ RSpec.describe User, type: :model do
     let!(:video_22) { Kvstore.add_id_key(friend_2, user, gen_video_id).key2 }
     let!(:video_23) { Kvstore.add_id_key(friend_2, user, gen_video_id).key2 }
 
-    specify do
-      is_expected.to include({ mkey: friend_1.mkey, video_ids: [video_11, video_12] },
-                             { mkey: friend_2.mkey, video_ids: [video_21, video_22, video_23] },
-                             mkey: friend_3.mkey, video_ids: [])
+    it do
+      expected = [
+        { mkey: friend_1.mkey, video_ids: [video_11, video_12] },
+        { mkey: friend_2.mkey, video_ids: [video_21, video_22, video_23] },
+        { mkey: friend_3.mkey, video_ids: [] }
+      ]
+      is_expected.to include(*expected)
+    end
+  end
+
+  describe '#received_messages and #received_texts' do
+    let(:user) { create(:user) }
+
+    let!(:friend_1) { create(:established_connection, creator: user).target }
+    let!(:friend_2) { create(:established_connection, creator: user).target }
+    let!(:friend_3) { create(:established_connection, creator: user).target }
+    let!(:friend_4) { create(:established_connection, creator: user).target }
+    let!(:friend_5) { create(:established_connection, creator: user).target }
+
+    let!(:message_11) { Kvstore.add_message_id_key('text', friend_1, user, gen_message_id, body: 'Message 11').key2 }
+    let!(:message_12) { Kvstore.add_message_id_key('text', friend_1, user, gen_message_id, body: 'Message 12').key2 }
+    let!(:message_21) { Kvstore.add_message_id_key('text', friend_2, user, gen_message_id, body: 'Message 21').key2 }
+    let!(:message_22) { Kvstore.add_message_id_key('text', friend_2, user, gen_message_id, body: 'Message 22').key2 }
+    let!(:message_23) { Kvstore.add_message_id_key('text', friend_2, user, gen_message_id, body: 'Message 23').key2 }
+    let!(:video_41)   { Kvstore.add_id_key(friend_4, user, gen_message_id).key2 }
+    let!(:video_42)   { Kvstore.add_id_key(friend_4, user, gen_message_id).key2 }
+
+    context '#received_messages' do
+      subject { user.received_messages }
+
+      it do
+        expected = [
+          {
+            mkey: friend_1.mkey,
+            messages: [
+              { 'type' => 'text', 'messageId' => message_11, 'body' => 'Message 11' },
+              { 'type' => 'text', 'messageId' => message_12, 'body' => 'Message 12' }
+            ]
+          }, {
+            mkey: friend_2.mkey,
+            messages: [
+              { 'type' => 'text', 'messageId' => message_21, 'body' => 'Message 21' },
+              { 'type' => 'text', 'messageId' => message_22, 'body' => 'Message 22' },
+              { 'type' => 'text', 'messageId' => message_23, 'body' => 'Message 23' }
+            ]
+          }, {
+            mkey: friend_3.mkey,
+            messages: []
+          }, {
+            mkey: friend_4.mkey,
+            messages: [
+              { 'type' => 'video', 'messageId' => video_41 },
+              { 'type' => 'video', 'messageId' => video_42 }
+            ]
+          }
+        ]
+        is_expected.to include(*expected)
+      end
+    end
+
+    context '#received_texts' do
+      subject { user.received_texts }
+
+      it do
+        expected = [
+          {
+            mkey: friend_1.mkey,
+            messages: [
+              { 'type' => 'text', 'messageId' => message_11, 'body' => 'Message 11' },
+              { 'type' => 'text', 'messageId' => message_12, 'body' => 'Message 12' }
+            ]
+          }, {
+            mkey: friend_2.mkey,
+            messages: [
+              { 'type' => 'text', 'messageId' => message_21, 'body' => 'Message 21' },
+              { 'type' => 'text', 'messageId' => message_22, 'body' => 'Message 22' },
+              { 'type' => 'text', 'messageId' => message_23, 'body' => 'Message 23' }
+            ]
+          }, {
+            mkey: friend_3.mkey,
+            messages: []
+          }, {
+            mkey: friend_4.mkey,
+            messages: []
+          }
+        ]
+        is_expected.to include(*expected)
+      end
     end
   end
 
@@ -477,10 +561,13 @@ RSpec.describe User, type: :model do
     let!(:kvstore_202) { Kvstore.add_status_key(friend_2, user, video_202, 'downloaded') }
     let!(:kvstore_203) { Kvstore.add_status_key(friend_2, user, video_203, 'downloaded') }
 
-    specify do
-      is_expected.to include({ mkey: friend_1.mkey, video_id: video_12, status: 'downloaded' },
-                             { mkey: friend_2.mkey, video_id: video_23, status: 'viewed' },
-                             mkey: friend_3.mkey, video_id: '', status: '')
+    it do
+      expected = [
+        { mkey: friend_1.mkey, video_id: video_12, status: 'downloaded' },
+        { mkey: friend_2.mkey, video_id: video_23, status: 'viewed' },
+        { mkey: friend_3.mkey, video_id: '', status: '' }
+      ]
+      is_expected.to include(*expected)
     end
   end
 

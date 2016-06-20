@@ -53,17 +53,42 @@ RSpec.describe KvstoreController, type: :controller do
     context 'when authenticated' do
       let(:user) { create(:user) }
 
-      specify do
+      it do
         authenticate_with_http_digest(user.mkey, user.auth) do
           get :received_videos
         end
         is_expected.to respond_with(:success)
       end
 
-      specify do
+      it do
         expect_any_instance_of(User).to receive(:received_videos)
         authenticate_with_http_digest(user.mkey, user.auth) do
           get :received_videos
+        end
+      end
+    end
+
+    context 'when not authenticated' do
+      before { get :received_videos }
+      it { is_expected.to respond_with(:unauthorized) }
+    end
+  end
+
+  describe 'GET #received_texts' do
+    context 'when authenticated' do
+      let(:user) { create(:user) }
+
+      it do
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          get :received_texts
+        end
+        is_expected.to respond_with(:success)
+      end
+
+      it do
+        expect_any_instance_of(User).to receive(:received_texts)
+        authenticate_with_http_digest(user.mkey, user.auth) do
+          get :received_texts
         end
       end
     end
@@ -78,14 +103,14 @@ RSpec.describe KvstoreController, type: :controller do
     context 'when authenticated' do
       let(:user) { create(:user) }
 
-      specify do
+      it do
         authenticate_with_http_digest(user.mkey, user.auth) do
           get :video_status
         end
         is_expected.to respond_with(:success)
       end
 
-      specify do
+      it do
         expect_any_instance_of(User).to receive(:video_status)
         authenticate_with_http_digest(user.mkey, user.auth) do
           get :video_status

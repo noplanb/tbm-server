@@ -104,8 +104,9 @@ class User < ActiveRecord::Base
     device_platform.present?
   end
 
+  # legacy method
   def received_videos
-    data = reduce_by_mkeys(kv_keys_for_received_videos) do |key1|
+    data = reduce_by_mkeys(kv_keys_for_received_messages) do |key1|
       key1.split('-').first
     end
     data.map do |mkey, values|
@@ -114,8 +115,27 @@ class User < ActiveRecord::Base
     end
   end
 
+  def received_messages
+    data = reduce_by_mkeys(kv_keys_for_received_messages) do |key1|
+      key1.split('-').first
+    end
+    data.map do |mkey, values|
+      messages = values.map do |v|
+        value = JSON.parse(v)
+        value['type'] ? value : { 'type' => 'video', 'messageId' => value['videoId'] }
+      end
+      { mkey: mkey, messages: messages }
+    end
+  end
+
+  def received_texts
+    received_messages.each do |row|
+      row[:messages].select! { |m| m['type'] == 'text' }
+    end
+  end
+
   def video_status
-    data = reduce_by_mkeys(kv_keys_for_video_status) do |key1|
+    data = reduce_by_mkeys(kv_keys_for_message_status) do |key1|
       key1.split('-').second
     end
     data.map do |mkey, values|
@@ -250,20 +270,16 @@ class User < ActiveRecord::Base
     connected_users_cache[connected_user_id]
   end
 
-  def kv_keys_for_received_videos
+  def kv_keys_for_received_messages
     live_connections.map do |connection|
       Kvstore.generate_id_key(connected_user_mkey(connection), self, connection)
     end
   end
 
-  def kv_keys_for_video_status
+  def kv_keys_for_message_status
     live_connections.map do |connection|
       Kvstore.generate_status_key(self, connected_user_mkey(connection), connection)
     end
-  end
-
-  def find_user_kv_records(kv_keys)
-    Kvstore.where(key1: kv_keys).group(:key1, :value).count
   end
 
   # @param block - block to extract +mkey+ from +key1+ value
@@ -276,5 +292,9 @@ class User < ActiveRecord::Base
       result[mkey] ||= []
       result[mkey] << value
     end
+  end
+
+  def find_user_kv_records(kv_keys)
+    Kvstore.where(key1: kv_keys).group(:key1, :value).count
   end
 end

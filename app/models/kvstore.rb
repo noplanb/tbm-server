@@ -54,6 +54,17 @@ class Kvstore < ActiveRecord::Base
     Kvstore.create_or_update(params)
   end
 
+  def self.add_message_id_key(type, sender, receiver, message_id, rest = {})
+    connection = Connection.live_between(sender.id, receiver.id).first
+    fail 'no live connections found' if connection.nil?
+    params = {
+      key1: generate_id_key(sender, receiver, connection),
+      key2: message_id,
+      value: { 'type' => type, 'messageId' => message_id }.merge(rest).to_json
+    }
+    Kvstore.create_or_update(params)
+  end
+
   def self.add_status_key(sender, receiver, video_id, status)
     connection = Connection.live_between(sender.id, receiver.id).first
     fail 'no live connections found' if connection.nil?

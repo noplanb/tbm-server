@@ -47,8 +47,7 @@ class Kvstore::TriggerEvent
       when 'text'
         { message_id: value['messageId'] }
       else
-        { video_filename: video_filename,
-          video_id: value['videoId'] }
+        { video_filename: video_filename, video_id: value['videoId'] }
     end
 
     { sender_id: sender.mkey,

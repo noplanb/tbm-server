@@ -56,6 +56,8 @@ ThreebymeServer::Application.routes.draw do
   get 'kvstore/load_test_read'
   get 'kvstore/load_test_write'
   get 'kvstore/received_videos'
+  get 'kvstore/received_messages'
+  get 'kvstore/received_texts'
   get 'kvstore/video_status'
 
   get 'kvstore_admin' => 'kvstore_admin#index'

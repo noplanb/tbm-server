@@ -2,6 +2,7 @@
 
 ### next release
 - :bulb: Added ability to receive text messages via kvstore/set
+- :bulb: Implemented new API: kvstore/received_messages and kvstore/received_texts routes
 - :hammer: Refactored kvstore code
 
 ### v2.10.4
