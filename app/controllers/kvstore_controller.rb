@@ -7,6 +7,8 @@ class KvstoreController < ApplicationController
     render json: { status: '200' }
   end
 
+  # TODO: delete methods below?
+
   def get
     render json: get_kvs.first
   end
@@ -22,19 +24,6 @@ class KvstoreController < ApplicationController
     logger.info "deleting #{kvs.length} kvs"
     kvs.destroy_all
     render json: { status: '200' }
-  end
-
-  # ================
-  # = Load testing =
-  # ================
-  # These dont require auth rememeber to remove them from routes after testing.
-
-  def load_test_read
-    get_all
-  end
-
-  def load_test_write
-    set
   end
 
   def received_videos
