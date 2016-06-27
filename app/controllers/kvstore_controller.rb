@@ -1,13 +1,11 @@
 class KvstoreController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authenticate, only: [:received_videos, :received_messages, :received_texts, :video_status]
+  before_action :authenticate
 
   def set
     Kvstore.create_or_update(kvstore_params)
     render json: { status: '200' }
   end
-
-  # TODO: delete methods below?
 
   def get
     render json: get_kvs.first
@@ -26,9 +24,9 @@ class KvstoreController < ApplicationController
     render json: { status: '200' }
   end
 
-  def received_videos
-    render json: current_user.received_videos
-  end
+  #
+  # new API
+  #
 
   def received_messages
     render json: current_user.received_messages
@@ -36,6 +34,18 @@ class KvstoreController < ApplicationController
 
   def received_texts
     render json: current_user.received_texts
+  end
+
+  def messages_statuses
+    render json: current_user.messages_statuses
+  end
+
+  #
+  # legacy API
+  #
+
+  def received_videos
+    render json: current_user.received_videos
   end
 
   def video_status
