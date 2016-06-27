@@ -106,10 +106,10 @@ end
 group :development, :test do
   gem 'pry-rescue'
   gem 'pry-remote'
-  gem 'pry-byebug', '= 1.3.3'
-  gem 'jazz_fingers'
+  gem 'pry-byebug'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'jazz_fingers'
   gem 'fuubar'
 end
 

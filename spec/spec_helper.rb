@@ -94,4 +94,6 @@ RSpec.configure do |config|
 
   # right above the existing:
   config.extend(VCR::RSpec::Macros)
+
+  config.example_status_persistence_file_path = 'tmp/rspec_failures.txt'
 end
