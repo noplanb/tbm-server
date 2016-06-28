@@ -26,9 +26,10 @@ module User::KvstoreMethods
       messages = values.map do |v|
         value = JSON.parse(v)
         if value['type']
-          value
+          rest_attrs = value.except('type', 'messageId').symbolize_keys
+          { type: value['type'], message_id: value['messageId'] }.merge(rest_attrs)
         else
-          { 'type' => 'video', 'messageId' => value['videoId'] }
+          { type: 'video', message_id: value['videoId'] }
         end
       end
       { mkey: mkey, messages: messages }
@@ -83,7 +84,7 @@ module User::KvstoreMethods
 
   def filter_received_messages(type)
     received_messages.each do |row|
-      row[:messages].select! { |m| m['type'] == type }
+      row[:messages].select! { |m| m[:type] == type }
     end
   end
 end

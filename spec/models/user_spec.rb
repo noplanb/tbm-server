@@ -475,15 +475,15 @@ RSpec.describe User, type: :model do
           {
             mkey: friend_1.mkey,
             messages: [
-              { 'type' => 'text', 'messageId' => message_11, 'body' => 'Message 11' },
-              { 'type' => 'text', 'messageId' => message_12, 'body' => 'Message 12' }
+              { type: 'text', message_id: message_11, body: 'Message 11' },
+              { type: 'text', message_id: message_12, body: 'Message 12' }
             ]
           }, {
             mkey: friend_2.mkey,
             messages: [
-              { 'type' => 'text', 'messageId' => message_21, 'body' => 'Message 21' },
-              { 'type' => 'text', 'messageId' => message_22, 'body' => 'Message 22' },
-              { 'type' => 'text', 'messageId' => message_23, 'body' => 'Message 23' }
+              { type: 'text', message_id: message_21, body: 'Message 21' },
+              { type: 'text', message_id: message_22, body: 'Message 22' },
+              { type: 'text', message_id: message_23, body: 'Message 23' }
             ]
           }, {
             mkey: friend_3.mkey,
@@ -491,8 +491,8 @@ RSpec.describe User, type: :model do
           }, {
             mkey: friend_4.mkey,
             messages: [
-              { 'type' => 'video', 'messageId' => video_41 },
-              { 'type' => 'video', 'messageId' => video_42 }
+              { type: 'video', message_id: video_41 },
+              { type: 'video', message_id: video_42 }
             ]
           }
         ]
@@ -508,15 +508,15 @@ RSpec.describe User, type: :model do
           {
             mkey: friend_1.mkey,
             messages: [
-              { 'type' => 'text', 'messageId' => message_11, 'body' => 'Message 11' },
-              { 'type' => 'text', 'messageId' => message_12, 'body' => 'Message 12' }
+              { type: 'text', message_id: message_11, body: 'Message 11' },
+              { type: 'text', message_id: message_12, body: 'Message 12' }
             ]
           }, {
             mkey: friend_2.mkey,
             messages: [
-              { 'type' => 'text', 'messageId' => message_21, 'body' => 'Message 21' },
-              { 'type' => 'text', 'messageId' => message_22, 'body' => 'Message 22' },
-              { 'type' => 'text', 'messageId' => message_23, 'body' => 'Message 23' }
+              { type: 'text', message_id: message_21, body: 'Message 21' },
+              { type: 'text', message_id: message_22, body: 'Message 22' },
+              { type: 'text', message_id: message_23, body: 'Message 23' }
             ]
           }, {
             mkey: friend_3.mkey,
