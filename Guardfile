@@ -1,36 +1,4 @@
-# A sample Guardfile
-# More info at https://github.com/guard/guard#readme
-
-## Uncomment and set this to only include directories you want to watch
-directories %w(app lib config spec)
-
-## Uncomment to clear the screen before every task
-# clearing :on
-
-## Guard internally checks for changes in the Guardfile and exits.
-## If you want Guard to automatically start up again, run guard in a
-## shell loop, e.g.:
-##
-##  $ while bundle exec guard; do echo "Restarting Guard..."; done
-##
-## Note: if you are using the `directories` clause above and you are not
-## watching the project directory ('.'), then you will want to move
-## the Guardfile to a watched dir and symlink it back, e.g.
-#
-#  $ mkdir config
-#  $ mv Guardfile config/
-#  $ ln -s config/Guardfile .
-#
-# and, you'll have to watch "config/Guardfile" instead of "Guardfile"
-
-# Note: The cmd option is now required due to the increasing number of ways
-#       rspec may be run, below are examples of the most common uses.
-#  * bundler: 'bundle exec rspec'
-#  * bundler binstubs: 'bin/rspec'
-#  * spring: 'bin/rspec' (This will use spring if running and you have
-#                          installed the spring binstubs per the docs)
-#  * zeus: 'zeus rspec' (requires the server to be started separately)
-#  * 'just' rspec: 'rspec'
+directories %w(. app lib config spec)
 
 guard :bundler do
   require 'guard/bundler'
@@ -44,16 +12,29 @@ guard :bundler do
   files.each { |file| watch(helper.real_path(file)) }
 end
 
-# guard :rubocop, all_on_start: false, cli: ['--format', 'clang', '--rails'] do
-#   watch(%r{.+\.rb$})
-#   watch(%r{(?:.+/)?\.rubocop\.yml$}) { |m| File.dirname(m[0]) }
-# end
+guard 'pow' do
+  watch('.powrc')
+  watch('.powenv')
+  watch('.rvmrc')
+  watch('.ruby-version')
+  watch('Gemfile')
+  watch('Gemfile.lock')
+  watch('config/application.rb')
+  watch(%r{^config/.+\.yml$})
+  watch('config/environment.rb')
+  watch(%r{^config/environments/.*\.rb$})
+  watch(%r{^config/initializers/.*\.rb$})
+end
 
-guard :rspec, cmd: 'bundle exec rspec' do
+rspec_options = {
+  results_file: 'tmp/guard_rspec_results.txt',
+  cmd: 'zeus rspec',
+  failed_mode: :focus
+}
+
+guard :rspec, rspec_options do
   require 'guard/rspec/dsl'
   dsl = Guard::RSpec::Dsl.new(self)
-
-  # Feel free to open issues for suggestions and improvements
 
   # RSpec files
   rspec = dsl.rspec
@@ -92,23 +73,14 @@ guard :rspec, cmd: 'bundle exec rspec' do
     Dir[File.join("**/#{m[1]}.feature")][0] || 'spec/acceptance'
   end
 
-  watch('config/application.rb') { rspec.spec_dir }
-  watch('config/application.yml') { rspec.spec_dir }
-  watch('config/environment.rb') { rspec.spec_dir }
-  watch(%r{^config/environments/.*\.rb$}) { rspec.spec_dir }
-  watch(%r{^config/initializers/.*\.rb$}) { rspec.spec_dir }
+  #watch('config/application.rb') { rspec.spec_dir }
+  #watch('config/application.yml') { rspec.spec_dir }
+  #watch('config/environment.rb') { rspec.spec_dir }
+  #watch(%r{^config/environments/.*\.rb$}) { rspec.spec_dir }
+  #watch(%r{^config/initializers/.*\.rb$}) { rspec.spec_dir }
 end
 
-guard :pow do
-  watch('.powrc')
-  watch('.powenv')
-  watch('.rvmrc')
-  watch('.ruby-version')
-  watch('Gemfile')
-  watch('Gemfile.lock')
-  watch('config/application.rb')
-  watch(%r{^config/.+\.yml$})
-  watch('config/environment.rb')
-  watch(%r{^config/environments/.*\.rb$})
-  watch(%r{^config/initializers/.*\.rb$})
+guard 'migrate' do
+  watch(%r{^db/migrate/(\d+).+\.rb})
 end
+
