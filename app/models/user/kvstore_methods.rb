@@ -21,34 +21,35 @@ module User::KvstoreMethods
   end
 
   def received_messages
-    data = reduce_by_mkeys(kv_keys_for_received_messages) do |key1|
-      key1.split('-').first
-    end
+    data = reduce_by_mkeys(kv_keys_for_received_messages) { |key1| key1.split('-').first }
     data.map do |mkey, values|
       messages = values.map do |v|
         value = JSON.parse(v)
-        value['type'] ? value : { 'type' => 'video', 'messageId' => value['videoId'] }
+        if value['type']
+          value
+        else
+          { 'type' => 'video', 'messageId' => value['videoId'] }
+        end
       end
       { mkey: mkey, messages: messages }
     end
   end
 
   def received_texts
-    received_messages.each do |row|
-      row[:messages].select! { |m| m['type'] == 'text' }
-    end
+    filter_received_messages('text')
   end
 
   def messages_statuses
-    [
-      {
-        mkey: 'xxxxxxxxxxxx',
-        message: { type: 'text', message_id: 123456789, status: 'downloaded' }
-      }, {
-        mkey: 'xxxxxxxxxxxx',
-        message: { type: 'video', message_id: 123456789, status: 'viewed' }
-      }
-    ]
+    data = reduce_by_mkeys(kv_keys_for_message_status) { |key1| key1.split('-').second }
+    data.map do |mkey, values|
+      value = values.last
+      value &&= JSON.parse(value)
+      message = value && {
+        type: value['type'] || 'video',
+        message_id: value['messageId'] || value['videoId'],
+        status: value['status'] }
+      { mkey: mkey, message: message }
+    end
   end
 
   private
@@ -78,5 +79,11 @@ module User::KvstoreMethods
 
   def find_user_kv_records(kv_keys)
     Kvstore.where(key1: kv_keys).group(:key1, :value).count
+  end
+
+  def filter_received_messages(type)
+    received_messages.each do |row|
+      row[:messages].select! { |m| m['type'] == type }
+    end
   end
 end

@@ -448,6 +448,8 @@ RSpec.describe User, type: :model do
     end
   end
 
+
+
   context '#received_messages and #received_texts' do
     let(:user) { create(:user) }
 
@@ -529,9 +531,9 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#video_status' do
+  describe '#video_status and #messages_statuses' do
     let(:user) { create(:user) }
-    subject { user.video_status }
+
 
     let!(:friend_1) { create(:established_connection, creator: user).target }
     let!(:friend_2) { create(:established_connection, creator: user).target }
@@ -561,18 +563,32 @@ RSpec.describe User, type: :model do
     let!(:kvstore_202) { Kvstore.add_status_key(friend_2, user, video_202, 'downloaded') }
     let!(:kvstore_203) { Kvstore.add_status_key(friend_2, user, video_203, 'downloaded') }
 
-    it do
-      expected = [
-        { mkey: friend_1.mkey, video_id: video_12, status: 'downloaded' },
-        { mkey: friend_2.mkey, video_id: video_23, status: 'viewed' },
-        { mkey: friend_3.mkey, video_id: '', status: '' }
-      ]
-      is_expected.to include(*expected)
+
+    describe '#video_status' do
+      subject { user.video_status }
+
+      it do
+        expected = [
+          { mkey: friend_1.mkey, video_id: video_12, status: 'downloaded' },
+          { mkey: friend_2.mkey, video_id: video_23, status: 'viewed' },
+          { mkey: friend_3.mkey, video_id: '', status: '' }
+        ]
+        is_expected.to include(*expected)
+      end
     end
-  end
 
-  describe '#message_status' do
+    describe '#messages_statuses' do
+      subject { user.messages_statuses }
 
+      it do
+        expected = [
+          { mkey: friend_1.mkey, message: { type: 'video', message_id: video_12, status: 'downloaded' } },
+          { mkey: friend_2.mkey, message: { type: 'video', message_id: video_23, status: 'viewed' } },
+          { mkey: friend_3.mkey, message: nil }
+        ]
+        is_expected.to include(*expected)
+      end
+    end
   end
 
   describe '#add_emails' do

@@ -76,6 +76,18 @@ RSpec.describe Kvstore, type: :model do
     it { is_expected.to be_valid }
   end
 
+  describe '.add_message_id_key' do
+    let!(:connection) { create(:established_connection, connection_attributes) }
+    subject { described_class.add_message_id_key('text', sender, receiver, message_id) }
+    it { is_expected.to be_valid }
+  end
+
+  describe '.add_message_status_key' do
+    let!(:connection) { create(:established_connection, connection_attributes) }
+    subject { described_class.add_message_status_key('text', sender, receiver, video_id, :downloaded) }
+    it { is_expected.to be_valid }
+  end
+
   describe '.create_or_update' do
     subject { described_class.create_or_update(params) }
     let!(:connection) { create(:established_connection, connection_attributes) }
