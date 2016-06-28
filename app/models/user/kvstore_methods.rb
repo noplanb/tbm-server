@@ -5,7 +5,7 @@ module User::KvstoreMethods
     end
     data.map do |mkey, values|
       video_ids = values.map { |v| JSON.parse(v)['videoId'] }
-      { mkey: mkey, video_ids: video_ids }
+      { mkey: mkey, video_ids: video_ids.compact }
     end
   end
 
@@ -16,8 +16,8 @@ module User::KvstoreMethods
     data.map do |mkey, values|
       value = values.last || { 'videoId' => '', 'status' => '' }.to_json
       decoded = JSON.parse(value)
-      { mkey: mkey, video_id: decoded['videoId'], status: decoded['status'] }
-    end
+      { mkey: mkey, video_id: decoded['videoId'], status: decoded['status'] } unless decoded['type']
+    end.compact
   end
 
   def received_messages
@@ -26,8 +26,8 @@ module User::KvstoreMethods
       messages = values.map do |v|
         value = JSON.parse(v)
         if value['type']
-          rest_attrs = value.except('type', 'messageId').symbolize_keys
-          { type: value['type'], message_id: value['messageId'] }.merge(rest_attrs)
+          rest = value.except('type', 'messageId').symbolize_keys
+          { type: value['type'], message_id: value['messageId'] }.merge(rest)
         else
           { type: 'video', message_id: value['videoId'] }
         end

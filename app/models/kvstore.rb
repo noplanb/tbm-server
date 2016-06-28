@@ -32,11 +32,11 @@ class Kvstore < ActiveRecord::Base
   end
 
   def self.generate_id_key(sender, receiver, connection)
-    generate_key 'VideoIdKVKey', sender, receiver, connection
+    generate_key('VideoIdKVKey', sender, receiver, connection)
   end
 
   def self.generate_status_key(sender, receiver, connection)
-    generate_key 'VideoStatusKVKey', sender, receiver, connection
+    generate_key('VideoStatusKVKey', sender, receiver, connection)
   end
 
   def self.generate_welcomed_friends_key(user)

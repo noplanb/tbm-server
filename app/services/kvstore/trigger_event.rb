@@ -9,9 +9,7 @@ class Kvstore::TriggerEvent
 
   def call
     return false if object.key1.blank? && object.value.blank?
-    return false unless Kvstore::SUFFIXES_FOR_EVENTS.any? do |suffix|
-      object.key1.include?(suffix)
-    end
+    return false unless Kvstore::SUFFIXES_FOR_EVENTS.any? { |suffix| object.key1.include?(suffix) }
 
     type = value['type'] || 'video'
     status = value.fetch('status', 'received')
@@ -47,7 +45,7 @@ class Kvstore::TriggerEvent
       when 'text'
         { message_id: value['messageId'] }
       else
-        { video_filename: video_filename, video_id: value['videoId'] }
+        { video_filename: video_filename, video_id: video_id }
     end
 
     { sender_id: sender.mkey,
@@ -60,7 +58,11 @@ class Kvstore::TriggerEvent
   # type specific helpers
   #
 
+  def video_id
+    @video_id ||= value['videoId'] || value['messageId']
+  end
+
   def video_filename
-    @video_filename ||= object.class.video_filename(sender, receiver, value['videoId'])
+    @video_filename ||= object.class.video_filename(sender, receiver, video_id)
   end
 end
