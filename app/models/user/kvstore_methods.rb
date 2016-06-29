@@ -1,22 +1,26 @@
 module User::KvstoreMethods
   def received_videos
-    data = reduce_by_mkeys(kv_keys_for_received_messages) do |key1|
-      key1.split('-').first
-    end
+    data = reduce_by_mkeys(kv_keys_for_received_messages) { |key1| key1.split('-').first }
     data.map do |mkey, values|
-      video_ids = values.map { |v| JSON.parse(v)['videoId'] }
-      { mkey: mkey, video_ids: video_ids.compact }
+      video_ids = values.map do |v|
+        value = JSON.parse(v)
+        value['type'] == 'video' ? value['messageId'] : value['videoId']
+      end.compact
+      { mkey: mkey, video_ids: video_ids }
     end
   end
 
   def video_status
-    data = reduce_by_mkeys(kv_keys_for_message_status) do |key1|
-      key1.split('-').second
-    end
+    data = reduce_by_mkeys(kv_keys_for_message_status) { |key1| key1.split('-').second }
     data.map do |mkey, values|
-      value = values.last || { 'videoId' => '', 'status' => '' }.to_json
-      decoded = JSON.parse(value)
-      { mkey: mkey, video_id: decoded['videoId'], status: decoded['status'] } unless decoded['type']
+      value = values.last
+      value &&= JSON.parse(value)
+      video_id = status = ''
+      if value
+        video_id, status = [value['videoId'], value['status']] unless value['type']
+        video_id, status = [value['messageId'], value['status']] if value['type'] == 'video'
+      end
+      { mkey: mkey, video_id: video_id, status: status }
     end.compact
   end
 

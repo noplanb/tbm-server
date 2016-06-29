@@ -419,29 +419,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#received_videos' do
-    let(:user) { create(:user) }
-    subject { user.received_videos }
-
-    let!(:friend_1) { create(:established_connection, creator: user).target }
-    let!(:friend_2) { create(:established_connection, creator: user).target }
-    let!(:friend_3) { create(:established_connection, creator: user).target }
-    let!(:video_11) { Kvstore.add_id_key(friend_1, user, gen_video_id).key2 }
-    let!(:video_12) { Kvstore.add_id_key(friend_1, user, gen_video_id).key2 }
-    let!(:video_21) { Kvstore.add_id_key(friend_2, user, gen_video_id).key2 }
-    let!(:video_22) { Kvstore.add_id_key(friend_2, user, gen_video_id).key2 }
-    let!(:video_23) { Kvstore.add_id_key(friend_2, user, gen_video_id).key2 }
-
-    it do
-      expected = [
-        { mkey: friend_1.mkey, video_ids: [video_11, video_12] },
-        { mkey: friend_2.mkey, video_ids: [video_21, video_22, video_23] },
-        { mkey: friend_3.mkey, video_ids: [] }
-      ]
-      is_expected.to match_array(expected)
-    end
-  end
-
   context '#received_messages #received_texts #received_videos' do
     let(:user) { create(:user) }
 
@@ -453,6 +430,7 @@ RSpec.describe User, type: :model do
 
     let!(:message_11) { Kvstore.add_message_id_key('text', friend_1, user, gen_message_id, body: 'Message 11').key2 }
     let!(:message_12) { Kvstore.add_message_id_key('text', friend_1, user, gen_message_id, body: 'Message 12').key2 }
+    let!(:message_13) { Kvstore.add_message_id_key('video', friend_1, user, gen_message_id).key2 }
     let!(:message_21) { Kvstore.add_message_id_key('text', friend_2, user, gen_message_id, body: 'Message 21').key2 }
     let!(:message_22) { Kvstore.add_message_id_key('text', friend_2, user, gen_message_id, body: 'Message 22').key2 }
     let!(:message_23) { Kvstore.add_message_id_key('text', friend_2, user, gen_message_id, body: 'Message 23').key2 }
@@ -465,10 +443,10 @@ RSpec.describe User, type: :model do
 
       it do
         expected = [
-          { mkey: friend_1.mkey, video_ids: [] },
+          { mkey: friend_1.mkey, video_ids: [message_13] },
           { mkey: friend_2.mkey, video_ids: [] },
           { mkey: friend_3.mkey, video_ids: [] },
-          { mkey: friend_4.mkey, video_ids: [message_42, message_43] },
+          { mkey: friend_4.mkey, video_ids: [message_41, message_42, message_43] },
           { mkey: friend_5.mkey, video_ids: [] }
         ]
         is_expected.to match_array(expected)
@@ -483,7 +461,8 @@ RSpec.describe User, type: :model do
           { mkey: friend_1.mkey,
             messages: [
               { type: 'text', message_id: message_11, body: 'Message 11' },
-              { type: 'text', message_id: message_12, body: 'Message 12' }
+              { type: 'text', message_id: message_12, body: 'Message 12' },
+              { type: 'video', message_id: message_13 }
             ] },
           { mkey: friend_2.mkey,
             messages: [
@@ -508,6 +487,21 @@ RSpec.describe User, type: :model do
       subject { user.received_texts }
 
       it do
+
+        {
+          mkey: 'xxxxxxxxxxxx',
+          status: {
+            type: 'text',
+            message_id: message_11,
+            status: 'viewed'
+          },
+          messages: [
+            { type: 'text', message_id: message_11, body: 'Message 11' },
+            { type: 'text', message_id: message_12, body: 'Message 12' },
+            { type: 'video', message_id: message_13 }
+          ]
+        }
+
         expected = [
           { mkey: friend_1.mkey,
             messages: [
@@ -529,20 +523,23 @@ RSpec.describe User, type: :model do
     end
   end
 
-  context '#video_status #messages_statuses' do
+  context '#messages_statuses #video_status' do
     let(:user) { create(:user) }
 
     let!(:friend_1) { create(:established_connection, creator: user).target }
     let!(:friend_2) { create(:established_connection, creator: user).target }
     let!(:friend_3) { create(:established_connection, creator: user).target }
     let!(:friend_4) { create(:established_connection, creator: user).target }
+    let!(:friend_5) { create(:established_connection, creator: user).target }
 
     let!(:message_11) { gen_message_id }
     let!(:message_12) { gen_message_id }
     let!(:message_21) { gen_message_id }
     let!(:message_22) { gen_message_id }
     let!(:message_23) { gen_message_id }
-    let!(:message_31) { gen_message_id }
+    let!(:message_41) { gen_message_id }
+    let!(:message_51) { gen_message_id }
+    let!(:message_52) { gen_message_id }
 
     before do
       Kvstore.add_status_key(user, friend_1, message_11, 'downloaded')
@@ -550,7 +547,9 @@ RSpec.describe User, type: :model do
       Kvstore.add_status_key(user, friend_2, message_21, 'downloaded')
       Kvstore.add_status_key(user, friend_2, message_22, 'viewed')
       Kvstore.add_status_key(user, friend_2, message_23, 'viewed')
-      Kvstore.add_message_status_key('text', user, friend_4, message_31, 'downloaded')
+      Kvstore.add_message_status_key('text', user, friend_4, message_41, 'downloaded')
+      Kvstore.add_message_status_key('text', user, friend_5, message_51, 'viewed')
+      Kvstore.add_message_status_key('video', user, friend_5, message_52, 'viewed')
     end
 
     describe '#video_status' do
@@ -561,6 +560,8 @@ RSpec.describe User, type: :model do
           { mkey: friend_1.mkey, video_id: message_12, status: 'downloaded' },
           { mkey: friend_2.mkey, video_id: message_23, status: 'viewed' },
           { mkey: friend_3.mkey, video_id: '', status: '' },
+          { mkey: friend_4.mkey, video_id: '', status: '' },
+          { mkey: friend_5.mkey, video_id: message_52, status: 'viewed' }
         ]
         is_expected.to match_array(expected)
       end
@@ -574,7 +575,8 @@ RSpec.describe User, type: :model do
           { mkey: friend_1.mkey, message: { type: 'video', message_id: message_12, status: 'downloaded' } },
           { mkey: friend_2.mkey, message: { type: 'video', message_id: message_23, status: 'viewed' } },
           { mkey: friend_3.mkey, message: nil },
-          { mkey: friend_4.mkey, message: { type: 'text', message_id: message_31, status: 'downloaded' } }
+          { mkey: friend_4.mkey, message: { type: 'text', message_id: message_41, status: 'downloaded' } },
+          { mkey: friend_5.mkey, message: { type: 'video', message_id: message_52, status: 'viewed' } }
         ]
         is_expected.to match_array(expected)
       end
