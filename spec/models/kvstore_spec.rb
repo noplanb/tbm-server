@@ -99,9 +99,7 @@ RSpec.describe Kvstore, type: :model do
           key2: video_id, value: { 'videoId' => video_id }.to_json }
       end
 
-      specify do
-        expect { subject }.to change { described_class.count }.by(1)
-      end
+      it { expect { subject }.to change { described_class.count }.by(1) }
 
       context 'event notification' do
         let(:event_params) do
@@ -130,9 +128,7 @@ RSpec.describe Kvstore, type: :model do
           value: { 'messageId' => message_id, 'type' => 'text', 'body' => 'Hello World!' }.to_json }
       end
 
-      specify do
-        expect { subject }.to change { described_class.count }.by(1)
-      end
+      it { expect { subject }.to change { described_class.count }.by(1) }
 
       context 'event notification' do
         let(:event_params) do
@@ -160,9 +156,7 @@ RSpec.describe Kvstore, type: :model do
           key2: nil, value: { 'status' => 'downloaded', 'videoId' => video_id }.to_json }
       end
 
-      specify do
-        expect { subject }.to change { described_class.count }.by(1)
-      end
+      it { expect { subject }.to change { described_class.count }.by(1) }
 
       context 'event notification' do
         let(:event_params) do

@@ -1,6 +1,6 @@
 class Kvstore < ActiveRecord::Base
   SUFFIXES_FOR_EVENTS = %w(VideoIdKVKey VideoStatusKVKey).freeze
-  after_save :trigger_event
+  after_save -> { TriggerEvent.new(self).call }
 
   def self.create_or_update(params)
     if params[:key2].blank?
@@ -88,11 +88,5 @@ class Kvstore < ActiveRecord::Base
     connection = Connection.live_between(sender.id, receiver.id).first
     fail "No connection found between #{sender.name} and #{receiver.name}" if connection.nil?
     "#{sender.mkey}-#{receiver.mkey}-#{digest(connection.ckey + video_id)}"
-  end
-
-  private
-
-  def trigger_event
-    TriggerEvent.new(self).call
   end
 end

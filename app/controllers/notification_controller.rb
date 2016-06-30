@@ -9,13 +9,13 @@ class NotificationController < ApplicationController
   end
 
   def send_video_received
-    instance = Notification::VideoReceived.new(@push_user, request.host, current_user)
+    instance = Notification::SendMessage.new(@push_user, request.host, current_user)
     instance.process(params, params[:from_mkey], params[:sender_name], params[:video_id])
     render json: { status: '200' }
   end
 
   def send_video_status_update
-    instance = Notification::VideoStatusUpdated.new(@push_user, request.host)
+    instance = Notification::SendMessageStatus.new(@push_user, request.host)
     instance.process(params)
     render json: { status: '200' }
   end
@@ -29,9 +29,9 @@ class NotificationController < ApplicationController
   def find_target_push_user
     @push_user = params[:target_mkey] && PushUser.find_by_mkey(params[:target_mkey])
     if @push_user.nil?
-      msg = "No PushUser found for mkey: #{params[:target_mkey]}"
-      logger.info(msg)
-      render json: { status: '404', title: 'Not found', msg: "No PushUser found for mkey: #{params[:target_mkey]}" }, status: :not_found
+      message = "No PushUser found for mkey: #{params[:target_mkey]}"
+      logger.info(message)
+      render json: { status: '404', title: 'Not found', message: message }, status: :not_found
     end
   end
 end

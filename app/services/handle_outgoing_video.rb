@@ -45,7 +45,7 @@ class HandleOutgoingVideo
       from_mkey: sender_user.mkey,
       sender_name: sender_user.name,
       video_id: s3_metadata.video_id }
-    instance = Notification::VideoReceived.new(receiver_push_user, Figaro.env.domain_name, sender_user)
+    instance = Notification::SendMessage.new(receiver_push_user, Figaro.env.domain_name, sender_user)
     instance.process(params, params[:from_mkey], params[:sender_name], params[:video_id])
   end
 

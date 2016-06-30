@@ -19,7 +19,7 @@ RSpec.describe HandleOutgoingVideo do
     end
 
     it 'notification case', metadata do
-      expect_any_instance_of(Notification::VideoReceived).send action.call(:notification), receive(:process)
+      expect_any_instance_of(Notification::SendMessage).send action.call(:notification), receive(:process)
       subject
     end
 
@@ -37,12 +37,12 @@ RSpec.describe HandleOutgoingVideo do
   end
 
   def stub_kvstore
-    allow_any_instance_of(Kvstore).to receive(:trigger_event).and_return true
+    allow_any_instance_of(Kvstore::TriggerEvent).to receive(:call).and_return(true)
   end
 
   describe '#do' do
     let(:errors_messages) do
-      HandleOutgoingVideo::StatusNotifier.new(instance).send :errors_messages
+      HandleOutgoingVideo::StatusNotifier.new(instance).send(:errors_messages)
     end
 
     subject do
