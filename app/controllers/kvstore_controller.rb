@@ -1,7 +1,7 @@
 class KvstoreController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authenticate
-  before_action :set_service, only: %i(messages received_messages received_texts messages_statuses received_videos video_status)
+  before_action :set_service, only: %i(received_videos video_status messages)
 
   def set
     Kvstore.create_or_update(kvstore_params)
@@ -14,13 +14,13 @@ class KvstoreController < ApplicationController
 
   def get_all
     kvs = get_kvs
-    logger.info "#{params[:key1]} count = #{kvs.length}"
+    logger.info("#{params[:key1]} count = #{kvs.length}")
     render json: get_kvs
   end
 
   def delete
     kvs = get_kvs
-    logger.info "deleting #{kvs.length} kvs"
+    logger.info("deleting #{kvs.length} kvs")
     kvs.destroy_all
     render json: { status: '200' }
   end
@@ -29,16 +29,8 @@ class KvstoreController < ApplicationController
   # new API
   #
 
-  def received_messages
-    render json: @service.legacy(:received_messages)
-  end
-
-  def received_texts
-    render json: @service.legacy(:received_texts)
-  end
-
-  def messages_statuses
-    render json: @service.legacy(:messages_statuses)
+  def messages
+    render json: @service.call(filter: params[:filter])
   end
 
   #

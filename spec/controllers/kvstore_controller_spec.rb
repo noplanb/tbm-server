@@ -57,7 +57,7 @@ RSpec.describe KvstoreController, type: :controller do
     end
   end
 
-  %i(received_videos received_messages received_texts video_status).each do |action|
+  %i(received_videos video_status messages).each do |action|
     describe "GET ##{action}" do
       it 'responds with success when authenticated' do
         authenticate_user { get action }

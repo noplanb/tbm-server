@@ -1,5 +1,5 @@
 class Kvstore::GetMessages
-  LEGACY_METHODS = %i(received_videos video_status received_messages received_texts messages_statuses)
+  LEGACY_METHODS = %i(received_videos video_status)
 
   attr_reader :user
 
@@ -8,7 +8,14 @@ class Kvstore::GetMessages
   end
 
   def call(filter: nil)
-
+    data_messages = reduce_by_mkeys(kv_keys_for_received_messages) { |key1| key1.split('-').first }
+    data_statuses = reduce_by_mkeys(kv_keys_for_message_status) { |key1| key1.split('-').second }
+    mkeys = (data_messages.keys + data_statuses.keys).uniq
+    mkeys.map do |mkey|
+      { mkey: mkey,
+        messages: data_messages[mkey].map { |v| build_message_by_value(v) },
+        statuses: [build_status_by_value(data_statuses[mkey].last)].compact }
+    end
   end
 
   def legacy(method)
@@ -17,6 +24,10 @@ class Kvstore::GetMessages
   end
 
   private
+
+  #
+  # legacy methods
+  #
 
   def received_videos
     data = reduce_by_mkeys(kv_keys_for_received_messages) { |key1| key1.split('-').first }
@@ -40,39 +51,6 @@ class Kvstore::GetMessages
         video_id, status = [value['messageId'], value['status']] if value['type'] == 'video'
       end
       { mkey: mkey, video_id: video_id, status: status }
-    end
-  end
-
-  def received_messages
-    data = reduce_by_mkeys(kv_keys_for_received_messages) { |key1| key1.split('-').first }
-    data.map do |mkey, values|
-      messages = values.map do |v|
-        value = JSON.parse(v)
-        if value['type']
-          rest = value.except('type', 'messageId').symbolize_keys
-          { type: value['type'], message_id: value['messageId'] }.merge(rest)
-        else
-          { type: 'video', message_id: value['videoId'] }
-        end
-      end
-      { mkey: mkey, messages: messages }
-    end
-  end
-
-  def received_texts
-    filter_received_messages('text')
-  end
-
-  def messages_statuses
-    data = reduce_by_mkeys(kv_keys_for_message_status) { |key1| key1.split('-').second }
-    data.map do |mkey, values|
-      value = values.last
-      value &&= JSON.parse(value)
-      message = value && {
-        type: value['type'] || 'video',
-        message_id: value['messageId'] || value['videoId'],
-        status: value['status'] }
-      { mkey: mkey, message: message }
     end
   end
 
@@ -107,9 +85,20 @@ class Kvstore::GetMessages
     Kvstore.where(key1: kv_keys).group(:key1, :value).count
   end
 
-  def filter_received_messages(type)
-    received_messages.each do |row|
-      row[:messages].select! { |m| m[:type] == type }
+  def build_message_by_value(value)
+    value = JSON.parse(value)
+    if value['type']
+      rest = value.except('type', 'messageId').symbolize_keys
+      { type: value['type'], message_id: value['messageId'] }.merge(rest)
+    else
+      { type: 'video', message_id: value['videoId'] }
     end
+  end
+
+  def build_status_by_value(value)
+    value &&= JSON.parse(value)
+    { type: value['type'] || 'video',
+      message_id: value['messageId'] || value['videoId'],
+      status: value['status'] } if value
   end
 end

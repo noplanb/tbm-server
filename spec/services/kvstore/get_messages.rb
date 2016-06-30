@@ -33,6 +33,47 @@ RSpec.describe Kvstore::GetMessages do
     Kvstore.add_message_status_key('video', user, friend_5, message_52, 'viewed')
   end
 
+  describe '#call' do
+    subject { instance.call(filter: filter) }
+
+    context 'all messages' do
+      let(:filter) { nil }
+
+      it do
+        expected = [
+          { mkey: friend_1.mkey,
+            statuses: [{ type: 'video', message_id: message_12, status: 'downloaded' }],
+            messages: [
+              { type: 'text', message_id: message_11, body: 'Message 11' },
+              { type: 'text', message_id: message_12, body: 'Message 12' },
+              { type: 'video', message_id: message_13 }
+            ] },
+          { mkey: friend_2.mkey,
+            statuses: [{ type: 'video', message_id: message_23, status: 'viewed' }],
+            messages: [
+              { type: 'text', message_id: message_21, body: 'Message 21' },
+              { type: 'text', message_id: message_22, body: 'Message 22' },
+              { type: 'text', message_id: message_23, body: 'Message 23' }
+            ] },
+          { mkey: friend_3.mkey,
+            statuses: [],
+            messages: [] },
+          { mkey: friend_4.mkey,
+            statuses: [{ type: 'text', message_id: message_41, status: 'downloaded' }],
+            messages: [
+              { type: 'video', message_id: message_41 },
+              { type: 'video', message_id: message_42 },
+              { type: 'video', message_id: message_43 }
+            ] },
+          { mkey: friend_5.mkey,
+            statuses: [{ type: 'video', message_id: message_52, status: 'viewed' }],
+            messages: [] }
+        ]
+        is_expected.to match_array(expected)
+      end
+    end
+  end
+
   context 'legacy methods' do
     describe '#received_videos' do
       it do
@@ -47,57 +88,6 @@ RSpec.describe Kvstore::GetMessages do
       end
     end
 
-    describe '#received_messages' do
-      it do
-        expected = [
-          { mkey: friend_1.mkey,
-            messages: [
-              { type: 'text', message_id: message_11, body: 'Message 11' },
-              { type: 'text', message_id: message_12, body: 'Message 12' },
-              { type: 'video', message_id: message_13 }
-            ]
-          },
-          { mkey: friend_2.mkey,
-            messages: [
-              { type: 'text', message_id: message_21, body: 'Message 21' },
-              { type: 'text', message_id: message_22, body: 'Message 22' },
-              { type: 'text', message_id: message_23, body: 'Message 23' }
-            ] },
-          { mkey: friend_3.mkey, messages: [] },
-          { mkey: friend_4.mkey,
-            messages: [
-              { type: 'video', message_id: message_41 },
-              { type: 'video', message_id: message_42 },
-              { type: 'video', message_id: message_43 }
-            ] },
-          { mkey: friend_5.mkey, messages: [] }
-        ]
-        expect(instance.legacy(:received_messages)).to match_array(expected)
-      end
-    end
-
-    describe '#received_texts' do
-      it do
-        expected = [
-          { mkey: friend_1.mkey,
-            messages: [
-              { type: 'text', message_id: message_11, body: 'Message 11' },
-              { type: 'text', message_id: message_12, body: 'Message 12' }
-            ] },
-          { mkey: friend_2.mkey,
-            messages: [
-              { type: 'text', message_id: message_21, body: 'Message 21' },
-              { type: 'text', message_id: message_22, body: 'Message 22' },
-              { type: 'text', message_id: message_23, body: 'Message 23' }
-            ] },
-          { mkey: friend_3.mkey, messages: [] },
-          { mkey: friend_4.mkey, messages: [] },
-          { mkey: friend_5.mkey, messages: [] }
-        ]
-        expect(instance.legacy(:received_texts)).to match_array(expected)
-      end
-    end
-
     describe '#video_status' do
       it do
         expected = [
@@ -108,19 +98,6 @@ RSpec.describe Kvstore::GetMessages do
           { mkey: friend_5.mkey, video_id: message_52, status: 'viewed' }
         ]
         expect(instance.legacy(:video_status)).to match_array(expected)
-      end
-    end
-
-    describe '#messages_statuses' do
-      it do
-        expected = [
-          { mkey: friend_1.mkey, message: { type: 'video', message_id: message_12, status: 'downloaded' } },
-          { mkey: friend_2.mkey, message: { type: 'video', message_id: message_23, status: 'viewed' } },
-          { mkey: friend_3.mkey, message: nil },
-          { mkey: friend_4.mkey, message: { type: 'text', message_id: message_41, status: 'downloaded' } },
-          { mkey: friend_5.mkey, message: { type: 'video', message_id: message_52, status: 'viewed' } }
-        ]
-        expect(instance.legacy(:messages_statuses)).to match_array(expected)
       end
     end
   end
