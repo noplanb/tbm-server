@@ -1,4 +1,23 @@
-module User::KvstoreMethods
+class Kvstore::GetMessages
+  LEGACY_METHODS = %i(received_videos video_status received_messages received_texts messages_statuses)
+
+  attr_reader :user
+
+  def initialize(user:)
+    @user = user
+  end
+
+  def call(filter: nil)
+
+  end
+
+  def legacy(method)
+    raise ArgumentError, 'method is not allowed' unless LEGACY_METHODS.include?(method)
+    send(method)
+  end
+
+  private
+
   def received_videos
     data = reduce_by_mkeys(kv_keys_for_received_messages) { |key1| key1.split('-').first }
     data.map do |mkey, values|
@@ -21,7 +40,7 @@ module User::KvstoreMethods
         video_id, status = [value['messageId'], value['status']] if value['type'] == 'video'
       end
       { mkey: mkey, video_id: video_id, status: status }
-    end.compact
+    end
   end
 
   def received_messages
@@ -57,23 +76,25 @@ module User::KvstoreMethods
     end
   end
 
-  private
+  #
+  # helper methods
+  #
 
   def kv_keys_for_received_messages
-    live_connections.map do |connection|
-      Kvstore.generate_id_key(connected_user_mkey(connection), self, connection)
+    user.live_connections.map do |connection|
+      Kvstore.generate_id_key(user.send(:connected_user_mkey, connection), user, connection)
     end
   end
 
   def kv_keys_for_message_status
-    live_connections.map do |connection|
-      Kvstore.generate_status_key(self, connected_user_mkey(connection), connection)
+    user.live_connections.map do |connection|
+      Kvstore.generate_status_key(user, user.send(:connected_user_mkey, connection), connection)
     end
   end
 
   def reduce_by_mkeys(kv_keys)
     data = find_user_kv_records(kv_keys)
-    hash = Hash[connected_users_cache.map { |_, mkey| [mkey, []] }]
+    hash = Hash[user.send(:connected_users_cache).map { |_, mkey| [mkey, []] }]
     data.each_with_object(hash) do |(item, _), result|
       key1, value = item
       mkey = yield(key1) # block to extract +mkey+ from +key1+ value

@@ -1,6 +1,7 @@
 class KvstoreController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authenticate
+  before_action :set_service, only: %i(messages received_messages received_texts messages_statuses received_videos video_status)
 
   def set
     Kvstore.create_or_update(kvstore_params)
@@ -29,15 +30,15 @@ class KvstoreController < ApplicationController
   #
 
   def received_messages
-    render json: current_user.received_messages
+    render json: @service.legacy(:received_messages)
   end
 
   def received_texts
-    render json: current_user.received_texts
+    render json: @service.legacy(:received_texts)
   end
 
   def messages_statuses
-    render json: current_user.messages_statuses
+    render json: @service.legacy(:messages_statuses)
   end
 
   #
@@ -45,11 +46,11 @@ class KvstoreController < ApplicationController
   #
 
   def received_videos
-    render json: current_user.received_videos
+    render json: @service.legacy(:received_videos)
   end
 
   def video_status
-    render json: current_user.video_status
+    render json: @service.legacy(:video_status)
   end
 
   private
@@ -57,6 +58,10 @@ class KvstoreController < ApplicationController
   def get_kvs
     return Kvstore.where('key1 = ?', params[:key1]) if params[:key2].blank?
     Kvstore.where('key1 = ? and key2 = ?', params[:key1], params[:key2])
+  end
+
+  def set_service
+    @service = Kvstore::GetMessages.new(user: current_user)
   end
 
   def kvstore_params
