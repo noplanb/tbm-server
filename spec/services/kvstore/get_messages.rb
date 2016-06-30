@@ -72,6 +72,73 @@ RSpec.describe Kvstore::GetMessages do
         is_expected.to match_array(expected)
       end
     end
+
+    xcontext 'video messages' do
+      let(:filter) { 'video' }
+
+      it do
+        expected = [
+          { mkey: friend_1.mkey,
+            statuses: [{ type: 'video', message_id: message_12, status: 'downloaded' }],
+            messages: [
+              { type: 'video', message_id: message_13 }
+            ] },
+          { mkey: friend_2.mkey,
+            statuses: [{ type: 'video', message_id: message_23, status: 'viewed' }],
+            messages: [] },
+          { mkey: friend_3.mkey,
+            statuses: [],
+            messages: [] },
+          { mkey: friend_4.mkey,
+            statuses: [],
+            messages: [
+              { type: 'video', message_id: message_41 },
+              { type: 'video', message_id: message_42 },
+              { type: 'video', message_id: message_43 }
+            ] },
+          { mkey: friend_5.mkey,
+            statuses: [{ type: 'video', message_id: message_52, status: 'viewed' }],
+            messages: [] }
+        ]
+        is_expected.to match_array(expected)
+      end
+    end
+
+    xcontext 'text messages' do
+      let(:filter) { 'text' }
+
+      it do
+        expected = [
+          { mkey: friend_1.mkey,
+            statuses: [],
+            messages: [
+              { type: 'text', message_id: message_11, body: 'Message 11' },
+              { type: 'text', message_id: message_12, body: 'Message 12' }
+            ] },
+          { mkey: friend_2.mkey,
+            statuses: [{ type: 'video', message_id: message_23, status: 'viewed' }],
+            messages: [
+              { type: 'text', message_id: message_21, body: 'Message 21' },
+              { type: 'text', message_id: message_22, body: 'Message 22' },
+              { type: 'text', message_id: message_23, body: 'Message 23' }
+            ] },
+          { mkey: friend_3.mkey,
+            statuses: [],
+            messages: [] },
+          { mkey: friend_4.mkey,
+            statuses: [{ type: 'text', message_id: message_41, status: 'downloaded' }],
+            messages: [
+              { type: 'video', message_id: message_41 },
+              { type: 'video', message_id: message_42 },
+              { type: 'video', message_id: message_43 }
+            ] },
+          { mkey: friend_5.mkey,
+            statuses: [{ type: 'video', message_id: message_52, status: 'viewed' }],
+            messages: [] }
+        ]
+        is_expected.to match_array(expected)
+      end
+    end
   end
 
   context 'legacy methods' do

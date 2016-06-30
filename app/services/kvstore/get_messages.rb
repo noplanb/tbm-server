@@ -7,6 +7,7 @@ class Kvstore::GetMessages
     @user = user
   end
 
+  # filtering is not implemented yet
   def call(filter: nil)
     data_messages = reduce_by_mkeys(kv_keys_for_received_messages) { |key1| key1.split('-').first }
     data_statuses = reduce_by_mkeys(kv_keys_for_message_status) { |key1| key1.split('-').second }

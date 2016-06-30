@@ -30,7 +30,7 @@ class KvstoreController < ApplicationController
   #
 
   def messages
-    render json: @service.call(filter: params[:filter])
+    render json: @service.call
   end
 
   #
