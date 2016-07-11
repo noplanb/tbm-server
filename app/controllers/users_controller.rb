@@ -87,29 +87,29 @@ class UsersController < AdminController
     end
   end
 
-  # Send test_video
+  # send test video
 
   def receive_test_video
-    file = Rails.root.join "#{params[:file] ? params[:file] : 'test_video_sani'}.mp4"
+    file = Rails.root.join("#{params[:file] ? params[:file] : 'test_video_sani'}.mp4")
     if file.exist?
-      receive_video file
+      receive_video(file)
     else
       redirect_to @user, alert: 'Video file not found'
     end
   end
 
   def receive_corrupt_video
-    receive_video Rails.root.join('app/assets/images/orange-background.jpg')
+    receive_video(Rails.root.join('app/assets/images/orange-background.jpg'))
   end
 
   def receive_permanent_error_video
-    receive_video nil, without_s3_upload: true
+    receive_video(nil, without_s3_upload: true)
   end
 
   private
 
   def receive_video(file_name, options = {})
-    sender = User.find params[:sender_id]
+    sender = User.find(params[:sender_id])
     video_id = options[:without_s3_upload] ? test_video_id : create_test_video(sender, @user, file_name)
     Kvstore.add_id_key(sender, @user, video_id)
     @push_user = PushUser.find_by_mkey(@user.mkey) || not_found
