@@ -1,5 +1,8 @@
 # Changelog
 
+### next release
+- :arrow_up: Added new long test video
+
 ### v2.10.4
 - :hammer: Add new APNS certs
 
