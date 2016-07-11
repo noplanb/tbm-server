@@ -1,3 +1,7 @@
+#
+# handle S3 upload events
+#
+
 class Api::V1::EventsController < ActionController::Base
   before_action :log_params
 

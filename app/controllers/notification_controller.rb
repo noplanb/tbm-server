@@ -27,7 +27,7 @@ class NotificationController < ApplicationController
   end
 
   def find_target_push_user
-    @push_user = params[:target_mkey] && PushUser.find_by_mkey(params[:target_mkey])
+    @push_user = PushUser.find_by_mkey(params[:target_mkey])
     if @push_user.nil?
       message = "No PushUser found for mkey: #{params[:target_mkey]}"
       logger.info(message)
