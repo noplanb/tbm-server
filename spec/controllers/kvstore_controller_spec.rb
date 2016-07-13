@@ -1,15 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe KvstoreController, type: :controller do
+  include_context 'user authentication'
+
   let(:user) { create(:user) }
   let(:message_id) { '1426622544176' }
   let(:connection) { create(:established_connection) }
   let(:sender) { connection.creator }
   let(:receiver) { connection.target }
 
-  def authenticate_user
-    authenticate_with_http_digest(user.mkey, user.auth) { yield }
-  end
 
   describe 'POST #set' do
     let(:video_message_params) do
@@ -57,7 +56,7 @@ RSpec.describe KvstoreController, type: :controller do
     end
   end
 
-  %i(received_videos video_status messages).each do |action|
+  %i(received_videos video_status).each do |action|
     describe "GET ##{action}" do
       it 'responds with success when authenticated' do
         authenticate_user { get action }

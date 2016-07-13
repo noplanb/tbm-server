@@ -1,11 +1,5 @@
-class Kvstore::GetMessages
+class Kvstore::GetMessages < Struct.new(:user)
   LEGACY_METHODS = %i(received_videos video_status)
-
-  attr_reader :user
-
-  def initialize(user:)
-    @user = user
-  end
 
   # filtering is not implemented yet
   def call(filter: nil)

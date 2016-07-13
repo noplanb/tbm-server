@@ -1,19 +1,26 @@
-class Api::V1::MessagesController < ApplicationController
-  before_action :authenticate
-
+class Api::V1::MessagesController < ApiController
   def index
-    render json: Kvstore::GetMessages.new(user: current_user).call
+    handle_interactor(:render,
+      Messages::Index.run(user: current_user))
+  end
+
+  def show
+    handle_interactor(:render,
+      Messages::Show.run(user: current_user, id: params[:id]))
   end
 
   def create
-    Kvstore::AddMessage.new
+    handle_interactor([:render, result: false],
+      Messages::Create.run(params.merge(user: current_user)))
   end
 
   def update
-    Kvstore::UpdateMessageStatus.new
+    handle_interactor([:render, result: false],
+      Messages::Update.run(user: current_user, id: params[:id], status: params[:status]))
   end
 
   def delete
-    Kvstore::UpdateMessageStatus.new
+    handle_interactor([:render, result: false],
+      Messages::Delete.run(user: current_user, id: params[:id]))
   end
 end

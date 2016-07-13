@@ -1,4 +1,3 @@
-# spec/support/digest_auth_helpers.rb
 module DigestAuthHelpers
   def authenticate_with_http_digest(user, password, &request_trigger)
     request.env['HTTP_AUTHORIZATION'] = encode_credentials(user, password, &request_trigger)

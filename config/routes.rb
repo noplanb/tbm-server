@@ -15,6 +15,7 @@ ThreebymeServer::Application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :events, only: [:create]
+      resources :messages, except: [:new, :edit]
     end
   end
 
