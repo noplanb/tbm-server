@@ -9,7 +9,6 @@ RSpec.describe KvstoreController, type: :controller do
   let(:sender) { connection.creator }
   let(:receiver) { connection.target }
 
-
   describe 'POST #set' do
     let(:video_message_params) do
       { key1: Kvstore.generate_id_key(sender, receiver, connection),

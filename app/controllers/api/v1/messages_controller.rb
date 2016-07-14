@@ -11,7 +11,8 @@ class Api::V1::MessagesController < ApiController
 
   def create
     handle_interactor([:render, result: false],
-      Messages::Create.run(params.merge(user: current_user)))
+      Messages::Create.run(user: current_user, id: params[:id],
+                           receiver_mkey: params[:receiver], value: params[:value]))
   end
 
   def update
