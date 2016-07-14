@@ -44,7 +44,7 @@ class Controllers::HandleApiInteractor
   def prepare_data_by_failure_case
     @response = {
       status: :unprocessable_entity,
-      json: { status: :failure, errors: interactor.errors.messages }
+      json: { status: :failure, errors: interactor.errors.full_messages }
     }
   end
 

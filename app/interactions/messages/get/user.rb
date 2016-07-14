@@ -1,9 +1,9 @@
-class Messages::SetUser < ActiveInteraction::Base
+class Messages::Get::User < ActiveInteraction::Base
   string :mkey
   symbol :relation
 
   def execute
-    user = User.find_by_mkey(mkey)
+    user = ::User.find_by_mkey(mkey)
     validate_user_presence(user)
     user
   end

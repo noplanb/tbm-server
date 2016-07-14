@@ -8,4 +8,8 @@ class ApiController < ApplicationController
       handler.render? ? render(handler.response) : handler.result
     end
   end
+
+  def interactor_params(*keys)
+    params.slice(*keys).merge(user: current_user)
+  end
 end
