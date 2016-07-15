@@ -5,6 +5,10 @@ RSpec.shared_context 'user prepared messages' do
   let!(:friend_4) { create(:established_connection, creator: user).target }
   let!(:friend_5) { create(:established_connection, creator: user).target }
 
+  #
+  # messages from user
+  #
+
   let!(:message_11) { Kvstore.add_message_id_key('text', friend_1, user, gen_message_id, body: 'Message 11').key2 }
   let!(:message_12) { Kvstore.add_message_id_key('text', friend_1, user, gen_message_id, body: 'Message 12').key2 }
   let!(:message_13) { Kvstore.add_message_id_key('video', friend_1, user, gen_message_id).key2 }
@@ -16,6 +20,15 @@ RSpec.shared_context 'user prepared messages' do
   let!(:message_43) { Kvstore.add_id_key(friend_4, user, gen_message_id).key2 }
   let!(:message_51) { gen_message_id }
   let!(:message_52) { gen_message_id }
+
+  #
+  # messages to user
+  #
+
+  let!(:message_11r) { Kvstore.add_message_id_key('text', user, friend_1, gen_message_id, body: 'Message 11').key2 }
+  let!(:message_12r) { Kvstore.add_message_id_key('text', user, friend_1, gen_message_id, body: 'Message 12').key2 }
+  let!(:message_21r) { Kvstore.add_message_id_key('text', user, friend_2, gen_message_id, body: 'Message 21').key2 }
+  let!(:message_22r) { Kvstore.add_message_id_key('video', user, friend_2, gen_message_id).key2 }
 
   before do
     Kvstore.add_status_key(user, friend_1, message_11, 'downloaded')
