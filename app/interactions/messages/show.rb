@@ -3,6 +3,7 @@ class Messages::Show < ActiveInteraction::Base
   string :id
 
   def execute
-    {}
+    message = compose(Messages::Get::Message, inputs)
+    JSON.parse(message.value).except('videoId', 'messageId')
   end
 end

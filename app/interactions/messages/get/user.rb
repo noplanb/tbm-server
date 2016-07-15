@@ -4,13 +4,15 @@ class Messages::Get::User < ActiveInteraction::Base
 
   def execute
     user = ::User.find_by_mkey(mkey)
-    validate_user_presence(user)
+    validate_presence(user)
     user
   end
 
   private
 
-  def validate_user_presence(user)
-    errors.add(relation.to_sym, "not found by mkey=#{mkey}") unless user
+  def validate_presence(user)
+    return true if user
+    errors.add(relation.to_sym, "not found by mkey=#{mkey}")
+    false
   end
 end

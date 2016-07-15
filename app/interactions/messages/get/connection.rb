@@ -4,13 +4,15 @@ class Messages::Get::Connection < ActiveInteraction::Base
 
   def execute
     connection = ::Connection.between(user_1.id, user_2.id).first
-    validate_connection_presence(connection)
+    validate_presence(connection)
     connection
   end
 
   private
 
-  def validate_connection_presence(connection)
-    errors.add(:connection, 'not found between users') unless connection
+  def validate_presence(connection)
+    return true if connection
+    errors.add(:connection, 'not found between users')
+    false
   end
 end
