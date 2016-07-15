@@ -19,8 +19,8 @@ class Api::V1::MessagesController < ApiController
       Messages::Update.run(interactor_params(:id, :sender_mkey, :type, :status)))
   end
 
-  def delete
+  def destroy
     handle_interactor([:render, result: false],
-      Messages::Delete.run(interactor_params(:id)))
+      Messages::Destroy.run(interactor_params(:id)))
   end
 end
