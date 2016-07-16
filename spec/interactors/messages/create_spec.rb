@@ -22,6 +22,7 @@ RSpec.describe Messages::Create do
 
     context 'when kvstore record is not exist' do
       it { expect { subject }.to change { Kvstore.count }.by(1) }
+      it { expect(subject.valid?).to be_truthy }
       it_kvstore_item_value
     end
 
@@ -29,6 +30,7 @@ RSpec.describe Messages::Create do
       before { described_class.run(default_params.merge(type: 'video')) }
 
       it { expect { subject }.to change { Kvstore.count }.by(0) }
+      it { expect(subject.valid?).to be_truthy }
       it_kvstore_item_value
     end
   end

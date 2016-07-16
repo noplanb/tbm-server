@@ -12,7 +12,7 @@ RSpec.describe Messages::Get::Message do
   describe '.run' do
     subject { described_class.run(default_params) }
 
-    it { expect(subject.valid?).to be(true) }
+    it { expect(subject.valid?).to be_truthy }
     it { expect(subject.result).to eq(message) }
   end
 
