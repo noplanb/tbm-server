@@ -2,8 +2,8 @@
 
 ### next release
 - :bulb: Added ability to receive text messages via kvstore/set
-- :bulb: Implemented new API routes: `kvstore/received_messages`, `kvstore/received_texts`, `kvstore/messages_statuses`
 - :bulb: Changed setup for productive development
+- :arrow_up: Implemented rack middleware to serve static docs files with basic auth
 - :hammer: Refactored code
 
 ### v2.10.4
