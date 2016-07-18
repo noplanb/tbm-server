@@ -6,7 +6,115 @@ HOST: http://zazoapp.com
 ## Authentication
 
 Authentication - **HTTP Digest** with `mkey` and `auth` as username and password.
-In *development* environment authentication method is **HTTP Basic** with same parameters (like in this document).
+
+## Group Messages
+
+### Get Messages [GET /api/v1/messages]
+
+Get all incoming messages and statuses for all outcoming messages.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "success",
+                "data": [
+                    {
+                        "mkey": "FaGUU1xx60N2cOufnV1v",
+                        "messages": [
+                            {
+                                "type": "text",
+                                "message_id": "123456789100",
+                                "body": "hello!"
+                            }
+                        ],
+                        "statuses": []
+                    }
+                ]
+            }
+
+### Create Message [POST /api/v1/messages]
+
+Add message (**VideoIdKVKey** kvstore record) from sender.
+
++ Parameters
+
+    + id (required, string) - id of message to create
+    + receiver_mkey (required, string) - mkey of receiver user
+    + type (required, string) - type of message
+        + Members
+            + `video`
+            + `text`
+    + body (string, optional) - body of text message
+    + transcription (string, optional) - transcription of video message
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "id": "123456789100",
+                "receiver_mkey": "GBAHb0482YxlJ0kYwbIS",
+                "type": "text",
+                "body": "hello!"
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "success"
+            }
+
+### Update Message Status [PATCH /api/v1/messages/{id}]
+
+Update message status (**VideoStatusKVKey** kvstore record) by message id from receiver.
+
++ Parameters
+
+    + id (required) - id of message
+    + sender_mkey (required, string) - mkey of sender user
+    + type (required, string) - type of message
+        + Members
+            + `video`
+            + `text`
+    + status (required, string) - status of message
+        + Members
+            + `uploaded`
+            + `downloaded`
+            + `viewed`
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "sender_mkey": "FaGUU1xx60N2cOufnV1v",
+                "type": "text",
+                "status": "uploaded"
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {"status":"success"}
 
 ## Group Landing
 
