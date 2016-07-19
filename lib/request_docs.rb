@@ -8,7 +8,8 @@ class RequestDocs
   end
 
   def call(env)
-    if env['PATH_INFO'] =~ /#{Regexp.new(DOCS_FOLDER)}\/.*+/
+    req = Rack::Request.new(env)
+    if req.get? && req.path_info.chomp('/') =~ /#{Regexp.new(DOCS_FOLDER)}\/.*+/
       basic_auth_app(static_app(@app)).call(env)
     else
       @app.call(env)
