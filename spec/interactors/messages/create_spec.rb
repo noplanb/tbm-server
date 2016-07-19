@@ -9,7 +9,8 @@ RSpec.describe Messages::Create do
   end
 
   describe '.run' do
-    def self.it_kvstore_item_value
+    def self.shared_context_specs
+      it { expect(subject.valid?).to be_truthy }
       it do
         subject
         expected = {
@@ -22,16 +23,14 @@ RSpec.describe Messages::Create do
 
     context 'when kvstore record is not exist' do
       it { expect { subject }.to change { Kvstore.count }.by(1) }
-      it { expect(subject.valid?).to be_truthy }
-      it_kvstore_item_value
+      shared_context_specs
     end
 
     context 'when kvstore record is already exist' do
       before { described_class.run(default_params.merge(type: 'video')) }
 
       it { expect { subject }.to change { Kvstore.count }.by(0) }
-      it { expect(subject.valid?).to be_truthy }
-      it_kvstore_item_value
+      shared_context_specs
     end
   end
 end
