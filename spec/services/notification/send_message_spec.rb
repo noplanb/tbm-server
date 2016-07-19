@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Notification::VideoStatusUpdated, type: :service do
+RSpec.describe Notification::SendMessage, type: :service do
   let(:video_id) { (Time.now.to_f * 1000).to_i.to_s }
   let(:sender) { create(:android_user) }
   let(:receiver) { create(:ios_user) }
@@ -18,27 +18,29 @@ RSpec.describe Notification::VideoStatusUpdated, type: :service do
   let(:video_filename) { Kvstore.video_filename(sender, receiver, video_id) }
   let(:push_user) { create(:push_user, push_user_params) }
   let(:host) { 'test.host' }
-  let(:instance) { described_class.new(push_user, host) }
+  let(:current_user) { receiver }
+  let(:instance) { described_class.new(push_user, host, current_user) }
 
   before { create(:established_connection, creator: sender, target: receiver) }
 
   describe '#process' do
-    let(:user) { sender }
+    let(:user) { receiver }
     let(:params) do
-      push_user_params.merge(to_mkey: receiver.mkey,
+      push_user_params.merge(from_mkey: sender.mkey,
                              target_mkey: target.mkey,
-                             video_id: video_id,
-                             status: 'viewed')
+                             sender_name: sender.first_name,
+                             video_id: video_id)
     end
     let(:attributes) do
-      { type: :silent,
-        payload: { type: 'video_status_update',
-                   to_mkey: params[:to_mkey],
-                   status: params[:status],
+      { type: :alert,
+        alert: "New message from #{params[:sender_name]}",
+        badge: 1,
+        payload: { type: 'video_received',
+                   from_mkey: params[:from_mkey],
                    video_id: params[:video_id],
-                   host: host } }
+                   host: 'test.host' } }
     end
-    subject { instance.process(params) }
+    subject { instance.process(params, sender.mkey, sender.first_name, video_id) }
 
     it 'expects any instance of PushUser receives :send_notification with valid attributes' do
       expect_any_instance_of(PushUser).to receive(:send_notification).with(attributes)
@@ -52,9 +54,9 @@ RSpec.describe Notification::VideoStatusUpdated, type: :service do
           target: 'video',
           target_id: video_filename,
           data: {
-            sender_id: params[:target_mkey],
+            sender_id: params[:from_mkey],
             sender_platform: sender.device_platform,
-            receiver_id: params[:to_mkey],
+            receiver_id: params[:target_mkey],
             receiver_platform: receiver.device_platform,
             video_filename: video_filename,
             video_id: video_id
@@ -64,19 +66,18 @@ RSpec.describe Notification::VideoStatusUpdated, type: :service do
 
       subject do
         allow(GenericPushNotification).to receive(:send_notification)
-        instance.process(params)
+        instance.process(params, sender.mkey, sender.first_name, video_id)
       end
-      it_behaves_like 'event dispatchable', %w(video notification viewed)
+      it_behaves_like 'event dispatchable', %w(video notification received)
     end
 
     context 'Android' do
-      let(:sender) { create(:android_user) }
+      let(:receiver) { create(:android_user) }
       let(:payload) do
         GcmServer.make_payload(
           params[:push_token],
-          type: 'video_status_update',
-          to_mkey: params[:to_mkey],
-          status: params[:status],
+          type: 'video_received',
+          from_mkey: params[:from_mkey],
           video_id: params[:video_id])
       end
 
@@ -90,7 +91,7 @@ RSpec.describe Notification::VideoStatusUpdated, type: :service do
     end
 
     context 'iOS' do
-      let(:sender) { create(:ios_user) }
+      let(:receiver) { create(:ios_user) }
 
       specify 'expects GenericPushNotification to receive :send_notification' do
         expect(GenericPushNotification).to receive(:send_notification)

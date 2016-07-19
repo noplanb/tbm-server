@@ -380,120 +380,57 @@ RSpec.describe User, type: :model do
     ].each do |options|
       describe "##{options[:event]}" do
         subject { instance.send options[:event] }
-        let(:event_params) do
-          { initiator: 'user',
-            initiator_id: instance.mkey,
-            data: options }
-        end
+        let(:event_params) { { initiator: 'user', initiator_id: instance.mkey, data: options } }
 
         it_behaves_like 'event dispatchable', ['user', options[:to_state]]
       end
     end
 
     describe '#verify' do
-      subject { instance.verify }
-      before do
-        allow(EventDispatcher.sqs_client).to receive(:send_message)
-        instance.register!
-      end
       let(:event_params) do
         { initiator: 'user',
           initiator_id: instance.mkey,
-          data: { event: :verify,
-                  from_state: :registered,
-                  to_state: :verified } }
+          data: { event: :verify, from_state: :registered, to_state: :verified } }
+      end
+      subject { instance.verify }
+
+      before do
+        allow(EventDispatcher.sqs_client).to receive(:send_message)
+        instance.register!
       end
 
       it_behaves_like 'event dispatchable', ['user', :verified]
     end
 
     describe '#pend' do
-      subject { instance.pend }
-      before do
-        allow(EventDispatcher.sqs_client).to receive(:send_message)
-        instance.register!
-      end
       let(:event_params) do
         { initiator: 'user',
           initiator_id: instance.mkey,
-          data: { event: :pend,
-                  from_state: :registered,
-                  to_state: :initialized } }
+          data: { event: :pend, from_state: :registered, to_state: :initialized } }
+      end
+      subject { instance.pend }
+
+      before do
+        allow(EventDispatcher.sqs_client).to receive(:send_message)
+        instance.register!
       end
 
       it_behaves_like 'event dispatchable', ['user', :initialized]
     end
   end
 
-  describe '#received_videos' do
-    let(:user) { create(:user) }
-    subject { user.received_videos }
-
-    let!(:friend_1) { create(:established_connection, creator: user).target }
-    let!(:friend_2) { create(:established_connection, creator: user).target }
-    let!(:friend_3) { create(:established_connection, creator: user).target }
-    let!(:video_11) { Kvstore.add_id_key(friend_1, user, gen_video_id).key2 }
-    let!(:video_12) { Kvstore.add_id_key(friend_1, user, gen_video_id).key2 }
-    let!(:video_21) { Kvstore.add_id_key(friend_2, user, gen_video_id).key2 }
-    let!(:video_22) { Kvstore.add_id_key(friend_2, user, gen_video_id).key2 }
-    let!(:video_23) { Kvstore.add_id_key(friend_2, user, gen_video_id).key2 }
-
-    specify do
-      is_expected.to include({ mkey: friend_1.mkey, video_ids: [video_11, video_12] },
-                             { mkey: friend_2.mkey, video_ids: [video_21, video_22, video_23] },
-                             mkey: friend_3.mkey, video_ids: [])
-    end
-  end
-
-  describe '#video_status' do
-    let(:user) { create(:user) }
-    subject { user.video_status }
-
-    let!(:friend_1) { create(:established_connection, creator: user).target }
-    let!(:friend_2) { create(:established_connection, creator: user).target }
-    let!(:friend_3) { create(:established_connection, creator: user).target }
-
-    let!(:video_11) { gen_video_id }
-    let!(:video_12) { gen_video_id }
-    let!(:video_21) { gen_video_id }
-    let!(:video_22) { gen_video_id }
-    let!(:video_23) { gen_video_id }
-
-    let!(:video_101) { gen_video_id }
-    let!(:video_102) { gen_video_id }
-    let!(:video_201) { gen_video_id }
-    let!(:video_202) { gen_video_id }
-    let!(:video_203) { gen_video_id }
-
-    let!(:kvstore_11) { Kvstore.add_status_key(user, friend_1, video_11, 'downloaded') }
-    let!(:kvstore_12) { Kvstore.add_status_key(user, friend_1, video_12, 'downloaded') }
-    let!(:kvstore_21) { Kvstore.add_status_key(user, friend_2, video_21, 'downloaded') }
-    let!(:kvstore_22) { Kvstore.add_status_key(user, friend_2, video_22, 'viewed') }
-    let!(:kvstore_23) { Kvstore.add_status_key(user, friend_2, video_23, 'viewed') }
-
-    let!(:kvstore_101) { Kvstore.add_status_key(friend_1, user, video_101, 'viewed') }
-    let!(:kvstore_102) { Kvstore.add_status_key(friend_1, user, video_102, 'downloaded') }
-    let!(:kvstore_201) { Kvstore.add_status_key(friend_2, user, video_201, 'viewed') }
-    let!(:kvstore_202) { Kvstore.add_status_key(friend_2, user, video_202, 'downloaded') }
-    let!(:kvstore_203) { Kvstore.add_status_key(friend_2, user, video_203, 'downloaded') }
-
-    specify do
-      is_expected.to include({ mkey: friend_1.mkey, video_id: video_12, status: 'downloaded' },
-                             { mkey: friend_2.mkey, video_id: video_23, status: 'viewed' },
-                             mkey: friend_3.mkey, video_id: '', status: '')
-    end
-  end
-
   describe '#add_emails' do
     let(:user) { create(:user, emails: ['test@example.com']) }
     subject { user.add_emails(emails) }
+
     context 'with string given' do
       let(:emails) { 'other@example.com' }
-      it { is_expected.to eq(['test@example.com', 'other@example.com']) }
+      it { is_expected.to eq(%w(test@example.com other@example.com)) }
     end
+
     context 'with array given' do
       let(:emails) { ['other@example.com'] }
-      it { is_expected.to eq(['test@example.com', 'other@example.com']) }
+      it { is_expected.to eq(%w(test@example.com other@example.com)) }
     end
   end
 end

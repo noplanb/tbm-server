@@ -6,7 +6,464 @@ HOST: http://zazoapp.com
 ## Authentication
 
 Authentication - **HTTP Digest** with `mkey` and `auth` as username and password.
-In *development* environment authentication method is **HTTP Basic** with same parameters (like in this document).
+
+## Group Messages
+
+### Get messages data [GET /api/v1/messages]
+
+Get all incoming messages and statuses for all outcoming messages.
+
++ Request success (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "success",
+                "data": [
+                    {
+                        "mkey": "FaGUU1xx60N2cOufnV1v",
+                        "messages": [
+                            {
+                                "type": "text",
+                                "message_id": "123456789100",
+                                "body": "hello!"
+                            }
+                        ],
+                        "statuses": [
+                            {
+                                "type": "text",
+                                "message_id": "123456789101",
+                                "status": "uploaded"
+                            }
+                        ]
+                    }, {
+                        "mkey": "7qdanSEmctZ2jPnYA0a1",
+                        "messages": [],
+                        "statuses": []
+                    }
+                ]
+            }
+
+### Get message info [GET /api/v1/messages/{id}]
+
+Returns message info (value) by id.
+
++ Parameters
+
+    + id (required) - id of message
+
++ Request success (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "success",
+                "data": {
+                    "type": "text",
+                    "body": "hello!"
+                }
+            }
+
++ Request message not found (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Message not found by key2=xxxxxxxxxxxx"
+                ]
+            }
+
++ Request message not belongs to user (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Message not associated with user"
+                ]
+            }
+
+### Create message [POST /api/v1/messages]
+
+Add message (**VideoIdKVKey** kvstore record) from sender.
+
++ Parameters
+
+    + id (required, string) - id of message to create
+    + receiver_mkey (required, string) - mkey of receiver user
+    + type (required, string) - type of message
+        + Members
+            + `video`
+            + `text`
+    + body (string, optional) - body of text message
+    + transcription (string, optional) - transcription of video message
+
++ Request success (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "id": "123456789100",
+                "receiver_mkey": "GBAHb0482YxlJ0kYwbIS",
+                "type": "text",
+                "body": "hello!"
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "success"
+            }
+
++ Request required fields are missed (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "body": "hello!"
+            }
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Id is required",
+                    "Receiver mkey is required",
+                    "Type is required"
+                ]
+            }
+
++ Request receiver not found (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "id": "123456789100",
+                "receiver_mkey": "BAHb0482YxlJ0kYwbISG",
+                "type": "text",
+                "body": "hello!"
+            }
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Receiver not found by mkey=BAHb0482YxlJ0kYwbISG"
+                ]
+            }
+
++ Request users not connected (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "id": "123456789100",
+                "receiver_mkey": "FaGUU1xx60N2cOufnV1v",
+                "type": "text",
+                "body": "hello!"
+            }
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Connection not found between users"
+                ]
+            }
+
++ Request type is not allowed (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "id": "123456789100",
+                "receiver_mkey": "GBAHb0482YxlJ0kYwbIS",
+                "type": "image"
+            }
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Type image is not allowed"
+                ]
+            }
+
+### Update message status [PATCH /api/v1/messages/{id}]
+
+Update message status (**VideoStatusKVKey** kvstore record) by id by receiver.
+
++ Parameters
+
+    + id (required) - id of message
+    + sender_mkey (required, string) - mkey of sender user
+    + type (required, string) - type of message
+        + Members
+            + `video`
+            + `text`
+    + status (required, string) - status of message
+        + Members
+            + `uploaded`
+            + `downloaded`
+            + `viewed`
+
++ Request success (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "sender_mkey": "FaGUU1xx60N2cOufnV1v",
+                "type": "text",
+                "status": "uploaded"
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "success"
+            }
+
++ Request required fields are missed (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Sender mkey is required",
+                    "Type is required",
+                    "Status is required"
+                ]
+            }
+
++ Request sender not found (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "sender_mkey": "aGUU1xx60N2cOufnV1vF",
+                "type": "text",
+                "status": "uploaded"
+            }
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Sender not found by mkey=aGUU1xx60N2cOufnV1vF"
+                ]
+            }
+
++ Request users not connected (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "sender_mkey": "GBAHb0482YxlJ0kYwbIS",
+                "type": "text",
+                "status": "uploaded"
+            }
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Connection not found between users"
+                ]
+            }
+
++ Request type is not allowed (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "sender_mkey": "FaGUU1xx60N2cOufnV1v",
+                "type": "image",
+                "status": "uploaded"
+            }
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Type image is not allowed"
+                ]
+            }
+
++ Request status is not allowed (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
+    + Body
+
+            {
+                "sender_mkey": "FaGUU1xx60N2cOufnV1v",
+                "type": "text",
+                "status": "removed"
+            }
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Status removed is not allowed"
+                ]
+            }
+
+# Delete message record [DELETE /api/v1/messages/{id}]
+
+Delete message record from kvstore by id by receiver.
+
++ Parameters
+
+    + id (required) - id of message
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "success"
+            }
+
++ Request message not found (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Message not found by key2=xxxxxxxxxxxx"
+                ]
+            }
+
++ Request message not belongs to user (application/json)
+
+    + Headers
+
+            Authorization: ** digest authentication credentials **
+
++ Response 422 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "status": "failure",
+                "errors": [
+                    "Message not associated with user"
+                ]
+            }
 
 ## Group Landing
 

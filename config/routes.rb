@@ -1,12 +1,10 @@
 ThreebymeServer::Application.routes.draw do
-
   get 's3_credentials/info'
 
   resources :s3_credentials
   resources :connections
   resources :users
   resources :version_compatibilities
-  resources :documentation, only: [:show]
 
   resources :connection, only: [] do
     post :set_visibility, on: :collection
@@ -15,6 +13,7 @@ ThreebymeServer::Application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :events, only: [:create]
+      resources :messages, except: [:new, :edit]
     end
   end
 
@@ -47,14 +46,12 @@ ThreebymeServer::Application.routes.draw do
   post 'notification/set_push_token'
   post 'notification/send_video_received'
   post 'notification/send_video_status_update'
-  get 'notification/load_test_send_notification'
 
   post 'kvstore/set'
   get 'kvstore/get'
   get 'kvstore/get_all'
   get 'kvstore/delete'
-  get 'kvstore/load_test_read'
-  get 'kvstore/load_test_write'
+  get 'kvstore/messages'
   get 'kvstore/received_videos'
   get 'kvstore/video_status'
 

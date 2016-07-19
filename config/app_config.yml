@@ -33,7 +33,6 @@ defaults: &settings
 
 development:
   <<: *settings
-  authentication_method: basic
 
 test:
   <<: *settings

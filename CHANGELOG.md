@@ -1,7 +1,11 @@
 # Changelog
 
 ### next release
+- :bulb: Implemented new messages API CRUD resource
+- :bulb: Changed setup for productive development
 - :arrow_up: Added new long test video
+- :arrow_up: Implemented rack middleware to serve static docs files with basic auth
+- :arrow_up: Refactored code
 
 ### v2.10.4
 - :hammer: Add new APNS certs
