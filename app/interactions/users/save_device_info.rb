@@ -15,7 +15,7 @@ class Users::SaveDeviceInfo < ActiveInteraction::Base
   private
 
   def update_required?
-    user.device_platform != platform || user.app_version != version
+    user.device_platform.to_s != platform || user.app_version != version
   end
 
   def update_attributes

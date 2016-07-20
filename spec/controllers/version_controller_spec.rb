@@ -14,7 +14,7 @@ RSpec.describe VersionController, type: :controller do
     end
 
     subject do
-      user.reload.tap { |u| return [u.device_platform, u.app_version] }
+      user.reload.tap { |u| return [u.device_platform.to_s, u.app_version.to_s] }
     end
 
     context 'ios' do
@@ -24,14 +24,14 @@ RSpec.describe VersionController, type: :controller do
         let(:version) { '21' }
 
         it { expect(json_response).to eq('result' => 'update_required') }
-        it { is_expected.to eq([:ios, '21']) }
+        it { is_expected.to eq(%w(ios 21)) }
       end
 
       context '22' do
         let(:version) { '22' }
 
         it { expect(json_response).to eq('result' => 'current') }
-        it { is_expected.to eq([:ios, '22']) }
+        it { is_expected.to eq(%w(ios 22)) }
       end
     end
 
@@ -42,14 +42,14 @@ RSpec.describe VersionController, type: :controller do
         let(:version) { '41' }
 
         it { expect(json_response).to eq('result' => 'update_required') }
-        it { is_expected.to eq([:android, '41']) }
+        it { is_expected.to eq(%w(android 41)) }
       end
 
       context '42' do
         let(:version) { '42' }
 
         it { expect(json_response).to eq('result' => 'current') }
-        it { is_expected.to eq([:android, '42']) }
+        it { is_expected.to eq(%w(android 42)) }
       end
     end
 
@@ -60,14 +60,14 @@ RSpec.describe VersionController, type: :controller do
         let(:version) { '21' }
 
         it { expect(json_response).to eq('result' => 'unsupported') }
-        it { is_expected.to eq([nil, nil]) }
+        it { is_expected.to eq(['', '']) }
       end
 
       context '22' do
         let(:version) { '22' }
 
         it { expect(json_response).to eq('result' => 'unsupported') }
-        it { is_expected.to eq([nil, nil]) }
+        it { is_expected.to eq(['', '']) }
       end
     end
   end
