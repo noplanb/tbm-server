@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Messages::Index do
+RSpec.describe Api::V1::MessagesController::Index do
   include_context 'user prepared messages'
 
   let(:user) { create(:user) }

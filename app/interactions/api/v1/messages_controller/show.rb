@@ -1,9 +1,9 @@
-class Messages::Show < ActiveInteraction::Base
+class Api::V1::MessagesController::Show < ActiveInteraction::Base
   object :user
   string :id
 
   def execute
-    message_data(compose(Messages::Get::Message, inputs))
+    message_data(compose(self.class.parent::Get::Message, inputs))
   end
 
   private

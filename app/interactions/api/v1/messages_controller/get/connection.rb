@@ -1,4 +1,4 @@
-class Messages::Get::Connection < ActiveInteraction::Base
+class Api::V1::MessagesController::Get::Connection < ActiveInteraction::Base
   object :user_1, class: ::User
   object :user_2, class: ::User
 

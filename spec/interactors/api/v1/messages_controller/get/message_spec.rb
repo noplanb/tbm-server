@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Messages::Get::Message do
+RSpec.describe Api::V1::MessagesController::Get::Message do
   let(:user) { create(:user) }
   let(:message) do
     friend = create(:user)

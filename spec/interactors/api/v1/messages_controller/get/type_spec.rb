@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Messages::Get::Type do
+RSpec.describe Api::V1::MessagesController::Get::Type do
   let(:default_params) { { type: 'video' } }
 
   describe '.run' do

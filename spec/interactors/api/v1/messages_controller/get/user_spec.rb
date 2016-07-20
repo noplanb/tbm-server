@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Messages::Get::User do
+RSpec.describe Api::V1::MessagesController::Get::User do
   let(:user) { create(:user) }
   let(:default_params) { { mkey: user.mkey, relation: :sender } }
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Messages::Update do
+RSpec.describe Api::V1::MessagesController::Update do
   let(:user) { create(:user) }
   let(:sender) { create(:user) }
   let(:default_params) do

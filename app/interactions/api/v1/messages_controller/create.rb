@@ -1,4 +1,4 @@
-class Messages::Create < ActiveInteraction::Base
+class Api::V1::MessagesController::Create < ActiveInteraction::Base
   object :user # message sender
   string :id
   string :receiver_mkey
@@ -7,9 +7,9 @@ class Messages::Create < ActiveInteraction::Base
   string :transcription, default: nil
 
   def execute
-    compose(Messages::Get::Type, type: type)
-    receiver = compose(Messages::Get::User, mkey: receiver_mkey, relation: :receiver)
-    connection = compose(Messages::Get::Connection, user_1: user, user_2: receiver)
+    compose(self.class.parent::Get::Type, type: type)
+    receiver = compose(self.class.parent::Get::User, mkey: receiver_mkey, relation: :receiver)
+    connection = compose(self.class.parent::Get::Connection, user_1: user, user_2: receiver)
     create_record(receiver, connection)
   end
 

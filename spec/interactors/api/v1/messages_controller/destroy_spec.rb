@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Messages::Destroy do
+RSpec.describe Api::V1::MessagesController::Destroy do
   let(:user) { create(:user) }
   let(:message) do
     friend = create(:user)
