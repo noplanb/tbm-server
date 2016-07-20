@@ -13,8 +13,16 @@ class Kvstore::Wrapper
     model.key2
   end
 
+  def message_id
+    key2 || value['messageId'] || value['videoId']
+  end
+
   def type
     value['type'] || 'video'
+  end
+
+  def status
+    value['status']
   end
 
   def value

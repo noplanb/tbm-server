@@ -14,7 +14,8 @@ class Api::V1::MessagesController::Update < Api::BaseInteraction
     compose(namespace::Get::Type, type: type)
     sender = compose(namespace::Get::User, mkey: sender_mkey, relation: :sender)
     connection = compose(namespace::Get::Connection, user_1: user, user_2: sender)
-    update_record(sender, connection)
+    kvstore = update_record(sender, connection)
+    Notifications::Send::StatusUpdated.run(sender: sender, receiver: user, kvstore: kvstore)
   end
 
   private

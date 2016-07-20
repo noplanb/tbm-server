@@ -16,7 +16,14 @@ class Notifications::Send::Received < Notifications::Send
   def base_notification
     { type: :alert,
       alert: "New message from #{sender.name}",
-      badge: 1, payload: {} }
+      badge: 1 }
+  end
+
+  def payload_with_legacy_schema
+    { type: 'video_received',
+      from_mkey: sender.mkey,
+      video_id: message.message_id,
+      host: host }
   end
 
   def payload_with_new_schema
@@ -24,14 +31,7 @@ class Notifications::Send::Received < Notifications::Send
       content_type: message.type,
       from_mkey: sender.mkey,
       owner_mkey: receiver.mkey,
-      message_id: message.key2,
+      message_id: message.message_id,
       host: host }.merge(message.stripped_value)
-  end
-
-  def payload_with_legacy_schema
-    { type: 'video_received',
-      from_mkey: sender.mkey,
-      video_id: message.key2,
-      host: host }
   end
 end

@@ -1,6 +1,6 @@
 class Notifications::Send < ActiveInteraction::Base
-  object :sender, class: ::User
-  object :receiver, class: ::User
+  object :sender, class: ::User   # message sender
+  object :receiver, class: ::User # message receiver
   object :kvstore
 
   protected
