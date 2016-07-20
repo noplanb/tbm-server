@@ -1,9 +1,9 @@
-class Api::V1::MessagesController::Destroy < ActiveInteraction::Base
+class Api::V1::MessagesController::Destroy < Api::BaseInteraction
   object :user
   string :id
 
   def execute
-    message = compose(self.class.parent::Get::Message, inputs)
+    message = compose(namespace::Get::Message, inputs)
     message.destroy
   end
 end

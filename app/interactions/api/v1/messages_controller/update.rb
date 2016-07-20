@@ -1,4 +1,4 @@
-class Api::V1::MessagesController::Update < ActiveInteraction::Base
+class Api::V1::MessagesController::Update < Api::BaseInteraction
   ALLOWED_STATUSES = %w(uploaded downloaded viewed)
 
   object :user # message receiver
@@ -11,9 +11,9 @@ class Api::V1::MessagesController::Update < ActiveInteraction::Base
                                   message: '%{value} is not allowed' }
 
   def execute
-    compose(self.class.parent::Get::Type, type: type)
-    sender = compose(self.class.parent::Get::User, mkey: sender_mkey, relation: :sender)
-    connection = compose(self.class.parent::Get::Connection, user_1: user, user_2: sender)
+    compose(namespace::Get::Type, type: type)
+    sender = compose(namespace::Get::User, mkey: sender_mkey, relation: :sender)
+    connection = compose(namespace::Get::Connection, user_1: user, user_2: sender)
     update_record(sender, connection)
   end
 

@@ -1,4 +1,4 @@
-class Api::V1::MessagesController::Get::User < ActiveInteraction::Base
+class Api::V1::MessagesController::Get::User < Api::BaseInteraction
   string :mkey
   symbol :relation
 

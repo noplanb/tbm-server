@@ -1,4 +1,4 @@
-class Api::V1::MessagesController::Get::Message < ActiveInteraction::Base
+class Api::V1::MessagesController::Get::Message < Api::BaseInteraction
   object :user
   string :id
 
