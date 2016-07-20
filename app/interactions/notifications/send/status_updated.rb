@@ -26,10 +26,11 @@ class Notifications::Send::StatusUpdated < Notifications::Send
   end
 
   def payload_with_new_schema
-    { type: 'video_status_update',
+    { type: 'message_status_update',
       content_type: message.type,
       to_mkey: receiver.mkey,
       owner_mkey: sender.mkey,
+      status: message.status,
       message_id: message.message_id,
       host: host }
   end

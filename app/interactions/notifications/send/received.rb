@@ -27,11 +27,11 @@ class Notifications::Send::Received < Notifications::Send
   end
 
   def payload_with_new_schema
-    { type: 'video_received',
+    { type: 'message_received',
       content_type: message.type,
       from_mkey: sender.mkey,
       owner_mkey: receiver.mkey,
       message_id: message.message_id,
-      host: host }.merge(message.stripped_value)
+      host: host }.merge(message.stripped_value.symbolize_keys)
   end
 end
