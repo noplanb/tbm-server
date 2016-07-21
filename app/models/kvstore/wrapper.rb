@@ -26,7 +26,7 @@ class Kvstore::Wrapper
   end
 
   def status
-    value['status']
+    value['status'] || 'received'
   end
 
   def value

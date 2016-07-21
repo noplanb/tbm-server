@@ -2,7 +2,7 @@
 
 ### next release
 - :bulb: Implemented new messages API CRUD resource
-- :bulb: Implemented autonotifications for new messages API
+- :bulb: Implemented auto-notifications for new messages API
 - :bulb: Changed setup for productive development
 - :arrow_up: Added new long test video
 - :arrow_up: Implemented rack middleware to serve static docs files with basic auth

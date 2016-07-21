@@ -3,6 +3,17 @@ class Notifications::Send < ActiveInteraction::Base
   object :receiver, class: ::User # message receiver
   object :kvstore
 
+  def execute
+    send_notification
+    Messages::TriggerEvent.run(
+      sender: sender, receiver: receiver,
+      message: message, type: 'notification')
+  end
+
+  def message
+    @message ||= Kvstore::Wrapper.new(kvstore)
+  end
+
   protected
 
   def send_notification
@@ -14,10 +25,6 @@ class Notifications::Send < ActiveInteraction::Base
 
   def host
     Figaro.env.domain_name
-  end
-
-  def message
-    @message ||= Kvstore::Wrapper.new(kvstore)
   end
 
   def notification_receiver
@@ -38,9 +45,5 @@ class Notifications::Send < ActiveInteraction::Base
 
   def payload_with_new_schema
     {}
-  end
-
-  def trigger_event(name)
-    name
   end
 end

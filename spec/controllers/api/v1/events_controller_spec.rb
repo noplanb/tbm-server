@@ -10,7 +10,6 @@ RSpec.describe Api::V1::EventsController, type: :controller do
       FactoryGirl.create(:push_user, mkey: target.mkey, push_token: 'qq64zz709r4zw1l6ap5p')
       FactoryGirl.create(:established_connection, creator: creator, target: target)
       allow_any_instance_of(HandleOutgoingVideo).to receive(:send_notification_to_receiver).and_return(true)
-      allow_any_instance_of(Kvstore::TriggerEvent).to receive(:call).and_return(true)
       post :create, params
     end
 
