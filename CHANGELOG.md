@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.2
+- :hammer: Fixed messages#create API (set id as optional parameter)
+
 ### 2.10.4-wip.1
 - :bulb: Implemented new messages API CRUD resource
 - :bulb: Implemented auto-notifications for new messages API
