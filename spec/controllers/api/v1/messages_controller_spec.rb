@@ -15,7 +15,7 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
   [
     { method: 'get', action: 'index' },
     { method: 'get', action: 'show', params: %w(id) },
-    { method: 'post', action: 'create', params: %w(id receiver_mkey type) },
+    { method: 'post', action: 'create', params: %w(receiver_mkey type) },
     { method: 'patch', action: 'update', params: %w(id_r sender_mkey type status) },
     { method: 'delete', action: 'destroy', params: %w(id) }
   ].each do |desc|

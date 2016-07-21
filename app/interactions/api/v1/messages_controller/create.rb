@@ -1,10 +1,10 @@
 class Api::V1::MessagesController::Create < Api::BaseInteraction
   object :user # message sender
-  string :id
   string :receiver_mkey
   string :type
   string :body, default: nil
   string :transcription, default: nil
+  string :id, default: -> { Time.now.to_i.to_s }
 
   def execute
     compose(namespace::Get::Type, type: type)

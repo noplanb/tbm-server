@@ -7,6 +7,7 @@ RSpec.describe Api::V1::MessagesController::Create do
     create(:established_connection, target: user, creator: receiver)
     { user: user, id: '123456789100', receiver_mkey: receiver.mkey, type: 'text' }
   end
+  let(:params) { default_params }
 
   describe '.run' do
     def self.shared_context_specs
@@ -19,7 +20,7 @@ RSpec.describe Api::V1::MessagesController::Create do
       end
     end
 
-    subject { described_class.run(default_params) }
+    subject { described_class.run(params) }
 
     context 'when kvstore record is not exist' do
       it { expect { subject }.to change { Kvstore.count }.by(1) }
@@ -31,6 +32,18 @@ RSpec.describe Api::V1::MessagesController::Create do
 
       it { expect { subject }.to change { Kvstore.count }.by(0) }
       shared_context_specs
+    end
+
+    context 'when id is not persisted is request' do
+      let(:params) { default_params.except(:id) }
+
+      it { expect(subject.valid?).to be_truthy }
+      it do
+        Timecop.freeze(Time.parse('21-01-1994')) { subject }
+        expected = {
+          'messageId' => '759099600', 'type' => 'text' }
+        expect(JSON.parse(Kvstore.last.value)).to eq(expected)
+      end
     end
   end
 end
