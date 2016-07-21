@@ -76,7 +76,7 @@ Returns message info (value) by id.
                 }
             }
 
-+ Request message not found (application/json)
++ Request message is not found (application/json)
 
     + Headers
 
@@ -93,7 +93,7 @@ Returns message info (value) by id.
                 ]
             }
 
-+ Request message not belongs to user (application/json)
++ Request message does not belong to user (application/json)
 
     + Headers
 
@@ -116,7 +116,6 @@ Add message (**VideoIdKVKey** kvstore record) from sender.
 
 + Parameters
 
-    + id (required, string) - id of message to create
     + receiver_mkey (required, string) - mkey of receiver user
     + type (required, string) - type of message
         + Members
@@ -124,6 +123,8 @@ Add message (**VideoIdKVKey** kvstore record) from sender.
             + `text`
     + body (string, optional) - body of text message
     + transcription (string, optional) - transcription of video message
+    + id (string, optional) - id of message to create
+        + Default: current unix timestamp
 
 + Request success (application/json)
 
@@ -173,7 +174,7 @@ Add message (**VideoIdKVKey** kvstore record) from sender.
                 ]
             }
 
-+ Request receiver not found (application/json)
++ Request receiver is not found (application/json)
 
     + Headers
 
@@ -199,7 +200,7 @@ Add message (**VideoIdKVKey** kvstore record) from sender.
                 ]
             }
 
-+ Request users not connected (application/json)
++ Request users are not connected (application/json)
 
     + Headers
 
@@ -309,7 +310,7 @@ Update message status (**VideoStatusKVKey** kvstore record) by id by receiver.
                 ]
             }
 
-+ Request sender not found (application/json)
++ Request sender is not found (application/json)
 
     + Headers
 
@@ -334,7 +335,7 @@ Update message status (**VideoStatusKVKey** kvstore record) by id by receiver.
                 ]
             }
 
-+ Request users not connected (application/json)
++ Request users are not connected (application/json)
 
     + Headers
 
@@ -431,7 +432,7 @@ Delete message record from kvstore by id by receiver.
                 "status": "success"
             }
 
-+ Request message not found (application/json)
++ Request message is not found (application/json)
 
     + Headers
 
@@ -448,7 +449,7 @@ Delete message record from kvstore by id by receiver.
                 ]
             }
 
-+ Request message not belongs to user (application/json)
++ Request message does not belong to user (application/json)
 
     + Headers
 
