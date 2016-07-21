@@ -17,7 +17,7 @@ RSpec.describe Api::V1::MessagesController::Get::User do
     context 'presence' do
       let(:params) { default_params.merge(mkey: 'xxxxxxxxxxxx') }
 
-      it { is_expected.to eq(['Sender not found by mkey=xxxxxxxxxxxx']) }
+      it { is_expected.to eq(['Sender is not found by mkey=xxxxxxxxxxxx']) }
     end
   end
 end

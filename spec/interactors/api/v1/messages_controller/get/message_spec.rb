@@ -28,7 +28,7 @@ RSpec.describe Api::V1::MessagesController::Get::Message do
     context 'ownership' do
       let(:params) { default_params.merge(user: create(:user)) }
 
-      it { is_expected.to eq(['Message not associated with user']) }
+      it { is_expected.to eq(['Message is not associated with user']) }
     end
   end
 end
