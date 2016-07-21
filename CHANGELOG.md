@@ -1,6 +1,6 @@
 # Changelog
 
-### next release
+### 2.10.4-wip.1
 - :bulb: Implemented new messages API CRUD resource
 - :bulb: Implemented auto-notifications for new messages API
 - :bulb: Changed setup for productive development
@@ -8,48 +8,48 @@
 - :arrow_up: Implemented rack middleware to serve static docs files with basic auth
 - :arrow_up: Refactored code
 
-### v2.10.4
+### 2.10.4
 - :hammer: Add new APNS certs
 
-### v2.10.3
+### 2.10.3
 - :bulb: Added Mixpanel link to landing footer to get free service
 
-### v2.10.2
+### 2.10.2
 - :hammer: Fixed bug with welcome message feature
 - :hammer: Refactored specs for `HandleOutgoingVideo` service
 
-### v2.10.1
+### 2.10.1
 - :hammer: Fixed specs for `HandleOutgoingVideo` service
 
-### v2.10.0
+### 2.10.0
 - :hammer: Fixed upload duplications problem
 - :hammer: Refactored code regarding `HandleOutgoingVideo` service
 
-### v2.9.7
+### 2.9.7
 - :bulb: Added more test videos
 
-### v2.9.6
+### 2.9.6
 - :bulb: Implemented receive_permanent_error_video link for connection
 - :bulb: Implemented receive_long_test_video_path link for connection
 
-### v2.9.5
+### 2.9.5
 - :bulb: Allowed ios clients to use auto notification feature
 
-### v2.9.4
+### 2.9.4
 - :hammer: API: changed type of connection id from integer to string
 - :hammer: Added invitee name to landing connection page (/c/:id requests)
 
-### v2.9.3
+### 2.9.3
 - :hammer: Fixed rollbar logging of APNS unregistered users
 
-### v2.9.2
+### 2.9.2
 - :hammer: Reverted back legacy app link with events tracking
 
-### v2.9.1
+### 2.9.1
 - :bulb: Fire sqs event when user clicks on app link
 - :hammer: Refactored code regarding landing page
 
-### v2.9.0
+### 2.9.0
 - :star: Implemented AutoNotification feature
 - :bulb: Added logging to papertrail service
 - :bulb: Added more information for houston errors
