@@ -36,10 +36,6 @@ RSpec.describe HandleOutgoingVideo do
     FactoryGirl.create :established_connection, creator: creator, target: target
   end
 
-  def stub_kvstore
-    allow_any_instance_of(Kvstore::TriggerEvent).to receive(:call).and_return(true)
-  end
-
   describe '#do' do
     let(:errors_messages) do
       HandleOutgoingVideo::StatusNotifier.new(instance).send(:errors_messages)
@@ -52,7 +48,6 @@ RSpec.describe HandleOutgoingVideo do
     before do |example|
       if example.metadata[:common_behavior]
         create_users_and_connection !example.metadata[:disable_push_user]
-        stub_kvstore
       end
       VCR.use_cassette(vcr_cassette) { instance.do } if example.metadata[:do_before]
     end
@@ -84,7 +79,7 @@ RSpec.describe HandleOutgoingVideo do
 
       it 'has specific errors' do
         subject
-        create_users_and_connection && stub_kvstore
+        create_users_and_connection
         expect(errors_messages).to eq file_name: ['already persisted in database, duplication case']
       end
 

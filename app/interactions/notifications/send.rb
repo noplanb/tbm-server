@@ -5,7 +5,9 @@ class Notifications::Send < ActiveInteraction::Base
 
   def execute
     send_notification
-    Notifications::TriggerEvent.run(caller: self)
+    Messages::TriggerEvent.run(
+      sender: sender, receiver: receiver,
+      message: message, type: 'notification')
   end
 
   def message
