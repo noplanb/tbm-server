@@ -21,7 +21,7 @@ class Notifications::Send < ActiveInteraction::Base
   end
 
   def notification_receiver
-    nil
+    User.new
   end
 
   def new_schema_allowed?
