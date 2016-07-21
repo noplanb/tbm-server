@@ -12,7 +12,7 @@ class Api::V1::MessagesController::Get::Connection < Api::BaseInteraction
 
   def validate_presence(connection)
     return true if connection
-    errors.add(:connection, 'not found between users')
+    errors.add(:connection, 'is not found between users')
     false
   end
 end

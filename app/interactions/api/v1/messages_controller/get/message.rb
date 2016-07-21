@@ -18,7 +18,7 @@ class Api::V1::MessagesController::Get::Message < Api::BaseInteraction
 
   def validate_ownership(message)
     return true if message.key1.include?(user.mkey)
-    errors.add(:message, 'not associated with user')
+    errors.add(:message, 'is not associated with user')
     false
   end
 end

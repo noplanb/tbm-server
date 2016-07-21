@@ -12,7 +12,7 @@ class Api::V1::MessagesController::Get::User < Api::BaseInteraction
 
   def validate_presence(user)
     return true if user
-    errors.add(relation.to_sym, "not found by mkey=#{mkey}")
+    errors.add(relation.to_sym, "is not found by mkey=#{mkey}")
     false
   end
 end

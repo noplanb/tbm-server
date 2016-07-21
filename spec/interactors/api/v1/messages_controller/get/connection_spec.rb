@@ -19,7 +19,7 @@ RSpec.describe Api::V1::MessagesController::Get::Connection do
     context 'presence' do
       let(:params) { default_params.merge(user_2: create(:user)) }
 
-      it { is_expected.to eq(['Connection not found between users']) }
+      it { is_expected.to eq(['Connection is not found between users']) }
     end
   end
 end
