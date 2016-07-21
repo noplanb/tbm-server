@@ -1,8 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe VersionController, type: :controller do
+  include_context 'user authentication'
+
+  let(:user) { create(:user) }
+
   describe 'GET #check_compatibility' do
-    subject { get :check_compatibility, device_platform: device_platform, version: version }
+    before do
+      authenticate_user do
+        get :check_compatibility,
+            device_platform: device_platform, version: version
+      end
+    end
+
+    subject do
+      user.reload.tap { |u| return [u.device_platform.to_s, u.app_version.to_s] }
+    end
 
     context 'ios' do
       let(:device_platform) { :ios }
@@ -10,19 +23,15 @@ RSpec.describe VersionController, type: :controller do
       context '21' do
         let(:version) { '21' }
 
-        specify do
-          subject
-          expect(json_response).to eq('result' => 'update_required')
-        end
+        it { expect(json_response).to eq('result' => 'update_required') }
+        it { is_expected.to eq(%w(ios 21)) }
       end
 
       context '22' do
         let(:version) { '22' }
 
-        specify do
-          subject
-          expect(json_response).to eq('result' => 'current')
-        end
+        it { expect(json_response).to eq('result' => 'current') }
+        it { is_expected.to eq(%w(ios 22)) }
       end
     end
 
@@ -32,19 +41,15 @@ RSpec.describe VersionController, type: :controller do
       context '41' do
         let(:version) { '41' }
 
-        specify do
-          subject
-          expect(json_response).to eq('result' => 'update_required')
-        end
+        it { expect(json_response).to eq('result' => 'update_required') }
+        it { is_expected.to eq(%w(android 41)) }
       end
 
       context '42' do
         let(:version) { '42' }
 
-        specify do
-          subject
-          expect(json_response).to eq('result' => 'current')
-        end
+        it { expect(json_response).to eq('result' => 'current') }
+        it { is_expected.to eq(%w(android 42)) }
       end
     end
 
@@ -54,19 +59,15 @@ RSpec.describe VersionController, type: :controller do
       context '21' do
         let(:version) { '21' }
 
-        specify do
-          subject
-          expect(json_response).to eq('result' => 'unsupported')
-        end
+        it { expect(json_response).to eq('result' => 'unsupported') }
+        it { is_expected.to eq(['', '']) }
       end
 
       context '22' do
         let(:version) { '22' }
 
-        specify do
-          subject
-          expect(json_response).to eq('result' => 'unsupported')
-        end
+        it { expect(json_response).to eq('result' => 'unsupported') }
+        it { is_expected.to eq(['', '']) }
       end
     end
   end

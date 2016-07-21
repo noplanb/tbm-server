@@ -1,4 +1,4 @@
-class Messages::Index < ActiveInteraction::Base
+class Api::V1::MessagesController::Index < Api::BaseInteraction
   object :user
 
   def execute

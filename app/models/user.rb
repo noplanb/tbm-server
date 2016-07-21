@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
 
   has_many :connections_as_creator, class_name: 'Connection', foreign_key: :creator_id, dependent: :destroy
   has_many :connections_as_target, class_name: 'Connection', foreign_key: :target_id, dependent: :destroy
+  has_one  :push_user, primary_key: :mkey, foreign_key: :mkey
 
   validates :mobile_number, uniqueness: true
 

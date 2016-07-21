@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Messages::Get::Connection do
+RSpec.describe Api::V1::MessagesController::Get::Connection do
   let(:user_1) { create(:user) }
   let(:user_2) { create(:user) }
   let(:default_params) { { user_1: user_1, user_2: user_2 } }

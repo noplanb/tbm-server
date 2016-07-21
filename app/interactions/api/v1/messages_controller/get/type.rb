@@ -1,4 +1,4 @@
-class Messages::Get::Type < ActiveInteraction::Base
+class Api::V1::MessagesController::Get::Type < Api::BaseInteraction
   ALLOWED_TYPES = %w(video text)
 
   string :type
