@@ -21,6 +21,10 @@ class Kvstore::Wrapper
     value['type'] || 'video'
   end
 
+  def type?(_type)
+    type == _type.to_s
+  end
+
   def status
     value['status']
   end

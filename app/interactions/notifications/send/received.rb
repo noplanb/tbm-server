@@ -6,11 +6,8 @@ class Notifications::Send::Received < Notifications::Send
 
   private
 
-  def send_notification
-    payload = new_schema_allowed?(receiver) ?
-      payload_with_new_schema : payload_with_legacy_schema
-    receiver.push_user.try(:send_notification,
-      base_notification.merge(payload: payload))
+  def notification_receiver
+    receiver
   end
 
   def base_notification
