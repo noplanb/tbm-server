@@ -1,9 +1,4 @@
 class Notifications::Send::Received < Notifications::Send
-  def execute
-    send_notification
-    trigger_event(%w(video notification received))
-  end
-
   private
 
   def notification_receiver

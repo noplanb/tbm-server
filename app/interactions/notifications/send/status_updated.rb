@@ -1,9 +1,4 @@
 class Notifications::Send::StatusUpdated < Notifications::Send
-  def execute
-    send_notification
-    trigger_event(%w(video notification) + [message.status])
-  end
-
   private
 
   def notification_receiver
