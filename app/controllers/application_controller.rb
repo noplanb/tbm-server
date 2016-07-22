@@ -15,9 +15,9 @@ class ApplicationController < ActionController::Base
   def save_client_info
     Users::SaveClientInfo.run(
       user: current_user,
-      device_platform: response.headers['Device-Platform'],
-      device_info: response.headers['Device-Info'],
-      app_version: response.headers['App-Version'])
+      device_platform: request.headers['Device-Platform'],
+      device_info: request.headers['Device-Info'],
+      app_version: request.headers['App-Version'])
   end
 
   def not_found

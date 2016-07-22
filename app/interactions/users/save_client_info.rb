@@ -23,7 +23,7 @@ class Users::SaveClientInfo < ActiveInteraction::Base
 
   def update_attributes
     new_attrs = { device_platform: device_platform, app_version: app_version }
-    new_attrs.merge(device_info: device_info) if device_info
+    new_attrs[:device_info] = device_info if device_info
     user.update_attributes(new_attrs)
   end
 end
