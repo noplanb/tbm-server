@@ -9,7 +9,6 @@ defaults: &settings
   support_email: support@zazoapp.com
   app_schema: zazo://
   use_s3: false
-  authentication_method: digest
   verification_code_length: 4
   verification_code_lifetime_minutes: 120
   verification_code_sms_countries:
