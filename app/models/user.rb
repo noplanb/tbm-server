@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   include EnumHandler
   include AASM
   include EventNotifiable
+  include ModelWrapper::WrapWith
 
   include AppAttributes
   include VerificationMethods
@@ -53,15 +54,12 @@ class User < ActiveRecord::Base
   before_save :strip_emoji, :set_keys, :eliminate_invalid_emails
 
   def self.find_by_raw_mobile_number(value)
-    find_by_mobile_number GlobalPhone.normalize(value)
+    find_by_mobile_number(GlobalPhone.normalize(value))
   end
 
   def self.search(query)
-    query_param = "%#{query}%"
-    where('first_name LIKE ? OR last_name LIKE ? OR mobile_number LIKE ?',
-          query_param,
-          query_param,
-          query_param)
+    param = "%#{query}%"
+    where('first_name LIKE ? OR last_name LIKE ? OR mobile_number LIKE ?', param, param, param)
   end
 
   def name
@@ -81,7 +79,7 @@ class User < ActiveRecord::Base
   end
 
   def connected_users
-    User.where ['id IN ?', connected_user_ids]
+    User.where(['id IN ?', connected_user_ids])
   end
 
   def connections
