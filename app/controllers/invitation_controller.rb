@@ -1,6 +1,7 @@
 class InvitationController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authenticate
+  before_action :save_client_info
   before_action :find_friend, only: [:update_friend]
   before_action :validate_phone, except: [:direct_invite_message, :update_friend]
 

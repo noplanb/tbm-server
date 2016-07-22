@@ -12,6 +12,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def save_client_info
+    Users::SaveClientInfo.run(
+      user: current_user,
+      device_platform: response.headers['Device-Platform'],
+      device_info: response.headers['Device-Info'],
+      app_version: response.headers['App-Version'])
+  end
+
   def not_found
     fail ActionController::RoutingError.new('Not Found')
   end
