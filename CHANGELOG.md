@@ -1,5 +1,7 @@
 # Changelog
 
+### 2.10.4-wip.4
+
 ### 2.10.4-wip.3
 - :arrow_up: Removed unnecessary code
 - :hammer: Fixed rack middleware for api documentation
