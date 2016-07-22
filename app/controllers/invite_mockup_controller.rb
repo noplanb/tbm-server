@@ -10,35 +10,35 @@ class InviteMockupController < ApplicationController
     {first_name:"Inez", last_name:"Irksome"},
     {first_name:"Jim", last_name:"Johnson"},
   ]
-  
+
   INVITEE = {first_name:"Barbara", last_name:"Boxer", mobile_number:"bb", device_platform:"ios"}
 
-  
+
   def index
     destroy_invitee
     setup_users
     make_user_connections(:full)
     @users = [TEST_USERS.first, INVITEE]
   end
-  
+
   def setup_users
     TEST_USERS.each{|u| User.create(u) if User.where(u).blank?}
   end
-  
+
   def test_users
     TEST_USERS.map{|u| User.where(u).first}
   end
-  
+
   def destroy_invitee
     User.where(mobile_number: "bb").each{|u| u.destroy}
     User.where(first_name:"Barbara", last_name:"Boxer").each{|u| u.destroy}
   end
-  
-  
+
+
   def clear_user_connections
     test_users.each{ |u| Connection.for_user_id(u.id).each{|c| c.destroy} }
   end
-  
+
   def make_user_connections(state)
     clear_user_connections
     creator = test_users.first
@@ -53,9 +53,4 @@ class InviteMockupController < ApplicationController
     end
     targets.each{|target| c=Connection.find_or_create(creator.id, target.id)}
   end
-  
-  def not_found
-    raise ActionController::RoutingError.new('Not Found')
-  end
-  
 end

@@ -15,7 +15,7 @@ class Controllers::HandleApiInteractor
     if interactor.valid?
       prepare_data_by_success_case
       log_data_by_case(:success) if settings[:logging_success]
-      callback.call if callback
+      callback && callback.call
     else
       prepare_data_by_failure_case
       log_data_by_case(:failure) if settings[:logging_failure]
@@ -44,8 +44,7 @@ class Controllers::HandleApiInteractor
   def prepare_data_by_failure_case
     @response = {
       status: :unprocessable_entity,
-      json: { status: :failure, errors: interactor.errors.full_messages }
-    }
+      json: { status: :failure, errors: interactor.errors.full_messages } }
   end
 
   def log_data_by_case(status)
@@ -62,9 +61,7 @@ class Controllers::HandleApiInteractor
   def default_settings(type)
     case type
       when :render
-        { result: true,
-          logging_success: true,
-          logging_failure: true }
+        { result: true, logging_success: true, logging_failure: true }
       when :result
         { logging_failure: true }
       else {}

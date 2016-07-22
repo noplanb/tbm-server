@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160720101317) do
+ActiveRecord::Schema.define(version: 20160722113911) do
 
   create_table "connections", force: :cascade do |t|
     t.integer  "creator_id", limit: 4
@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 20160720101317) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "app_version",            limit: 255
+    t.string   "device_info",            limit: 255
   end
 
   add_index "users", ["mkey"], name: "index_users_on_mkey", using: :btree

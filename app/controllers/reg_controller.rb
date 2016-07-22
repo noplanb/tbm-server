@@ -1,6 +1,7 @@
 class RegController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authenticate, except: [:reg, :debug_get_user]
+  before_action :save_client_info, except: [:debug_get_user]
   before_action :validate_mobile_number, only: [:reg]
   before_action :validate_device_platform, only: [:reg, :verify_code]
   before_action :find_or_create_user, only: [:reg]

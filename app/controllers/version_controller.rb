@@ -3,7 +3,8 @@ class VersionController < ApplicationController
 
   def check_compatibility
     version_compatibility = VersionCompatibility.instance
-    Users::SaveDeviceInfo.run(user: current_user, platform: params[:device_platform], version: params[:version])
+    Users::SaveClientInfo.run(
+      user: current_user, device_platform: params[:device_platform], app_version: params[:version])
     render json: { result: version_compatibility.compatibility(params[:device_platform], params[:version]) }
   end
 end
