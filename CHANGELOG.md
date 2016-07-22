@@ -1,6 +1,8 @@
 # Changelog
 
 ### 2.10.4-wip.4
+- :bulb: Included abilities field for each user to messages#index response
+- :arrow_up: Updated .pryrc
 
 ### 2.10.4-wip.3
 - :arrow_up: Removed unnecessary code

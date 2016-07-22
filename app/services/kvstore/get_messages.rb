@@ -1,8 +1,7 @@
 class Kvstore::GetMessages < Struct.new(:user)
   LEGACY_METHODS = %i(received_videos video_status)
 
-  # filtering is not implemented yet
-  def call(filter: nil)
+  def call
     data_messages = reduce_by_mkeys(kv_keys_for_received_messages) { |key1| key1.split('-').first }
     data_statuses = reduce_by_mkeys(kv_keys_for_message_status) { |key1| key1.split('-').second }
     mkeys = (data_messages.keys + data_statuses.keys).uniq
@@ -14,8 +13,8 @@ class Kvstore::GetMessages < Struct.new(:user)
   end
 
   def legacy(method)
-    raise ArgumentError, 'method is not allowed' unless LEGACY_METHODS.include?(method)
-    send(method)
+    LEGACY_METHODS.include?(method) ?
+      send(method) : raise(ArgumentError, 'method is not allowed')
   end
 
   private
