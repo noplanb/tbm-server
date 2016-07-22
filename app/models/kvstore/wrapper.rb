@@ -1,18 +1,4 @@
-class Kvstore::Wrapper
-  attr_reader :model
-
-  def initialize(model)
-    @model = model
-  end
-
-  def key1
-    model.key1
-  end
-
-  def key2
-    model.key2
-  end
-
+class Kvstore::Wrapper < ModelWrapper
   def message_id
     key2 || value['messageId'] || value['videoId']
   end
