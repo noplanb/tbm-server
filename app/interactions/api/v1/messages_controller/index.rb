@@ -14,7 +14,7 @@ class Api::V1::MessagesController::Index < Api::BaseInteraction
 
   def friends_abilities
     user.connected_users.each_with_object({}) do |friend, memo|
-      memo[friend.mkey] = user.wrap_with(:client_info).abilities
+      memo[friend.mkey] = user.decorate_with(:client_info).abilities
     end
   end
 end
