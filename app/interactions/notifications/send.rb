@@ -1,5 +1,5 @@
 class Notifications::Send < ActiveInteraction::Base
-  object :sender, class: ::User   # message sender
+  object :sender,   class: ::User # message sender
   object :receiver, class: ::User # message receiver
   object :kvstore
 
@@ -11,7 +11,7 @@ class Notifications::Send < ActiveInteraction::Base
   end
 
   def message
-    @message ||= Kvstore::Wrapper.new(kvstore)
+    @message ||= kvstore.decorate_with(:default)
   end
 
   protected

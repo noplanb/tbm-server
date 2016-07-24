@@ -1,4 +1,4 @@
-class Kvstore::Wrapper < ModelWrapper
+class Kvstore::Decorators::Default < ModelDecorator
   def message_id
     key2 || value['messageId'] || value['videoId']
   end

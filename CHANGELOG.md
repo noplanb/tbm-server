@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.5
+- :arrow_up: Refactor ModelDecorator
+
 ### 2.10.4-wip.4
 - :bulb: Included abilities field for each user to messages#index response
 - :arrow_up: Updated .pryrc

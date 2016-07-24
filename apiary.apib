@@ -112,7 +112,7 @@ Returns message info (value) by id.
 
 ### Create message [POST /api/v1/messages]
 
-Add message (**VideoIdKVKey** kvstore record) from sender.
+Add message (**VideoIdKVKey** kvstore record) from sender and send notification to receiver.
 
 + Parameters
 
@@ -253,7 +253,7 @@ Add message (**VideoIdKVKey** kvstore record) from sender.
 
 ### Update message status [PATCH /api/v1/messages/{id}]
 
-Update message status (**VideoStatusKVKey** kvstore record) by id by receiver.
+Update message status (**VideoStatusKVKey** kvstore record) by id by receiver and send notification to sender.
 
 + Parameters
 
