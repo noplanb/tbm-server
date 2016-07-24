@@ -1,7 +1,7 @@
 class Messages::TriggerEvent < ActiveInteraction::Base
-  object :sender, class: ::User
+  object :sender,   class: ::User
   object :receiver, class: ::User
-  object :message, class: ::Kvstore::Wrapper
+  object :message,  class: ::Kvstore.decorator(:default)
   string :type
 
   def execute

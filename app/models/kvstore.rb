@@ -1,4 +1,6 @@
 class Kvstore < ActiveRecord::Base
+  include ModelDecorator::DecorateWith
+
   SUFFIXES_FOR_EVENTS = %w(VideoIdKVKey VideoStatusKVKey).freeze
   after_save :trigger_event_callback
 
@@ -99,7 +101,7 @@ class Kvstore < ActiveRecord::Base
     Messages::TriggerEvent.run(
       sender: User.find_by_mkey(sender_mkey),
       receiver: User.find_by_mkey(receiver_mkey),
-      message: Wrapper.new(self),
+      message: decorate_with(:default),
       type: 'kvstore')
   end
 end
