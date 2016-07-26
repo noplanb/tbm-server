@@ -25,6 +25,15 @@ GIT
   specs:
     npb_notification (0.0.4)
 
+GIT
+  remote: git://github.com/noplanb/zazo-tools.git
+  revision: 06c89f4e42e16f78618916d79e6b6c970d96012b
+  tag: 0.3.0-wip.1
+  specs:
+    zazo-tools (0.3.0)
+      active_interaction
+      aws-sdk
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -419,7 +428,6 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
-  active_interaction (~> 3.0)
   activerecord-colored_log_subscriber
   awesome_print
   aws-sdk (~> 2)
@@ -482,6 +490,7 @@ DEPENDENCIES
   uglifier
   vcr
   webmock
+  zazo-tools!
 
 BUNDLED WITH
    1.10.6
