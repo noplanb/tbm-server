@@ -1,5 +1,7 @@
 # Changelog
 
+### 2.10.4-wip.6
+
 ### 2.10.4-wip.5
 - :arrow_up: Refactor ModelDecorator
 
