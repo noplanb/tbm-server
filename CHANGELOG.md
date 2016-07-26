@@ -1,6 +1,7 @@
 # Changelog
 
 ### 2.10.4-wip.6
+- :arrow_up: Move some stuff to zazo-tools gem
 
 ### 2.10.4-wip.5
 - :arrow_up: Refactor ModelDecorator
