@@ -27,8 +27,8 @@ GIT
 
 GIT
   remote: git://github.com/noplanb/zazo-tools.git
-  revision: 7c6b31791642d31eab2056f4760947e73cb178fd
-  tag: 0.3.0-wip.3
+  revision: 324ee2317c409b452d6d25f0c0de751662f8b9a5
+  tag: 0.3.0-wip.4
   specs:
     zazo-tools (0.3.0)
       active_interaction

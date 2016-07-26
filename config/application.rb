@@ -39,6 +39,6 @@ module ThreebymeServer
     end
     config.sass.preferred_syntax = :sass
     config.middleware.insert 0, Rack::Attack
-    config.middleware.insert 1, Zazo::Tools::Middleware::RequestDocs
+    config.middleware.insert 1, Zazo::Middleware::RequestDocs
   end
 end

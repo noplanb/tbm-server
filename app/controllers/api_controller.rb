@@ -1,5 +1,5 @@
 class ApiController < ApplicationController
-  include Zazo::Tools::ApiController
+  include Zazo::Controller::Interactions
 
   before_action :authenticate
   before_action :save_client_info

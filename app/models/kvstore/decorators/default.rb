@@ -1,4 +1,4 @@
-class Kvstore::Decorators::Default < Zazo::Tools::Model::Decorator
+class Kvstore::Decorators::Default < Zazo::Model::Decorator
   def message_id
     key2 || value['messageId'] || value['videoId']
   end

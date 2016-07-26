@@ -1,5 +1,5 @@
 class Kvstore < ActiveRecord::Base
-  include Zazo::Tools::Model::Decorator::Extension
+  include Zazo::Model::Decorator::Decoratable
 
   SUFFIXES_FOR_EVENTS = %w(VideoIdKVKey VideoStatusKVKey).freeze
   after_save :trigger_event_callback

@@ -1,4 +1,4 @@
-class User::Decorators::ClientInfo < Zazo::Tools::Model::Decorator
+class User::Decorators::ClientInfo < Zazo::Model::Decorator
   def abilities
     []
   end
