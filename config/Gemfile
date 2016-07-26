@@ -37,7 +37,7 @@ gem 'kaminari'
 gem 'aasm'
 gem 'activerecord-colored_log_subscriber'
 
-gem 'zazo-tools', github: 'noplanb/zazo-tools', tag: '0.3.0-wip.2'
+gem 'zazo-tools', github: 'noplanb/zazo-tools', tag: '0.3.0-wip.3'
 gem 'remote_syslog_logger'
 gem 'rollbar'
 

@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   include EnumHandler
   include AASM
   include EventNotifiable
-  include ModelDecorator::DecorateWith
+  include Zazo::Tools::Model::Decorator::Extension
 
   include AppAttributes
   include VerificationMethods

@@ -27,12 +27,13 @@ GIT
 
 GIT
   remote: git://github.com/noplanb/zazo-tools.git
-  revision: e78749af4165b3111d408c50cd7e83e044dafc95
-  tag: 0.3.0-wip.2
+  revision: 7c6b31791642d31eab2056f4760947e73cb178fd
+  tag: 0.3.0-wip.3
   specs:
     zazo-tools (0.3.0)
       active_interaction
       aws-sdk
+      rails
 
 GEM
   remote: https://rubygems.org/
