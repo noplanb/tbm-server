@@ -1,7 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require_relative '../lib/request_docs'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -40,6 +39,6 @@ module ThreebymeServer
     end
     config.sass.preferred_syntax = :sass
     config.middleware.insert 0, Rack::Attack
-    config.middleware.insert 1, RequestDocs
+    config.middleware.insert 1, Zazo::Middleware::RequestDocs
   end
 end
