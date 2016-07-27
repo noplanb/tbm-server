@@ -14,6 +14,6 @@ class Api::V1::EventsController < ActionController::Base
   private
 
   def log_params
-    WriteLog.info(self, "Request params: #{params.inspect}")
+    Zazo::Tool::Logger.info(self, "Request params: #{params.inspect}")
   end
 end
