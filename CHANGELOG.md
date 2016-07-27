@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.7
+- :arrow_up: Removed unnecessary gem
+
 ### 2.10.4-wip.6
 - :arrow_up: Move some stuff to zazo-tools gem
 

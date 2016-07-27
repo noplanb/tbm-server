@@ -11,8 +11,6 @@ gem 'turbolinks'
 
 gem 'aws-sdk', '~> 2'
 
-gem 'faraday_middleware'
-
 gem 'console_candy', github: 'etcetc/console_candy'
 gem 'npb_notification', github: 'etcetc/npb_notification'
 gem 'enum_handler', github: 'asux/enum_handler'

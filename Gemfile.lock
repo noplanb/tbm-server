@@ -449,7 +449,6 @@ DEPENDENCIES
   enum_handler!
   factory_girl_rails
   faker
-  faraday_middleware
   figaro!
   fuubar
   gcm
