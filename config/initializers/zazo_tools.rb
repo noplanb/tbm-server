@@ -10,3 +10,8 @@ Zazo::Tool::Logger.configure do |config|
   config.project_name = Settings.app_name_key
 end
 
+Zazo::Tool::EventDispatcher.configure do |config|
+  config.send_message_enabled = false if Rails.env.test? || Rails.env.development?
+  config.queue_url = Figaro.env.sqs_queue_url
+  config.logger = Rails.logger
+end

@@ -5,7 +5,7 @@ module EventNotifiable
 
   def notify_state_changed
     initiator = self.class.name.underscore
-    EventDispatcher.emit([initiator, aasm.current_state],
+    Zazo::Tool::EventDispatcher.emit([initiator, aasm.current_state],
                          initiator: initiator,
                          initiator_id: id_for_events,
                          data: { event: aasm.current_event,

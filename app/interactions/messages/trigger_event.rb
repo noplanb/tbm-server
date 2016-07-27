@@ -5,7 +5,7 @@ class Messages::TriggerEvent < ActiveInteraction::Base
   string :type
 
   def execute
-    EventDispatcher.emit(name, event)
+    Zazo::Tool::EventDispatcher.emit(name, event)
   end
 
   private
