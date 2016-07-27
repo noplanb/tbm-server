@@ -5,6 +5,7 @@ defaults: &settings
   domain_name: zazoapp.com
   site_name: zazoapp
   app_name: Zazo
+  app_name_key: mainapi
   admin_email: admin@zazoapp.com
   support_email: support@zazoapp.com
   app_schema: zazo://

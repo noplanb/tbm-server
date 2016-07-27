@@ -1,6 +1,7 @@
 AWS_REGION: us-west-1
 AWS_ACCESS_KEY_ID:
 AWS_SECRET_ACCESS_KEY:
+APN_CERTIFICATE_PASSPHRASE:
 
 s3_access_key_id:
 s3_secret_access_key:
@@ -15,8 +16,6 @@ domain_name: localhost:3000
 
 gcm_api_key:
 gcm_uri: https://android.googleapis.com/gcm/send
-
-APN_CERTIFICATE_PASSPHRASE:
 
 http_basic_password:
 http_basic_username:
@@ -44,6 +43,10 @@ papertrail_host:
 papertrail_port:
 papertrail_program:
 papertrail_local_hostname:
+
+logstash_url:
+logstash_username:
+logstash_password:
 
 newrelic_license_key:
 

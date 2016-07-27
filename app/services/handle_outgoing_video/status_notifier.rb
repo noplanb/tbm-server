@@ -20,8 +20,8 @@ class HandleOutgoingVideo::StatusNotifier
 
   def log_messages(status)
     case status
-      when :success then WriteLog.info self, "s3 event was handled successfully at #{Time.now}; #{debug_info}"
-      when :failure then WriteLog.info self, "errors occurred with handle s3 event at #{Time.now}; errors: #{errors_messages.inspect}; #{debug_info}"
+      when :success then Zazo::Tool::Logger.info(self, "s3 event was handled successfully at #{Time.now}; #{debug_info}")
+      when :failure then Zazo::Tool::Logger.info(self, "errors occurred with handle s3 event at #{Time.now}; errors: #{errors_messages.inspect}; #{debug_info}")
     end
   end
 
