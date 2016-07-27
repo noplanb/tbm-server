@@ -1,7 +1,7 @@
 # Changelog
 
 ### 2.10.4-wip.7
-- :arrow_up: Removed unnecessary gem
+- :arrow_up: Removed unnecessary gems
 - :arrow_up: Added zazo logger
 
 ### 2.10.4-wip.6

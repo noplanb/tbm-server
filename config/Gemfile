@@ -36,8 +36,6 @@ gem 'aasm'
 gem 'activerecord-colored_log_subscriber'
 
 gem 'zazo-tools', github: 'noplanb/zazo-tools', tag: '1.0.0', require: 'zazo'
-
-gem 'remote_syslog_logger'
 gem 'rollbar'
 
 group :development do
