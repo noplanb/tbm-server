@@ -190,8 +190,8 @@ RSpec.describe Kvstore, type: :model do
       end
 
       context 'event notification' do
-        specify 'EventDispatcher not receives :emit' do
-          expect(EventDispatcher).to_not receive(:emit)
+        specify 'Zazo::Tool::EventDispatcher not receives :emit' do
+          expect(Zazo::Tool::EventDispatcher).to_not receive(:emit)
           subject
         end
       end

@@ -66,7 +66,7 @@ class InvitationController < ApplicationController
   end
 
   def trigger_invitation_sent(inviter, invitee)
-    EventDispatcher.emit(%w(user invitation_sent), initiator: 'user',
+    Zazo::Tool::EventDispatcher.emit(%w(user invitation_sent), initiator: 'user',
                                                    initiator_id: inviter.id_for_events,
                                                    target: 'user',
                                                    target_id: invitee.id_for_events,
@@ -81,7 +81,7 @@ class InvitationController < ApplicationController
     invitee_id_for_events = direct_invite_message_params[:mkey]
     messaging_platform = direct_invite_message_params[:messaging_platform]
     message_status = direct_invite_message_params[:message_status]
-    EventDispatcher.emit(%w(user invitation direct_invite_message), initiator: 'user',
+    Zazo::Tool::EventDispatcher.emit(%w(user invitation direct_invite_message), initiator: 'user',
                                                                     initiator_id: inviter.id_for_events,
                                                                     target: 'user',
                                                                     target_id: invitee_id_for_events,

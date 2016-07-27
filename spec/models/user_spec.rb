@@ -395,7 +395,7 @@ RSpec.describe User, type: :model do
       subject { instance.verify }
 
       before do
-        allow(EventDispatcher.sqs_client).to receive(:send_message)
+        allow(Zazo::Tool::EventDispatcher.sqs_client).to receive(:send_message)
         instance.register!
       end
 
@@ -411,7 +411,7 @@ RSpec.describe User, type: :model do
       subject { instance.pend }
 
       before do
-        allow(EventDispatcher.sqs_client).to receive(:send_message)
+        allow(Zazo::Tool::EventDispatcher.sqs_client).to receive(:send_message)
         instance.register!
       end
 

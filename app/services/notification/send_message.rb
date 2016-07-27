@@ -30,7 +30,7 @@ class Notification::SendMessage
 
   def trigger_event(params, sender_mkey, video_id)
     video_filename = Kvstore.video_filename(sender_mkey, push_user.mkey, video_id)
-    EventDispatcher.emit(%w(video notification received),
+    Zazo::Tool::EventDispatcher.emit(%w(video notification received),
       message.merge(
         target: 'video',
         target_id: video_filename,

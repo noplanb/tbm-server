@@ -10,7 +10,7 @@ RSpec.describe Landing::HandleAppLinkClickedEvent do
     context 'with correct connection_id' do
       let(:additions) { { connection: FactoryGirl.create(:connection) } }
       it do
-        expect(EventDispatcher).to receive(:emit).with %w(user app_link_clicked), instance_of(Hash)
+        expect(Zazo::Tool::EventDispatcher).to receive(:emit).with %w(user app_link_clicked), instance_of(Hash)
         subject
       end
     end
@@ -18,7 +18,7 @@ RSpec.describe Landing::HandleAppLinkClickedEvent do
     context 'with incorrect connection' do
       let(:additions) { { connection: nil } }
       it do
-        expect(EventDispatcher).to receive(:emit).with %w(user app_link_clicked), instance_of(Hash)
+        expect(Zazo::Tool::EventDispatcher).to receive(:emit).with %w(user app_link_clicked), instance_of(Hash)
         subject
       end
     end

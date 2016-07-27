@@ -1,8 +1,11 @@
 # Changelog
 
+### 2.10.4-wip.8
+- :arrow_up: Added event dispatcher from zazo-tools gem
+
 ### 2.10.4-wip.7
 - :arrow_up: Removed unnecessary gems
-- :arrow_up: Added zazo logger
+- :arrow_up: Added logger from zazo-tools gem
 
 ### 2.10.4-wip.6
 - :arrow_up: Move some stuff to zazo-tools gem

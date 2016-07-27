@@ -22,7 +22,7 @@ class Notification::SendMessageStatus
 
   def trigger_event(params)
     video_filename = Kvstore.video_filename(params[:target_mkey], params[:to_mkey], params[:video_id])
-    EventDispatcher.emit(['video', 'notification', params[:status]],
+    Zazo::Tool::EventDispatcher.emit(['video', 'notification', params[:status]],
       initiator: 'user',
       initiator_id: push_user.mkey,
       target: 'video',
