@@ -23,9 +23,6 @@ ThreebymeServer::Application.routes.draw do
   get 'c/:id' => 'landing#invite'
   get 'privacy' => 'landing#privacy'
 
-  get 'digest/open'
-  get 'digest/secure'
-
   post 'dispatch/post_dispatch'
 
   get 'users/new_connection/:id' => 'users#new_connection'

@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.9
+- :arrow_up: Removed unnecessary code
+
 ### 2.10.4-wip.8
 - :arrow_up: Added event dispatcher from zazo-tools gem
 
