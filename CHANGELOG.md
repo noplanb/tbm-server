@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.10
+- :hammer: Fixed update and destroy messages api routes
+
 ### 2.10.4-wip.9
 - :arrow_up: Removed unnecessary code
 - :arrow_up: Bumped nokogiri gem
