@@ -3,8 +3,8 @@ class Api::V1::MessagesController::Get::Message < Api::BaseInteraction
   string :id
 
   def execute
-    message = Kvstore.where(key2: id).first
-    validate_presence(message) && validate_ownership(message)
+    message = Kvstore.where(key2: id).find { |msg| msg.key1.include?(user.mkey) }
+    validate_presence(message)
     message
   end
 
@@ -12,13 +12,7 @@ class Api::V1::MessagesController::Get::Message < Api::BaseInteraction
 
   def validate_presence(message)
     return true if message
-    errors.add(:message, "not found by key2=#{id}")
-    false
-  end
-
-  def validate_ownership(message)
-    return true if message.key1.include?(user.mkey)
-    errors.add(:message, 'is not associated with user')
+    errors.add(:message, "not found by key2=#{id} by user ownership")
     false
   end
 end

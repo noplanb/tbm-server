@@ -22,13 +22,13 @@ RSpec.describe Api::V1::MessagesController::Get::Message do
     context 'presence' do
       let(:params) { default_params.merge(id: '123456789100') }
 
-      it { is_expected.to eq(['Message not found by key2=123456789100']) }
+      it { is_expected.to eq(['Message not found by key2=123456789100 by user ownership']) }
     end
 
     context 'ownership' do
       let(:params) { default_params.merge(user: create(:user)) }
 
-      it { is_expected.to eq(['Message is not associated with user']) }
+      it { is_expected.to eq(["Message not found by key2=#{message.key2} by user ownership"]) }
     end
   end
 end
