@@ -1,30 +1,27 @@
-box: wercker/rvm
-
-services:
-  - wercker/mysql
+box: zazo/rails
 
 build:
+  services:
+    - id: mysql
+      tag: 5.7
+      env:
+        MYSQL_USER: users_db
+        MYSQL_PASSWORD: secret888zazo
+        MYSQL_DATABASE: users_db
+        MYSQL_ROOT_PASSWORD: secret888zazo
   steps:
     - bundle-install:
         gemfile: config/Gemfile
         without: development production
-    - asux/rails-database-yml:
-        mysql-collation: utf8_unicode_ci
     - script:
-        name: echo ruby information
-        code: |
-          echo "ruby version $(ruby --version) running"
-          echo "from location $(which ruby)"
-          echo -p "gem list: $(gem list)"
-    - script:
-        name: reset database
-        code: bin/rake db:drop db:create db:migrate
+        name: db setup
+        code: rake db:create db:migrate RAILS_ENV=test
     - script:
         name: create rspec and coverage dir
         code: mkdir -p $WERCKER_REPORT_ARTIFACTS_DIR/rspec $WERCKER_REPORT_ARTIFACTS_DIR/coverage
     - script:
         name: rspec
-        code: bundle exec rspec
+        code: rspec
   after-steps:
     - wantedly/pretty-slack-notify:
         webhook_url: $slack_url
