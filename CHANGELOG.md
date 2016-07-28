@@ -3,7 +3,7 @@
 ### 2.10.4-wip.9
 - :arrow_up: Removed unnecessary code
 - :arrow_up: Bumped nokogiri gem
-- :hammer: Fixed wercker build configuration
+- :hammer: Fixed wercker build and deploy configuration
 
 ### 2.10.4-wip.8
 - :arrow_up: Added event dispatcher from zazo-tools gem
