@@ -76,7 +76,7 @@ Returns message info (value) by id.
                 }
             }
 
-+ Request message is not found (application/json)
++ Request message is not found or does not belong to user (application/json)
 
     + Headers
 
@@ -89,24 +89,7 @@ Returns message info (value) by id.
             {
                 "status": "failure",
                 "errors": [
-                    "Message not found by key2=xxxxxxxxxxxx"
-                ]
-            }
-
-+ Request message does not belong to user (application/json)
-
-    + Headers
-
-            Authorization: ** digest authentication credentials **
-
-+ Response 422 (application/json; charset=utf-8)
-
-    + Body
-
-            {
-                "status": "failure",
-                "errors": [
-                    "Message is not associated with user"
+                    "Message not found by key2=xxxxxxxxxxxx by user ownership"
                 ]
             }
 
@@ -432,7 +415,7 @@ Delete message record from kvstore by id by receiver.
                 "status": "success"
             }
 
-+ Request message is not found (application/json)
++ Request message is not found or does not belong to user (application/json)
 
     + Headers
 
@@ -445,24 +428,7 @@ Delete message record from kvstore by id by receiver.
             {
                 "status": "failure",
                 "errors": [
-                    "Message not found by key2=xxxxxxxxxxxx"
-                ]
-            }
-
-+ Request message does not belong to user (application/json)
-
-    + Headers
-
-            Authorization: ** digest authentication credentials **
-
-+ Response 422 (application/json; charset=utf-8)
-
-    + Body
-
-            {
-                "status": "failure",
-                "errors": [
-                    "Message is not associated with user"
+                    "Message not found by key2=xxxxxxxxxxxx by user ownership"
                 ]
             }
 
