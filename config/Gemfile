@@ -8,35 +8,33 @@ gem 'uglifier'
 gem 'coffee-rails'
 gem 'jquery-rails'
 gem 'turbolinks'
-
-gem 'aws-sdk', '~> 2'
+gem 'slim-rails'
+gem 'bootstrap-sass'
+gem 'simple_form'
+gem 'kaminari'
+gem 'aasm'
 
 gem 'console_candy', github: 'etcetc/console_candy'
 gem 'npb_notification', github: 'etcetc/npb_notification'
 gem 'enum_handler', github: 'asux/enum_handler'
 
+gem 'aws-sdk', '~> 2'
 gem 'gcm'
 gem 'houston'
 gem 'twilio-ruby'
 gem 'global_phone'
-
-gem 'pry-rails'
-gem 'figaro', github: 'asux/figaro', branch: 'feature/eb-set-command'
-gem 'awesome_print'
-gem 'slim-rails'
-
-gem 'bootstrap-sass'
-gem 'simple_form'
+gem 'streamio-ffmpeg'
 
 gem 'settingslogic'
-gem 'rack-attack'
-gem 'newrelic_rpm'
-gem 'kaminari'
-gem 'aasm'
-gem 'activerecord-colored_log_subscriber'
+gem 'figaro', github: 'asux/figaro', branch: 'feature/eb-set-command'
 
 gem 'zazo-tools', github: 'noplanb/zazo-tools', tag: '1.0.0', require: 'zazo'
 gem 'rollbar'
+gem 'newrelic_rpm'
+
+gem 'pry-rails'
+gem 'rack-attack'
+gem 'activerecord-colored_log_subscriber'
 
 group :development do
   gem 'better_errors'
