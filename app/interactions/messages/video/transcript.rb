@@ -5,21 +5,20 @@ class Messages::Video::Transcript < ActiveInteraction::Base
   object :s3_event
 
   def execute
-    file_path = WORKING_DIR.join(kvstore.key1).to_path
-    video = compose(DownloadVideo, s3_event: s3_event, file_path: file_path)
-    audio = compose(ExtractAudio, file_path: file_path)
-    update_record(transcription: get_transcription)
-    remove_files(video, audio)
+    video_path = compose(DownloadVideo, s3_event: s3_event, file_path: file_path)
+    audio_path = compose(ExtractAudio, file_path: file_path)
+    update_record(transcription: compose(GetTranscription, audio_path: audio_path))
+    remove_files(video_path, audio_path)
   end
 
   private
 
-  def get_transcription
+  def update_record(data)
 
   end
 
-  def update_record(data)
-
+  def file_path
+    @file_path ||= WORKING_DIR.join(kvstore.key1).to_path
   end
 
   def remove_files(*files)
