@@ -14,7 +14,8 @@ class Messages::Video::Transcript < ActiveInteraction::Base
   private
 
   def update_record(data)
-
+    new_value = JSON.parse(kvstore.value).merge(data)
+    kvstore.update_attributes(value: new_value.to_json)
   end
 
   def file_path
