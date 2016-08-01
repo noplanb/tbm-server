@@ -73,6 +73,7 @@ group :test do
   gem 'launchy'
   gem 'shoulda-matchers', '~> 2.8'
   gem 'simplecov', require: false
+  gem 'rspec-sidekiq'
   gem 'webmock'
   gem 'vcr'
   gem 'timecop'
