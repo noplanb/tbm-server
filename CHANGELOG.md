@@ -1,7 +1,8 @@
 # Changelog
 
 ### 2.10.4-wip.11
-- :bulb: Implemented interaction service to transcript video by s3 event
+- :bulb: Implemented video trainscription
+- :bulb: Implemented docker configuration and fixed bugs
 
 ### 2.10.4-wip.10
 - :hammer: Fixed update and destroy messages api routes
