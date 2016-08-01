@@ -27,6 +27,8 @@ gem 'streamio-ffmpeg'
 
 gem 'settingslogic'
 gem 'figaro', github: 'asux/figaro', branch: 'feature/eb-set-command'
+gem 'puma'
+gem 'foreman'
 gem 'sidekiq'
 gem 'sinatra', require: false
 
