@@ -14,7 +14,7 @@ class HandleOutgoingVideo
 
   def do
     return false unless s3_event.valid?
-    set_metadata
+    @s3_metadata = S3Metadata.create_by_event(s3_event)
     return false unless valid?
     handle_outgoing_video if client_version_allowed?
     true
@@ -22,15 +22,11 @@ class HandleOutgoingVideo
 
   private
 
-  def set_metadata
-    @s3_metadata = S3Metadata.create_by_event(s3_event)
-  end
-
   def handle_outgoing_video
     store_video_file_name
     kvstore = update_kvstore_with_video_id
-    send_notification_to_receiver if receiver_push_user
-    SidekiqWorker::TranscriptVideoMessage.perform_async(kvstore.id, s3_event_raw) if kvstore
+    kvstore && SidekiqWorker::TranscriptVideoMessage.perform_async(kvstore.id, s3_event_raw)
+    receiver_push_user && send_notification_to_receiver
   end
 
   def store_video_file_name

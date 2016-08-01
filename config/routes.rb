@@ -1,4 +1,8 @@
+require 'sidekiq/web'
+
 ThreebymeServer::Application.routes.draw do
+  mount Sidekiq::Web => '/sidekiq'
+
   get 's3_credentials/info'
 
   resources :s3_credentials

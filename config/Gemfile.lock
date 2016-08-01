@@ -507,6 +507,7 @@ DEPENDENCIES
   sidekiq
   simple_form
   simplecov
+  sinatra
   slim-rails
   streamio-ffmpeg
   terminal-notifier-guard
