@@ -27,6 +27,7 @@ gem 'streamio-ffmpeg'
 
 gem 'settingslogic'
 gem 'figaro', github: 'asux/figaro', branch: 'feature/eb-set-command'
+gem 'sidekiq'
 
 gem 'zazo-tools', github: 'noplanb/zazo-tools', tag: '1.0.0', require: 'zazo'
 gem 'rollbar'
