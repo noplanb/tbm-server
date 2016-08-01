@@ -33,8 +33,8 @@ twilio_ssid:
 twilio_to_number: '+16502453537'
 twilio_token:
 
-nuance_asr_api_key:
-nuance_asr_api_id:
+nuance_asr_app_key:
+nuance_asr_app_id:
 nuance_asr_id:
 
 rollbar_access_token:

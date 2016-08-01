@@ -1,8 +1,8 @@
 class Messages::Video::Transcript::GetTranscription < ActiveInteraction::Base
   NUANCE_API_ENDPOINT = 'https://dictation.nuancemobility.net:443/NMDPAsrCmdServlet/dictation'
   CREDENTIALS_PARAMS = {
-    appId:  Figaro.env.nuance_asr_api_id,
-    appKey: Figaro.env.nuance_asr_api_key,
+    appId:  Figaro.env.nuance_asr_app_id,
+    appKey: Figaro.env.nuance_asr_app_key,
     id:     Figaro.env.nuance_asr_id }
 
   string :audio_path
