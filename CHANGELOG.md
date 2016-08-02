@@ -3,6 +3,7 @@
 ### 2.10.4-wip.11
 - :bulb: Implemented video transcription
 - :bulb: Implemented docker configuration
+- :arrow_up: Disabled and removed rack attack middleware
 - :hammer: Fixed bugs with app configuration and assets
 
 ### 2.10.4-wip.10
