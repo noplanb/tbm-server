@@ -1,6 +1,9 @@
 require 'sidekiq/web'
 
 ThreebymeServer::Application.routes.draw do
+  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+    username == Figaro.env.http_basic_username && password == Figaro.env.http_basic_password
+  end
   mount Sidekiq::Web => '/sidekiq'
 
   get 's3_credentials/info'
