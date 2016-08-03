@@ -1,6 +1,7 @@
 # Changelog
 
 ### 2.10.4-wip.12
+- :arrow_up: Fixed video transcription persistence
 
 ### 2.10.4-wip.11
 - :bulb: Implemented video transcription
