@@ -15,15 +15,15 @@ class Messages::Video::Transcript < ActiveInteraction::Base
 
   private
 
-  def save_transcription(text)
+  def save_transcription(transcriptions)
     Message.create_or_update(
       { sender: sender_mkey, receiver: receiver_mkey,
         message_id: message_id, message_type: 'video' },
-      { transcription: text })
+      { transcription: transcriptions.split("\n").first })
   end
 
   def file_path
-    @file_path ||= WORKING_DIR.join(kvstore.key1).to_path
+    @file_path ||= WORKING_DIR.join(s3_event.file_name).to_path
   end
 
   def remove_files(*files)
