@@ -1,0 +1,4 @@
+web: puma
+nginx: service nginx start
+redis: redis-server
+sidekiq: sidekiq -c 25

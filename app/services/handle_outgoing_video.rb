@@ -1,19 +1,20 @@
 class HandleOutgoingVideo
   include ActiveModel::Validations
 
-  attr_reader :s3_event, :s3_metadata
+  attr_reader :s3_event, :s3_event_raw, :s3_metadata
 
   validates_with DuplicationCaseValidator
   validates_with DifferentFileSizesValidator
   validates_with ZeroFileSizeValidator
 
-  def initialize(s3_event_params)
-    @s3_event = S3Event.new(s3_event_params)
+  def initialize(s3_event_raw)
+    @s3_event_raw = s3_event_raw
+    @s3_event = S3Event.new(s3_event_raw)
   end
 
   def do
     return false unless s3_event.valid?
-    set_metadata
+    @s3_metadata = S3Metadata.create_by_event(s3_event)
     return false unless valid?
     handle_outgoing_video if client_version_allowed?
     true
@@ -21,13 +22,10 @@ class HandleOutgoingVideo
 
   private
 
-  def set_metadata
-    @s3_metadata = S3Metadata.create_by_event(s3_event)
-  end
-
   def handle_outgoing_video
     store_video_file_name
-    update_kvstore_with_video_id
+    kvstore = update_kvstore_with_video_id
+    kvstore && SidekiqWorker::TranscriptVideoMessage.perform_async(kvstore.id, s3_event_raw)
     receiver_push_user && send_notification_to_receiver
   end
 

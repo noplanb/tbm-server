@@ -17,7 +17,7 @@ class S3Metadata::FetchMetadata
   private
 
   def s3_client_instance
-    Aws::S3::Client.new access_key_id: Figaro.env.s3_access_key_id,
-                        secret_access_key: Figaro.env.s3_secret_access_key
+    Aws::S3::Client.new(access_key_id: Figaro.env.s3_access_key_id,
+                        secret_access_key: Figaro.env.s3_secret_access_key)
   end
 end
