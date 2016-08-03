@@ -1,5 +1,7 @@
 # Changelog
 
+### 2.10.4-wip.12
+
 ### 2.10.4-wip.11
 - :bulb: Implemented video transcription
 - :bulb: Implemented docker configuration
