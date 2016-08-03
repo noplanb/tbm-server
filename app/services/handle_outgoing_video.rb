@@ -24,8 +24,9 @@ class HandleOutgoingVideo
 
   def handle_outgoing_video
     store_video_file_name
-    kvstore = update_kvstore_with_video_id
-    kvstore && SidekiqWorker::TranscriptVideoMessage.perform_async(kvstore.id, s3_event_raw)
+    update_kvstore_with_video_id
+    SidekiqWorker::TranscriptVideoMessage.perform_async(
+      s3_event_raw, s3_metadata.sender_mkey, s3_metadata.receiver_mkey, s3_metadata.video_id)
     receiver_push_user && send_notification_to_receiver
   end
 

@@ -50,15 +50,15 @@ Get all incoming messages and statuses for all outcoming messages.
                 ]
             }
 
-### Get message info [GET /api/v1/messages/{id}]
+### Get message metadata [GET /api/v1/messages/{id}]
 
-Returns message info (value) by id.
+Returns message metadata (transcription for video) by id.
 
 + Parameters
 
     + id (required) - id of message
 
-+ Request success (application/json)
++ Request metadata is persisted (application/json)
 
     + Headers
 
@@ -71,26 +71,24 @@ Returns message info (value) by id.
             {
                 "status": "success",
                 "data": {
-                    "type": "text",
-                    "body": "hello!"
+                    "type": "video",
+                    "transcription": "Hello world"
                 }
             }
 
-+ Request message is not found or does not belong to user (application/json)
++ Request metadata is not persisted (application/json)
 
     + Headers
 
             Authorization: ** digest authentication credentials **
 
-+ Response 422 (application/json; charset=utf-8)
++ Response 200 (application/json; charset=utf-8)
 
     + Body
 
             {
-                "status": "failure",
-                "errors": [
-                    "Message not found by key2=xxxxxxxxxxxx by user ownership"
-                ]
+                "status": "success",
+                "data": {}
             }
 
 ### Create message [POST /api/v1/messages]
