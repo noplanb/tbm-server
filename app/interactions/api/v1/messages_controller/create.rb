@@ -3,8 +3,7 @@ class Api::V1::MessagesController::Create < Api::BaseInteraction
   string :receiver_mkey
   string :type
   string :body, default: nil
-  string :transcription, default: nil
-  string :id, default: -> { Time.now.to_i.to_s }
+  string :id, default: -> { (Time.now.to_f + 1000).to_i.to_s }
 
   def execute
     compose(namespace::Get::Type, type: type)
@@ -25,7 +24,6 @@ class Api::V1::MessagesController::Create < Api::BaseInteraction
   def build_value
     { 'type' => type,
       'messageId' => id,
-      'body' => body,
-      'transcription' => transcription }.select { |_, v| v }.to_json
+      'body' => body }.select { |_, v| v }.to_json
   end
 end
