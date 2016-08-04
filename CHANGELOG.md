@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.13
+- :arrow_up: Added specs for Messages::Video::Transcript service
+
 ### 2.10.4-wip.12
 - :arrow_up: Fixed video transcription persistence
 
