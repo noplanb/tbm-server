@@ -1,160 +1,166 @@
 require 'rails_helper'
 
 RSpec.describe HandleOutgoingVideo do
-  use_vcr_cassette 'gcm_send_with_error', erb: {
-    key: Figaro.env.gcm_api_key,
-    payload: GcmServer.make_payload('qq64zz709r4zw1l6ap5p', type: 'video_received',
-                                                            from_mkey: 'ZcAK4dM9S4m0IFui6ok6',
-                                                            video_id: '1444235919617') }
+  use_vcr_cassette 'gcm_send_with_error',
+    erb: {
+      key: Figaro.env.gcm_api_key,
+      payload: GcmServer.make_payload('qq64zz709r4zw1l6ap5p',
+        type: 'video_received',
+        from_mkey: 'ZcAK4dM9S4m0IFui6ok6',
+        video_id: '1444235919617') }
 
   let(:s3_event_params) { json_fixture(s3_event_file)['Records'] }
-  let(:instance) { described_class.new s3_event_params }
+  let(:instance) { described_class.new(s3_event_params) }
+
+  def self.with_metadata(*args)
+    [nil] + args
+  end
 
   RSpec.shared_examples 'expect common behavior' do |params|
-    action   = -> (key) { params[:perform][key] ? :to : :to_not }
+    action = -> (key) { params[:perform][key] ? :to : :to_not }
     metadata = { common_behavior: true }.merge(params[:addition_metadata] || {})
 
     it '#do', metadata do
-      expect(subject).to be params[:perform][:do]
+      expect(subject).to be(params[:perform][:do])
     end
 
     it 'notification case', metadata do
-      expect_any_instance_of(Notification::SendMessage).send action.call(:notification), receive(:process)
+      expect_any_instance_of(Notification::SendMessage).send(
+        action.call(:notification), receive(:process))
       subject
     end
 
     it 'kvstore case', metadata do
-      expect(Kvstore).send action.call(:kvstore), receive(:add_id_key)
+      expect(Kvstore).send(action.call(:kvstore), receive(:add_id_key))
       subject
     end
   end
 
-  def create_users_and_connection(create_push_user = true)
-    creator = FactoryGirl.create :user, mkey: 'ZcAK4dM9S4m0IFui6ok6'
-    target  = FactoryGirl.create :user, mkey: 'lpb8DcispONUSfdMOT9g'
-    FactoryGirl.create :push_user, mkey: target.mkey, push_token: 'qq64zz709r4zw1l6ap5p' if create_push_user
-    FactoryGirl.create :established_connection, creator: creator, target: target
-  end
-
   describe '#do' do
-    let(:errors_messages) do
-      HandleOutgoingVideo::StatusNotifier.new(instance).send(:errors_messages)
+    def create_users_and_connection(create_push_user = true)
+      creator = FactoryGirl.create(:user, mkey: 'ZcAK4dM9S4m0IFui6ok6')
+      target = FactoryGirl.create(:user, mkey: 'lpb8DcispONUSfdMOT9g')
+      FactoryGirl.create(:push_user, mkey: target.mkey, push_token: 'qq64zz709r4zw1l6ap5p') if create_push_user
+      FactoryGirl.create(:established_connection, creator: creator, target: target)
     end
 
-    subject do
-      VCR.use_cassette(vcr_cassette) { instance.do }
-    end
+    subject { VCR.use_cassette(vcr_cassette) { instance.do } }
 
     before do |example|
-      if example.metadata[:common_behavior]
-        create_users_and_connection !example.metadata[:disable_push_user]
-      end
-      VCR.use_cassette(vcr_cassette) { instance.do } if example.metadata[:do_before]
+      create_users_and_connection(!example.metadata[:disable_push_user]) if example.metadata[:common_behavior]
+      subject if example.metadata[:do_before]
     end
 
-    context 'success case' do
+    after do |example|
+      subject if example.metadata[:do_after]
+    end
+
+    context 'when success' do
       let(:vcr_cassette)  { 's3_get_metadata' }
       let(:s3_event_file) { 's3_event' }
 
-      include_examples 'expect common behavior', perform: { do: true, kvstore: true, notification: true }
-
-      it(nil, :common_behavior) { expect { subject }.to change { Kvstore.count }.by 1 }
-
-      it 'specific kvstore placed in database', :common_behavior, :do_before do
-        expect(Kvstore.last.key2).to eq '1444235919617'
+      include_examples 'expect common behavior',
+        perform: { do: true, kvstore: true, notification: true }
+      it *with_metadata(:common_behavior) do
+        expect { subject }.to change { Kvstore.count }.by(1)
       end
-
-      it 'specific video_id stored in database', :common_behavior, :do_before do
-        expect(NotifiedS3Object.last.file_name).to eq s3_event_params.first['s3']['object']['key']
+      it *with_metadata(:common_behavior, :do_before) do
+        expect(Kvstore.last.key2).to eq('1444235919617')
       end
-    end
-
-    context 'duplication case' do
-      let(:vcr_cassette)  { 's3_get_metadata' }
-      let(:s3_event_file) { 's3_event' }
-
-      before { FactoryGirl.create :notified_s3_object, file_name: s3_event_params.first['s3']['object']['key'] }
-
-      include_examples 'expect common behavior', perform: { do: false, kvstore: false, notification: false }
-
-      it 'has specific errors' do
-        subject
-        create_users_and_connection
-        expect(errors_messages).to eq file_name: ['already persisted in database, duplication case']
+      it *with_metadata(:common_behavior, :do_before) do
+        expect(NotifiedS3Object.last.file_name).to eq(s3_event_params.first['s3']['object']['key'])
       end
-
-      it 'should fire rollbar error' do
-        expect(Rollbar).to receive(:error).with 'Duplicate upload event', Hash
-        subject
+      it *with_metadata(:common_behavior, :do_before) do
+        expect(SidekiqWorker::TranscriptVideoMessage).to be_processed_in(:default)
       end
     end
 
-    context 'invalid mkeys case' do
-      let(:vcr_cassette)  { 's3_get_metadata' }
-      let(:s3_event_file) { 's3_event' }
-
-      include_examples 'expect common behavior', perform: {
-        do: true, kvstore: true, notification: false,
-      }, addition_metadata: { disable_push_user: true }
-    end
-
-    context 'invalid s3_event case' do
-      let(:vcr_cassette)  { 's3_get_metadata_incorrect' }
-      let(:s3_event_file) { 's3_event_incorrect' }
-
-      include_examples 'expect common behavior', perform: { do: false, kvstore: false, notification: false }
-
-      it 'has specific errors', :do_before do
-        expect(errors_messages).to eq bucket_name: ['can\'t be blank'],
-                                      file_name:   ['can\'t be blank']
+    context 'when failure' do
+      let(:errors_messages) do
+        HandleOutgoingVideo::StatusNotifier.new(instance).send(:errors_messages)
       end
-    end
 
-    context 'file sizes comparison', :common_behavior do
-      let(:s3_event_file) { 's3_event' }
+      context 'duplication case' do
+        let(:vcr_cassette)  { 's3_get_metadata' }
+        let(:s3_event_file) { 's3_event' }
 
-      after { subject }
+        before do
+          FactoryGirl.create(:notified_s3_object,
+            file_name: s3_event_params.first['s3']['object']['key'])
+        end
 
-      context 'equal' do
-        let(:vcr_cassette) { 's3_get_metadata_file_sizes_same' }
-
-        include_examples 'expect common behavior', perform: { do: true, kvstore: true, notification: true }
-
-        it 'should not fire rollbar error' do
-          expect(Rollbar).to_not receive(:error)
+        include_examples 'expect common behavior',
+          perform: { do: false, kvstore: false, notification: false }
+        it do
+          subject
+          create_users_and_connection
+          expect(errors_messages).to eq(file_name: ['already persisted in database, duplication case'])
+        end
+        it *with_metadata(:do_after) do
+          expect(Rollbar).to receive(:error).with('Duplicate upload event', Hash)
         end
       end
 
-      context 'not equal' do
-        let(:vcr_cassette) { 's3_get_metadata_file_sizes_different' }
+      context 'invalid mkeys case' do
+        let(:vcr_cassette)  { 's3_get_metadata' }
+        let(:s3_event_file) { 's3_event' }
 
-        include_examples 'expect common behavior', perform: { do: true, kvstore: true, notification: true }
+        include_examples 'expect common behavior',
+          perform: { do: true, kvstore: true, notification: false },
+          addition_metadata: { disable_push_user: true }
+      end
 
-        it 'should fire rollbar error' do
-          expect(Rollbar).to receive(:error).with 'Upload event with wrong size', Hash
+      context 'invalid s3_event case' do
+        let(:vcr_cassette)  { 's3_get_metadata_incorrect' }
+        let(:s3_event_file) { 's3_event_incorrect' }
+
+        include_examples 'expect common behavior',
+          perform: { do: false, kvstore: false, notification: false }
+        it *with_metadata(:do_before) do
+          expected = { bucket_name: ['can\'t be blank'], file_name: ['can\'t be blank'] }
+          expect(errors_messages).to eq(expected)
         end
       end
 
-      context 'when metadata does\'t contains file size' do
-        let(:vcr_cassette) { 's3_get_metadata' }
+      context 'file sizes comparison', :common_behavior do
+        let(:s3_event_file) { 's3_event' }
 
-        include_examples 'expect common behavior', perform: { do: true, kvstore: true, notification: true }
+        after { subject }
 
-        it 'should not fire rollbar error' do
-          expect(Rollbar).to_not receive(:error)
+        context 'equal' do
+          let(:vcr_cassette) { 's3_get_metadata_file_sizes_same' }
+
+          include_examples 'expect common behavior',
+            perform: { do: true, kvstore: true, notification: true }
+          it { expect(Rollbar).to_not receive(:error) }
+        end
+
+        context 'not equal' do
+          let(:vcr_cassette) { 's3_get_metadata_file_sizes_different' }
+
+          include_examples 'expect common behavior',
+            perform: { do: true, kvstore: true, notification: true }
+          it { expect(Rollbar).to receive(:error).with('Upload event with wrong size', Hash) }
+        end
+
+        context 'when metadata does\'t contains file size' do
+          let(:vcr_cassette) { 's3_get_metadata' }
+
+          include_examples 'expect common behavior',
+            perform: { do: true, kvstore: true, notification: true }
+          it { expect(Rollbar).to_not receive(:error) }
         end
       end
-    end
 
-    context 'file size equals zero' do
-      let(:vcr_cassette)  { 's3_get_metadata' }
-      let(:s3_event_file) { 's3_event_zero_file_size' }
+      context 'file size equals zero' do
+        let(:vcr_cassette)  { 's3_get_metadata' }
+        let(:s3_event_file) { 's3_event_zero_file_size' }
 
-      include_examples 'expect common behavior', perform: { do: false, kvstore: false, notification: false }
-
-      it 'should fire rollbar error' do
-        expect(Rollbar).to receive(:error).with 'Upload with filesize == 0', Hash
-        subject
+        include_examples 'expect common behavior',
+          perform: { do: false, kvstore: false, notification: false }
+        it *with_metadata(:do_after) do
+          expect(Rollbar).to receive(:error).with('Upload with filesize == 0', Hash)
+        end
       end
     end
   end

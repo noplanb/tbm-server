@@ -1,5 +1,10 @@
 # Changelog
 
+### 2.10.4-wip.13
+- :arrow_up: Added specs for Messages::Video::Transcript service
+- :arrow_up: Removed transcription field from messages#create
+- :arrow_up: Refactored specs for HandleOutgoingVideo service
+
 ### 2.10.4-wip.12
 - :arrow_up: Fixed video transcription persistence
 
