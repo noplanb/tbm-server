@@ -19,12 +19,22 @@ RSpec.describe Api::V1::MessagesController::Show do
 
     context 'when type is persisted in value' do
       let(:message) { Kvstore.add_message_id_key('video', connected_friend, user, gen_message_id) }
-      shared_context_specs
+
+      before do
+        create(:message,
+          sender: connected_friend.mkey, receiver: user.mkey,
+          message_id: message.key2, transcription: 'hello world')
+      end
+
+      it { expect(subject.valid?).to be_truthy }
+      it { expect(subject.result).to eq(type: 'video', transcription: 'hello world') }
     end
 
     context 'when type isn\'t persisted in value' do
       let(:message) { Kvstore.add_id_key(connected_friend, user, gen_message_id) }
-      shared_context_specs
+
+      it { expect(subject.valid?).to be_truthy }
+      it { expect(subject.result).to eq({}) }
     end
   end
 end
