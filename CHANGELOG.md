@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.15
+- :arrow_up: Disabled redis-server on worker aws environment
+
 ### 2.10.4-wip.14
 - :arrow_up: Removed unnecessary gems
 - :arrow_up: Fixed redis storage configuration
