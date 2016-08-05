@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.16
+- :bulb: Added feature to send test text messages
+
 ### 2.10.4-wip.15
 - :arrow_up: Disabled redis-server on worker aws environment
 

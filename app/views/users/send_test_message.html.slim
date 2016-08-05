@@ -1,0 +1,21 @@
+h1 = "#{@sender.name} → #{@receiver.name}"
+
+/.well
+  h4
+    .span.label.label-default Video Message
+  br
+  .row
+    .col-xs-3
+
+.well
+  h4
+    .span.label.label-default Text Message
+  br
+  .row
+    .col-xs-3
+      = simple_form_for(:message) do |f|
+        = f.input :type, as: :hidden, input_html: { value: 'text' }
+        = f.input :sender_id, as: :hidden, input_html: { value: @sender.id }
+        = f.input :body, as: :text, label: false, input_html: { rows: 3 }
+        .actions
+          = f.submit 'Send'
