@@ -1,11 +1,19 @@
 h1 = "#{@sender.name} → #{@receiver.name}"
 
-/.well
+.well
   h4
     .span.label.label-default Video Message
   br
   .row
     .col-xs-3
+      ul
+        li = link_to 'Test Video Sani', receive_test_video_path(id: @receiver.id, sender_id: @sender.id, file: 'test_video_sani')
+        li = link_to 'Test Video Sani Long', receive_test_video_path(id: @receiver.id, sender_id: @sender.id, file: 'test_video_sani_long')
+        li = link_to 'Test Video 1 Long', receive_test_video_path(id: @receiver.id, sender_id: @sender.id, file: 'test_video_1')
+        li = link_to 'Test Video 2', receive_test_video_path(id: @receiver.id, sender_id: @sender.id, file: 'test_video_2')
+        li = link_to 'Test Video 3', receive_test_video_path(id: @receiver.id, sender_id: @sender.id, file: 'test_video_3')
+        li = link_to 'Corrupt Video', receive_corrupt_video_path(id: @receiver.id, sender_id: @sender.id)
+        li = link_to 'Permanent Error Video', receive_permanent_error_video_path(id: @receiver.id, sender_id: @sender.id)
 
 .well
   h4

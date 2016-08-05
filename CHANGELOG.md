@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.17
+- :arrow_up: Fixed UI to send test messages
+
 ### 2.10.4-wip.16
 - :bulb: Added feature to send test text messages
 

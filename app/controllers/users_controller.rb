@@ -84,7 +84,7 @@ class UsersController < AdminController
           Api::V1::MessagesController::Create.run!(
             user: @sender, receiver_mkey: @receiver.mkey, type: 'text', body: params[:message][:body])
       end
-      redirect_to @receiver, notice: 'Message was successfully sent: '
+      redirect_to @receiver, notice: 'Test message was successfully sent.'
     end
   end
 
