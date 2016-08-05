@@ -2,6 +2,7 @@
 
 ### 2.10.4-wip.14
 - :arrow_up: Removed unnecessary gems
+- :arrow_up: Fixed redis storage configuration
 
 ### 2.10.4-wip.13
 - :arrow_up: Added specs for Messages::Video::Transcript service

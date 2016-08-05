@@ -30,6 +30,7 @@ gem 'figaro', github: 'asux/figaro', branch: 'feature/eb-set-command'
 gem 'puma'
 gem 'foreman'
 gem 'sidekiq'
+gem 'redis-namespace'
 gem 'sinatra', require: false
 
 gem 'zazo-tools', github: 'noplanb/zazo-tools', tag: '1.0.0', require: 'zazo'
