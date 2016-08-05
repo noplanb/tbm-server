@@ -60,6 +60,8 @@ table.table border="0" cellspacing="5" cellpadding="5"
       td
         = link_to 'Destroy', connection, method: :delete, data: { confirm: 'Are you sure?' }
         '  |
+        = link_to 'Send Test Message', user_send_test_message_path(@user, sender_id: u.id)
+        '  |
         = link_to 'Test Video Sani', receive_test_video_path(id: @user.id, sender_id: u.id, file: 'test_video_sani')
         '  |
         = link_to 'Test Video Sani Long', receive_test_video_path(id: @user.id, sender_id: u.id, file: 'test_video_sani_long')

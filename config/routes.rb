@@ -10,7 +10,10 @@ ThreebymeServer::Application.routes.draw do
 
   resources :s3_credentials
   resources :connections
-  resources :users
+  resources :users do
+    get :send_test_message
+    post :send_test_message
+  end
   resources :version_compatibilities
 
   resources :connection, only: [] do
