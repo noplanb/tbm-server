@@ -43,10 +43,8 @@ client_rollbar_access_token:
 ios_rollbar_access_token:
 android_rollbar_access_token:
 
-papertrail_host:
-papertrail_port:
-papertrail_program:
-papertrail_local_hostname:
+redis_host: localhost
+redis_port: '6379'
 
 logstash_url:
 logstash_username:
