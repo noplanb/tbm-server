@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.10.4-wip.18
+- :arrow_up: Fixed timestamp for messages#create endpoint
+- :arrow_up: Fixed redirect after sending test messages
+
 ### 2.10.4-wip.17
 - :arrow_up: Fixed UI to send test messages
 

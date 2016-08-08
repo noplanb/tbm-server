@@ -42,7 +42,7 @@ RSpec.describe Api::V1::MessagesController::Create do
         time = Time.parse('21-01-1994')
         Timecop.freeze(time) { subject }
         expected = {
-          'messageId' => (time.to_f + 1000).to_i.to_s, 'type' => 'text' }
+          'messageId' => time.to_i.to_s, 'type' => 'text' }
         expect(JSON.parse(Kvstore.last.value)).to eq(expected)
       end
     end
