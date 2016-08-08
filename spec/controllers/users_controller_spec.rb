@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe UsersController, type: :controller do
   before { authenticate_with_http_basic }
 
-  describe 'GET #receive_test_video' do
+  xdescribe 'GET #receive_test_video' do
     let(:video_id) { '1429630398758' }
     let(:connection) { create(:established_connection) }
     let(:user) { connection.creator }

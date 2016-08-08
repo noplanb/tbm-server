@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.10.4-wip.19
+- :arrow_up: Changed message id from seconds to milliseconds
+- :hammer: Disabled specs for users controller
+
 ### 2.10.4-wip.18
 - :arrow_up: Fixed timestamp for messages#create endpoint
 - :arrow_up: Fixed redirect after sending test messages
