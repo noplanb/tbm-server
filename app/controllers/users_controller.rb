@@ -84,18 +84,16 @@ class UsersController < AdminController
           Api::V1::MessagesController::Create.run!(
             user: @sender, receiver_mkey: @receiver.mkey, type: 'text', body: params[:message][:body])
       end
-      redirect_to @receiver, notice: 'Test message was successfully sent.'
+      redirect_to :back, notice: 'Test message was successfully sent.'
     end
   end
-
-  # send test video
 
   def receive_test_video
     file = Rails.root.join("#{params[:file] ? params[:file] : 'test_video_sani'}.mp4")
     if file.exist?
       receive_video(file)
     else
-      redirect_to @user, alert: 'Video file not found'
+      redirect_to :back, alert: 'Video file not found.'
     end
   end
 
@@ -115,7 +113,7 @@ class UsersController < AdminController
     Kvstore.add_id_key(sender, @user, video_id)
     @push_user = PushUser.find_by_mkey(@user.mkey) || not_found
     Notification::SendMessage.new(@push_user, request.host, current_user).process(params, sender.mkey, sender.first_name, video_id)
-    redirect_to @user, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
+    redirect_to :back, notice: "Video sent from #{sender.first_name} to #{@user.first_name}."
   end
 
   def test_video_id
