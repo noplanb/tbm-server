@@ -3,7 +3,7 @@ class Api::V1::MessagesController::Create < Api::BaseInteraction
   string :receiver_mkey
   string :type
   string :body, default: nil
-  string :id, default: -> { Time.now.to_i.to_s }
+  string :id, default: -> { DateTime.now.strftime('%Q') }
 
   def execute
     compose(namespace::Get::Type, type: type)
