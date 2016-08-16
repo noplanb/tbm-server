@@ -21,7 +21,14 @@ class Users::SendTestMessage::Video < Users::SendTestMessage
     cred.s3_client.put_object(
       bucket: cred.bucket,
       key: Kvstore.video_filename(sender, receiver, video_id),
-      body: File.read(file_path))
+      body: File.read(file_path),
+      metadata: build_s3_metadata(video_id))
+  end
+
+  def build_s3_metadata(video_id)
+    { 'sender-mkey' => sender.mkey,
+      'receiver-mkey' => receiver.mkey,
+      'video-id' =>  video_id }
   end
 
   def test_video_id
