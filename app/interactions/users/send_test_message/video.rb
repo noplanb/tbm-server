@@ -5,7 +5,7 @@ class Users::SendTestMessage::Video < Users::SendTestMessage
   def execute
     kvstore_record = Kvstore.add_id_key(sender, receiver, create_test_video)
     Notifications::Send::Received.run(
-      sender: user, receiver: receiver, kvstore: kvstore_record)
+      sender: sender, receiver: receiver, kvstore: kvstore_record)
   end
 
   private
