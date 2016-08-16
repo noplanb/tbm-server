@@ -81,8 +81,11 @@ class UsersController < AdminController
     if request.post?
       case params[:message][:type]
         when 'text'
-          Api::V1::MessagesController::Create.run!(
-            user: @sender, receiver_mkey: @receiver.mkey, type: 'text', body: params[:message][:body])
+          Users::SendTestMessage::Text.run!(
+            sender: @sender, receiver: @receiver, body: params[:message][:body])
+        when 'video'
+          Users::SendTestMessage::Video.run!(
+            sender: @sender, receiver: @receiver, file_name: params[:message][:file_name])
       end
       redirect_to :back, notice: 'Test message was successfully sent.'
     end
@@ -138,8 +141,7 @@ class UsersController < AdminController
   end
 
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :mobile_number,
-                                 :emails, :device_platform,
-                                 :auth, :mkey, :status)
+    params.require(:user).permit(
+      :first_name, :last_name, :mobile_number, :emails, :device_platform, :auth, :mkey, :status)
   end
 end
