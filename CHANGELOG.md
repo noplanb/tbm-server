@@ -1,6 +1,8 @@
 # Changelog
 
 ### 2.10.4-wip.20
+- :bulb: Added metadata to test video
+- :arrow_up: Fixed some admin redirects and views
 
 ### 2.10.4-wip.19
 - :arrow_up: Changed message id from seconds to milliseconds

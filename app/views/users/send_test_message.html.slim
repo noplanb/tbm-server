@@ -17,21 +17,16 @@ h1 = "#{@sender.name} → #{@receiver.name}"
 
 .well
   h4
-    .span.label.label-default Video Message
+    .span.label.label-default Video Message (with metadata)
   br
   .row
     .col-xs-3
       - [ \
           { name: 'Test Video Sani', file_name: 'test_video_sani' }, \
           { name: 'Test Video Sani Long', file_name: 'test_video_sani_long' }, \
-          {}, \
-          {}, \
-          {}, \
-          {}, \
-          {}, \
-          {}, \
-          {}, \
-          {}, \
+          { name: 'Test Video 1 Long', file_name: 'test_video_1' }, \
+          { name: 'Test Video 2', file_name: 'test_video_2' }, \
+          { name: 'Test Video 3', file_name: 'test_video_3' } \
       ].each do |message|
         = link_to message[:name], user_send_test_message_path( \
           message: { type: 'video', sender_id: @sender.id, file_name: message[:file_name] }), method: :post
@@ -47,3 +42,5 @@ h1 = "#{@sender.name} → #{@receiver.name}"
         = f.input :body, as: :text, label: false, input_html: { rows: 3 }
         .actions
           = f.submit 'Send'
+
+= link_to 'Back', user_path(@receiver), class: 'btn btn-default'
