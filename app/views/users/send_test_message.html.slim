@@ -21,15 +21,16 @@ h1 = "#{@sender.name} → #{@receiver.name}"
   br
   .row
     .col-xs-3
-      - [ \
-          { name: 'Test Video Sani', file_name: 'test_video_sani' }, \
-          { name: 'Test Video Sani Long', file_name: 'test_video_sani_long' }, \
-          { name: 'Test Video 1 Long', file_name: 'test_video_1' }, \
-          { name: 'Test Video 2', file_name: 'test_video_2' }, \
-          { name: 'Test Video 3', file_name: 'test_video_3' } \
-      ].each do |message|
-        = link_to message[:name], user_send_test_message_path( \
-          message: { type: 'video', sender_id: @sender.id, file_name: message[:file_name] }), method: :post
+      ul
+        - [ \
+            { name: 'Test Video Sani', file_name: 'test_video_sani' }, \
+            { name: 'Test Video Sani Long', file_name: 'test_video_sani_long' }, \
+            { name: 'Test Video 1 Long', file_name: 'test_video_1' }, \
+            { name: 'Test Video 2', file_name: 'test_video_2' }, \
+            { name: 'Test Video 3', file_name: 'test_video_3' } \
+        ].each do |message|
+          li = link_to message[:name], user_send_test_message_path( \
+            message: { type: 'video', sender_id: @sender.id, file_name: message[:file_name] }), method: :post
 .well
   h4
     .span.label.label-default Text Message

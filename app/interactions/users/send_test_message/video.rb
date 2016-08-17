@@ -1,22 +1,13 @@
 class Users::SendTestMessage::Video < Users::SendTestMessage
   string :file_name
-  boolean :s3_upload, default: true
 
   def execute
-    kvstore_record = Kvstore.add_id_key(sender, receiver, create_test_video)
-    Notifications::Send::Received.run(
-      sender: sender, receiver: receiver, kvstore: kvstore_record)
+    put_s3_object(test_video_id)
   end
 
   private
 
-  def create_test_video
-    video_id = test_video_id
-    put_s3_object(video_id, Rails.root.join("#{file_name}.mp4")) if s3_upload
-    video_id
-  end
-
-  def put_s3_object(video_id, file_path)
+  def put_s3_object(video_id)
     cred = S3Credential.instance
     cred.s3_client.put_object(
       bucket: cred.bucket,
@@ -26,12 +17,19 @@ class Users::SendTestMessage::Video < Users::SendTestMessage
   end
 
   def build_s3_metadata(video_id)
-    { 'sender-mkey' => sender.mkey,
+    { 'client-platform' => 'android',
+      'client-version' => '112',
+      'sender-mkey' => sender.mkey,
       'receiver-mkey' => receiver.mkey,
-      'video-id' =>  video_id }
+      'video-id' =>  video_id,
+      'file-size' => File.size(file_path).to_s }
   end
 
   def test_video_id
     (Time.now.to_f * 1000).to_i.to_s
+  end
+
+  def file_path
+    Rails.root.join("#{file_name}.mp4")
   end
 end
