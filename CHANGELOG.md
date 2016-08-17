@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.21
+- :bulb: Fixed feature to send test video
+
 ### 2.10.4-wip.20
 - :bulb: Added metadata to test video
 - :arrow_up: Fixed some admin redirects and views
