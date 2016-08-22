@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.22
+- :arrow_up: Fixed apns for ios notification
+
 ### 2.10.4-wip.21
 - :bulb: Fixed feature to send test video
 
