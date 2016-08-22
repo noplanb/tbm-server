@@ -7,7 +7,8 @@ class Notifications::Send::Received < Notifications::Send
 
   def base_notification
     { type: :alert,
-      alert: "New message from #{sender.name}",
+      alert: notification_alert,
+      category: 'MESSAGE_CATEGORY',
       badge: 1 }
   end
 
@@ -25,5 +26,13 @@ class Notifications::Send::Received < Notifications::Send
       owner_mkey: receiver.mkey,
       message_id: message.message_id,
       host: host }.merge(message.stripped_value.symbolize_keys)
+  end
+
+  def notification_alert
+    if message.type?(:text)
+     "#{sender.name}: #{message.value['body']}"
+    else
+      "New message from #{sender.name}"
+    end
   end
 end

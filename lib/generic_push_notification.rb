@@ -1,7 +1,7 @@
 class GenericPushNotification
   # :build = :dev, :prod (for IOS only)
-  attr_accessor :platform, :token, :type, :payload,          # ios and android
-                :alert, :badge, :sound, :content_available, :build   # ios only
+  attr_accessor :platform, :token, :type, :payload, # ios and android
+                :alert, :badge, :sound, :category, :content_available, :build # ios only
 
   # include EnumHandler
   # define_enum :platform, [:ios,:android]
@@ -19,6 +19,7 @@ class GenericPushNotification
     @alert = attrs[:alert] unless @type == :silent
     @badge = attrs[:badge] unless @type == :silent
     @sound = attrs[:sound] || (@type == :silent ? nil : 'NotificationTone.wav')
+    @category = attrs[:category]
     @content_available = attrs[:content_available].present?
     @payload = attrs[:payload]
   end
@@ -28,6 +29,7 @@ class GenericPushNotification
       n.alert = @alert if @alert
       n.badge = @badge if @badge
       n.sound = @sound if @sound
+      n.category = @category if @category
       n.content_available = @content_available
       n.custom_data = @payload if @payload
     end
