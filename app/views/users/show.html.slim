@@ -53,6 +53,8 @@ table.table
     td = @user.active_connections.count
 
 = link_to 'Edit', edit_user_path(@user), class: 'btn btn-default'
+' &nbsp;
+= link_to 'Destroy', @user, method: :delete, class: 'btn btn-danger', data: { confirm: 'Are you sure?' }
 
 h4
   ' Connected users
