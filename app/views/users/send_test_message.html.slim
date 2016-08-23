@@ -1,3 +1,6 @@
+- content_for(:additional_user_navigation)
+  li = link_to '→ Back to User', @receiver
+
 h1 = "#{@sender.name} → #{@receiver.name}"
 
 .well
@@ -43,5 +46,3 @@ h1 = "#{@sender.name} → #{@receiver.name}"
         = f.input :body, as: :text, label: false, input_html: { rows: 3 }
         .actions
           = f.submit 'Send'
-
-= link_to 'Back', user_path(@receiver), class: 'btn btn-default'
