@@ -24,6 +24,10 @@ class Api::V1::MessagesController::Create < Api::BaseInteraction
   def build_value
     { 'type' => type,
       'messageId' => id,
-      'body' => body }.select { |_, v| v }.to_json
+      'body' => serialize_emojis(body) }.select { |_, v| v }.to_json
+  end
+
+  def serialize_emojis(text)
+    Emojimmy.emoji_to_token(text)
   end
 end
