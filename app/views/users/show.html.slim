@@ -18,7 +18,13 @@ table.table
     td = @user.emails.join(', ')
   tr
     td Device platform
-    td = human_device_platform @user.device_platform
+    td = @user.device_platform
+  tr
+    td Device info
+    td = @user.device_info
+  tr
+    td App version
+    td = @user.app_version
   tr
     td Mkey
     td

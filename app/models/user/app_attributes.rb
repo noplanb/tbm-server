@@ -11,6 +11,7 @@ module User::AppAttributes
                                         :mobile_number, :device_platform, :emails)
     r[:id] = r[:id].to_s
     r[:has_app] = app?.to_s
+    r[:abilities] = decorate_with(:client_info).abilities
     r
   end
 
