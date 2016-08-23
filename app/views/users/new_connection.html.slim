@@ -19,8 +19,6 @@ table
         td = user.last_name
         td = user.mobile_number
         td
-          - # user.live_connection_count < 8 ? (link_to 'Pick', "/users/establish_connection/#{@user.id}?target_id=#{user.id}") : "Maxed out"
           = link_to 'Pick', "/users/establish_connection/#{@user.id}?target_id=#{user.id}"
           ' |
           = link_to 'Show', user
-br

@@ -26,7 +26,6 @@ class UsersController < AdminController
 
   def create
     @user = User.new(user_params)
-
     respond_to do |format|
       if @user.save
         format.html { redirect_to @user, notice: 'User was successfully created.' }
@@ -67,9 +66,9 @@ class UsersController < AdminController
       connection = Connection.find_or_create(@user.id, params[:target_id])
       if connection
         connection.establish! if connection.may_establish?
-        format.html { redirect_to @user, notice: 'Connection was successfully created.' }
+        format.html { redirect_to :back, notice: 'Connection was successfully created.' }
       else
-        format.html { redirect_to @user, notice: 'Connection could not be created.' }
+        format.html { redirect_to :back, notice: 'Connection could not be created.' }
       end
     end
   end
