@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.23
+- :bulb: Added emojis support for text messages
+
 ### 2.10.4-wip.22
 - :arrow_up: Fixed apns for ios notification
 

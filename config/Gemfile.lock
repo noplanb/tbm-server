@@ -139,6 +139,9 @@ GEM
       thor (~> 0.19)
     diff-lcs (1.2.5)
     docile (1.1.5)
+    emojimmy (0.2.2)
+      activerecord (>= 3.0.0)
+      rumoji (>= 0.3.1)
     erubis (2.7.0)
     execjs (2.6.0)
     factory_girl (4.5.0)
@@ -358,6 +361,7 @@ GEM
       sidekiq (>= 2.4.0)
     rspec-support (3.3.0)
     ruby-progressbar (1.7.5)
+    rumoji (0.5.0)
     safe_yaml (1.0.4)
     sass (3.4.18)
     sass-rails (5.0.4)
@@ -452,6 +456,7 @@ DEPENDENCIES
   console_candy!
   database_cleaner
   derailed_benchmarks
+  emojimmy
   enum_handler!
   factory_girl_rails
   faker

@@ -82,7 +82,7 @@ class Kvstore::GetMessages < Struct.new(:user)
   def build_message_by_value(value)
     value = JSON.parse(value)
     if value['type']
-      rest = value.except('type', 'messageId').symbolize_keys
+      rest = deserialize_body_emojis(value).except('type', 'messageId').symbolize_keys
       { type: value['type'], message_id: value['messageId'] }.merge(rest)
     else
       { type: 'video', message_id: value['videoId'] }
@@ -94,5 +94,10 @@ class Kvstore::GetMessages < Struct.new(:user)
     { type: value['type'] || 'video',
       message_id: value['messageId'] || value['videoId'],
       status: value['status'] } if value
+  end
+
+  def deserialize_body_emojis(attrs)
+    attrs['body'] = attrs['body'] && Emojimmy.token_to_emoji(attrs['body'])
+    attrs
   end
 end
