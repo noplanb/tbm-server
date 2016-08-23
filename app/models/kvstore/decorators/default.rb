@@ -17,14 +17,17 @@ class Kvstore::Decorators::Default < Zazo::Model::Decorator
 
   def value(raw: false)
     @value ||= JSON.parse(model.value)
-    return @value if raw
-
-    v = @value
-    v['body'] &&= Emojimmy.token_to_emoji(v['body'])
-    v
+    raw ? @value : value_with_emojis
   end
 
   def stripped_value
     value.except('videoId', 'messageId', 'type')
+  end
+
+  private
+
+  def value_with_emojis
+    body = @value['body'] && Emojimmy.token_to_emoji(@value['body'])
+    @value.merge('body' => body)
   end
 end
