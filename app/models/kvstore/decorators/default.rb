@@ -15,8 +15,13 @@ class Kvstore::Decorators::Default < Zazo::Model::Decorator
     value['status'] || 'received'
   end
 
-  def value
-    JSON.parse(model.value)
+  def value(raw: false)
+    @value ||= JSON.parse(model.value)
+    return @value if raw
+
+    v = @value
+    v['body'] &&= Emojimmy.token_to_emoji(v['body'])
+    v
   end
 
   def stripped_value
