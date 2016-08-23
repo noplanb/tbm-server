@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.24
+- :bulb: Added abilities for users
+
 ### 2.10.4-wip.23
 - :bulb: Added emojis support for text messages
 
