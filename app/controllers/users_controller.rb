@@ -66,9 +66,12 @@ class UsersController < AdminController
       connection = Connection.find_or_create(@user.id, params[:target_id])
       if connection
         connection.establish! if connection.may_establish?
-        format.html { redirect_to :back, notice: 'Connection was successfully created.' }
+        notice = 'Connection was successfully created.'
       else
-        format.html { redirect_to :back, notice: 'Connection could not be created.' }
+        notice = 'Connection could not be created.'
+      end
+      format.html do
+        redirect_to (request.env['HTTP_REFERER'] ? :back : @user), notice: notice
       end
     end
   end
@@ -88,7 +91,7 @@ class UsersController < AdminController
               sender: @sender, receiver: @receiver, file_name: file_name)
           end
       end
-      redirect_to :back, notice: 'Test message was successfully sent.'
+      redirect_to (request.env['HTTP_REFERER'] ? :back : @user), notice: 'Test message was successfully sent.'
     end
   end
 
@@ -97,7 +100,7 @@ class UsersController < AdminController
     if file.exist?
       receive_video(file)
     else
-      redirect_to :back, alert: 'Video file not found.'
+      redirect_to (request.env['HTTP_REFERER'] ? :back : @user), alert: 'Video file not found.'
     end
   end
 
