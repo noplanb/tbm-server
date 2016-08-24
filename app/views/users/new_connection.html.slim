@@ -3,24 +3,22 @@
 
 h1 Listing users
 
-.row
-  .col-sm-8
-    table.table
-      thead
-        tr
-          th Id
-          th First name
-          th Last name
-          th Mobile number
-          th Actions
-      tbody
-        - @users.each do |user|
-          tr
-            td = user.id
-            td = user.first_name
-            td = user.last_name
-            td = user.mobile_number
-            td
-              = link_to 'Pick', "/users/establish_connection/#{@user.id}?target_id=#{user.id}"
-              '  |
-              = link_to 'Show', user
+table.table
+  thead
+    tr
+      th Id
+      th First name
+      th Last name
+      th Mobile number
+      th Actions
+  tbody
+    - @users.each do |user|
+      tr
+        td = user.id
+        td = user.first_name
+        td = user.last_name
+        td = user.mobile_number
+        td
+          = link_to 'Pick', "/users/establish_connection/#{@user.id}?target_id=#{user.id}"
+          '  |
+          = link_to 'Show', user
