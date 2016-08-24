@@ -83,8 +83,10 @@ class UsersController < AdminController
           Users::SendTestMessage::Text.run!(
             sender: @sender, receiver: @receiver, body: params[:message][:body])
         when 'video'
-          Users::SendTestMessage::Video.run!(
-            sender: @sender, receiver: @receiver, file_name: params[:message][:file_name])
+          (params[:message][:files] || []).each do |file_name|
+            Users::SendTestMessage::Video.run!(
+              sender: @sender, receiver: @receiver, file_name: file_name)
+          end
       end
       redirect_to :back, notice: 'Test message was successfully sent.'
     end
