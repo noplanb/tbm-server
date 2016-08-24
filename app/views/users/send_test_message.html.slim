@@ -1,3 +1,6 @@
+- content_for(:additional_user_navigation)
+  li = link_to '→ Back to User', @receiver
+
 h1 = "#{@sender.name} → #{@receiver.name}"
 
 .well
@@ -7,30 +10,11 @@ h1 = "#{@sender.name} → #{@receiver.name}"
   .row
     .col-xs-3
       ul
-        li = link_to 'Test Video Sani', receive_test_video_path(id: @receiver.id, sender_id: @sender.id, file: 'test_video_sani')
-        li = link_to 'Test Video Sani Long', receive_test_video_path(id: @receiver.id, sender_id: @sender.id, file: 'test_video_sani_long')
-        li = link_to 'Test Video 1 Long', receive_test_video_path(id: @receiver.id, sender_id: @sender.id, file: 'test_video_1')
-        li = link_to 'Test Video 2', receive_test_video_path(id: @receiver.id, sender_id: @sender.id, file: 'test_video_2')
-        li = link_to 'Test Video 3', receive_test_video_path(id: @receiver.id, sender_id: @sender.id, file: 'test_video_3')
+        - test_video_messages.each do |message|
+          li = link_to message[:name], user_send_test_message_path( \
+            message: { type: 'video', sender_id: @sender.id, files: message[:files] }), method: :post
         li = link_to 'Corrupt Video', receive_corrupt_video_path(id: @receiver.id, sender_id: @sender.id)
         li = link_to 'Permanent Error Video', receive_permanent_error_video_path(id: @receiver.id, sender_id: @sender.id)
-
-.well
-  h4
-    .span.label.label-default Video Message (with metadata)
-  br
-  .row
-    .col-xs-3
-      ul
-        - [ \
-            { name: 'Test Video Sani', file_name: 'test_video_sani' }, \
-            { name: 'Test Video Sani Long', file_name: 'test_video_sani_long' }, \
-            { name: 'Test Video 1 Long', file_name: 'test_video_1' }, \
-            { name: 'Test Video 2', file_name: 'test_video_2' }, \
-            { name: 'Test Video 3', file_name: 'test_video_3' } \
-        ].each do |message|
-          li = link_to message[:name], user_send_test_message_path( \
-            message: { type: 'video', sender_id: @sender.id, file_name: message[:file_name] }), method: :post
 .well
   h4
     .span.label.label-default Text Message
@@ -43,5 +27,3 @@ h1 = "#{@sender.name} → #{@receiver.name}"
         = f.input :body, as: :text, label: false, input_html: { rows: 3 }
         .actions
           = f.submit 'Send'
-
-= link_to 'Back', user_path(@receiver), class: 'btn btn-default'

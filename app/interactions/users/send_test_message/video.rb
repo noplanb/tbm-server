@@ -30,6 +30,6 @@ class Users::SendTestMessage::Video < Users::SendTestMessage
   end
 
   def file_path
-    Rails.root.join("#{file_name}.mp4")
+    Rails.root.join("videos/#{file_name}.mp4")
   end
 end

@@ -1,23 +1,26 @@
+- content_for(:additional_user_navigation)
+  li = link_to '→ Back to User', @user
+
 h1 Listing users
-table
-  thead
-    tr
-      th Id
-      th First name
-      th Last name
-      th Mobile number
-      th
-  tbody
-    - @users.each do |user|
-      tr
-        td = user.id
-        td = user.first_name
-        td = user.last_name
-        td = user.mobile_number
-        td
-          - # user.live_connection_count < 8 ? (link_to 'Pick', "/users/establish_connection/#{@user.id}?target_id=#{user.id}") : "Maxed out"
-          = link_to 'Pick', "/users/establish_connection/#{@user.id}?target_id=#{user.id}"
-          ' |
-          = link_to 'Show', user
-br
-= link_to 'Back', @user
+
+.row
+  .col-sm-8
+    table.table
+      thead
+        tr
+          th Id
+          th First name
+          th Last name
+          th Mobile number
+          th Actions
+      tbody
+        - @users.each do |user|
+          tr
+            td = user.id
+            td = user.first_name
+            td = user.last_name
+            td = user.mobile_number
+            td
+              = link_to 'Pick', "/users/establish_connection/#{@user.id}?target_id=#{user.id}"
+              '  |
+              = link_to 'Show', user
