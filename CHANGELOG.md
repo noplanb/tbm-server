@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.10.4-wip.26
+- :hammer: Fixed sidekiq redis namespace
+
 ### 2.10.4-wip.25
 - :arrow_up: Added some additions for admin screens
 
