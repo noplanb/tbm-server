@@ -33,7 +33,7 @@ class Landing::HandleAppLinkClickedEvent
   private
 
   def fire_sqs_event(platform)
-    EventDispatcher.emit(%w(user app_link_clicked),
+    Zazo::Tool::EventDispatcher.emit(%w(user app_link_clicked),
       initiator: 'user',
       data: { platform: platform }.merge(sqs_event_data),
       raw_params: { user_agent: user_agent.raw })

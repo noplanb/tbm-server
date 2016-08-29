@@ -14,22 +14,22 @@ class HandleOutgoingVideo::StatusNotifier
 
   def rollbar(type, data = {})
     if ROLLBAR_MESSAGES[type]
-      Rollbar.error ROLLBAR_MESSAGES[type], rollbar_data(data)
+      Rollbar.error(ROLLBAR_MESSAGES[type], rollbar_data(data))
     end
   end
 
   def log_messages(status)
     case status
-      when :success then WriteLog.info self, "s3 event was handled successfully at #{Time.now}; #{debug_info}"
-      when :failure then WriteLog.info self, "errors occurred with handle s3 event at #{Time.now}; errors: #{errors_messages.inspect}; #{debug_info}"
+      when :success then Zazo::Tool::Logger.info(self, "s3 event was handled successfully at #{Time.now}; #{debug_info}")
+      when :failure then Zazo::Tool::Logger.info(self, "errors occurred with handle s3 event at #{Time.now}; errors: #{errors_messages.inspect}; #{debug_info}")
     end
   end
 
   private
 
   def rollbar_data(data)
-    data.merge s3_event:    instance.s3_event.inspect,
-               s3_metadata: instance.s3_metadata.inspect
+    data.merge(s3_event: instance.s3_event.inspect,
+               s3_metadata: instance.s3_metadata.inspect)
   end
 
   def debug_info
@@ -37,6 +37,6 @@ class HandleOutgoingVideo::StatusNotifier
   end
 
   def errors_messages
-    instance.errors.messages.merge instance.s3_event.errors.messages
+    instance.errors.messages.merge(instance.s3_event.errors.messages)
   end
 end

@@ -1,82 +1,71 @@
 require 'rails_helper'
 
 RSpec.describe KvstoreController, type: :controller do
-  let(:video_id) { '1426622544176' }
+  include_context 'user authentication'
+
+  let(:user) { create(:user) }
+  let(:message_id) { '1426622544176' }
   let(:connection) { create(:established_connection) }
   let(:sender) { connection.creator }
   let(:receiver) { connection.target }
 
   describe 'POST #set' do
-    let(:params) do
+    let(:video_message_params) do
       { key1: Kvstore.generate_id_key(sender, receiver, connection),
-        key2: video_id, value: { 'videoId' => video_id }.to_json }
+        key2: message_id, value: { 'videoId' => message_id }.to_json }
+    end
+    let(:text_message_params) do
+      { key1: Kvstore.generate_id_key(sender, receiver, connection), key2: message_id,
+        value: { 'messageId' => message_id, 'type' => 'text', 'body' => 'Hello World!' }.to_json }
     end
 
-    specify do
-      expect(Kvstore).to receive(:create_or_update).with(params)
-      post :set, params
-    end
+    [
+      { context: 'video message', params_key: :video_message_params },
+      { context: 'text message',  params_key: :text_message_params }
+    ].each do |data|
+      context data[:context] do
+        let(:params) { send(data[:params_key]) }
 
-    it 'returns http success' do
-      post :set, params
-      expect(response).to have_http_status(:success)
+        context 'when authenticated' do
+          it do
+            expect(Kvstore).to receive(:create_or_update).with(params)
+            authenticate_user { post :set, params }
+          end
+
+          it 'returns http success' do
+            authenticate_user { post :set, params }
+            expect(response).to have_http_status(:success)
+          end
+        end
+
+        context 'when not authenticated' do
+          it 'returns http unauthorized' do
+            post :set, params
+            is_expected.to respond_with(:unauthorized)
+          end
+        end
+      end
     end
   end
 
   describe 'GET #delete' do
     it 'returns http success' do
-      get :delete
+      authenticate_user { get :delete }
       expect(response).to have_http_status(:success)
     end
   end
 
-  describe 'GET #received_videos' do
-    context 'when authenticated' do
-      let(:user) { create(:user) }
-
-      specify do
-        authenticate_with_http_digest(user.mkey, user.auth) do
-          get :received_videos
-        end
+  %i(received_videos video_status).each do |action|
+    describe "GET ##{action}" do
+      it 'responds with success when authenticated' do
+        authenticate_user { get action }
         is_expected.to respond_with(:success)
       end
 
-      specify do
-        expect_any_instance_of(User).to receive(:received_videos)
-        authenticate_with_http_digest(user.mkey, user.auth) do
-          get :received_videos
-        end
+      it 'responds with unauthorized when not authenticated' do
+        get action
+        is_expected.to respond_with(:unauthorized)
       end
-    end
-
-    context 'when not authenticated' do
-      before { get :received_videos }
-      it { is_expected.to respond_with(:unauthorized) }
-    end
-  end
-
-  describe 'GET #video_status' do
-    context 'when authenticated' do
-      let(:user) { create(:user) }
-
-      specify do
-        authenticate_with_http_digest(user.mkey, user.auth) do
-          get :video_status
-        end
-        is_expected.to respond_with(:success)
-      end
-
-      specify do
-        expect_any_instance_of(User).to receive(:video_status)
-        authenticate_with_http_digest(user.mkey, user.auth) do
-          get :video_status
-        end
-      end
-    end
-
-    context 'when not authenticated' do
-      before { get :video_status }
-      it { is_expected.to respond_with(:unauthorized) }
     end
   end
 end

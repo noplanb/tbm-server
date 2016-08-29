@@ -14,6 +14,8 @@ class S3Event
   end
 
   def inspect
-    { bucket_name: bucket_name, file_name: file_name, file_size: file_size }.inspect
+    { bucket_name: bucket_name,
+      file_name: file_name,
+      file_size: file_size }.inspect
   end
 end

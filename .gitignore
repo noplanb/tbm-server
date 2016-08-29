@@ -11,13 +11,21 @@
 /db/*.sqlite3
 /db/*.sqlite3-journal
 
+# Ignore `wercker build` artifacts
+_builds
+_projects
+_steps
+_cache
+repository.tar
+
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
 config/s3.yml
 public/system
 config/app_config_local.yml
-.elasticbeanstalk/
+
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

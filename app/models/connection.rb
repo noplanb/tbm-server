@@ -29,8 +29,10 @@ class Connection < ActiveRecord::Base
     end
   end
 
-  scope :for_user_id, ->(user_id) { where ['creator_id = ? OR target_id = ?', user_id, user_id] }
-  scope :between_creator_and_target, ->(creator_id, target_id) { where ['creator_id = ? AND target_id = ?', creator_id, target_id] }
+  scope :live, -> { where.not(status: :voided) }
+
+  scope :for_user_id, -> (user_id) { where ['creator_id = ? OR target_id = ?', user_id, user_id] }
+  scope :between_creator_and_target, -> (creator_id, target_id) { where ['creator_id = ? AND target_id = ?', creator_id, target_id] }
 
   def self.live_between(user1_id, user2_id)
     between_creator_and_target(user1_id, user2_id).where.not(status: :voided) + between_creator_and_target(user2_id, user1_id).where.not(status: :voided)

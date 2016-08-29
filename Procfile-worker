@@ -1,0 +1,3 @@
+web: puma
+nginx: service nginx start
+sidekiq: sidekiq -c 25

@@ -34,14 +34,14 @@ RSpec.describe InvitationController, type: :controller do
 
       context 'events notification' do
         it 'emits 3 events' do
-          expect(EventDispatcher).to receive(:emit).with(['connection', :established], instance_of(Hash))
-          expect(EventDispatcher).to receive(:emit).with(['user', :invited], instance_of(Hash))
-          expect(EventDispatcher).to receive(:emit).with(['user', 'invitation_sent'], instance_of(Hash))
+          expect(Zazo::Tool::EventDispatcher).to receive(:emit).with(['connection', :established], instance_of(Hash))
+          expect(Zazo::Tool::EventDispatcher).to receive(:emit).with(['user', :invited], instance_of(Hash))
+          expect(Zazo::Tool::EventDispatcher).to receive(:emit).with(['user', 'invitation_sent'], instance_of(Hash))
           subject
         end
 
-        it 'EventDispatcher.sqs_client receives :send_message 3 times', event_dispatcher: true do
-          expect(EventDispatcher.sqs_client).to receive(:send_message).exactly(3).times
+        it 'Zazo::Tool::EventDispatcher.sqs_client receives :send_message 3 times', event_dispatcher: true do
+          expect(Zazo::Tool::EventDispatcher.sqs_client).to receive(:send_message).exactly(3).times
           subject
         end
       end
@@ -177,14 +177,14 @@ RSpec.describe InvitationController, type: :controller do
         end
 
         it 'emits 3 events' do
-          expect(EventDispatcher).to receive(:emit).with(['connection', :established], instance_of(Hash))
-          expect(EventDispatcher).to receive(:emit).with(['user', :invited], event_params1)
-          expect(EventDispatcher).to receive(:emit).with(['user', 'invitation_sent'], event_params2)
+          expect(Zazo::Tool::EventDispatcher).to receive(:emit).with(['connection', :established], instance_of(Hash))
+          expect(Zazo::Tool::EventDispatcher).to receive(:emit).with(['user', :invited], event_params1)
+          expect(Zazo::Tool::EventDispatcher).to receive(:emit).with(['user', 'invitation_sent'], event_params2)
           subject
         end
 
-        it 'EventDispatcher.sqs_client receives :send_message 3 times', event_dispatcher: true do
-          expect(EventDispatcher.sqs_client).to receive(:send_message).exactly(3).times
+        it 'Zazo::Tool::EventDispatcher.sqs_client receives :send_message 3 times', event_dispatcher: true do
+          expect(Zazo::Tool::EventDispatcher.sqs_client).to receive(:send_message).exactly(3).times
           subject
         end
       end

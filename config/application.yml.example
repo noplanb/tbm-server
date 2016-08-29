@@ -1,6 +1,7 @@
 AWS_REGION: us-west-1
 AWS_ACCESS_KEY_ID:
 AWS_SECRET_ACCESS_KEY:
+APN_CERTIFICATE_PASSPHRASE:
 
 s3_access_key_id:
 s3_secret_access_key:
@@ -15,8 +16,6 @@ domain_name: localhost:3000
 
 gcm_api_key:
 gcm_uri: https://android.googleapis.com/gcm/send
-
-APN_CERTIFICATE_PASSPHRASE:
 
 http_basic_password:
 http_basic_username:
@@ -34,16 +33,22 @@ twilio_ssid:
 twilio_to_number: '+16502453537'
 twilio_token:
 
+nuance_asr_app_key:
+nuance_asr_app_id:
+nuance_asr_id:
+
 rollbar_access_token:
 client_rollbar_access_token:
 
 ios_rollbar_access_token:
 android_rollbar_access_token:
 
-papertrail_host:
-papertrail_port:
-papertrail_program:
-papertrail_local_hostname:
+redis_host: localhost
+redis_port: '6379'
+
+logstash_url:
+logstash_username:
+logstash_password:
 
 newrelic_license_key:
 

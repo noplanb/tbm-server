@@ -84,7 +84,7 @@ RSpec.describe Connection, type: :model do
     describe '#void' do
       subject { instance.void }
       before do
-        allow(EventDispatcher.sqs_client).to receive(:send_message)
+        allow(Zazo::Tool::EventDispatcher.sqs_client).to receive(:send_message)
         instance.establish!
       end
       let(:event_params) do

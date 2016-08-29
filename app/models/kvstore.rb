@@ -1,6 +1,8 @@
 class Kvstore < ActiveRecord::Base
+  include Zazo::Model::Decorator::Decoratable
+
   SUFFIXES_FOR_EVENTS = %w(VideoIdKVKey VideoStatusKVKey).freeze
-  after_save :trigger_event
+  after_save :trigger_event_callback
 
   def self.create_or_update(params)
     if params[:key2].blank?
@@ -32,11 +34,11 @@ class Kvstore < ActiveRecord::Base
   end
 
   def self.generate_id_key(sender, receiver, connection)
-    generate_key 'VideoIdKVKey', sender, receiver, connection
+    generate_key('VideoIdKVKey', sender, receiver, connection)
   end
 
   def self.generate_status_key(sender, receiver, connection)
-    generate_key 'VideoStatusKVKey', sender, receiver, connection
+    generate_key('VideoStatusKVKey', sender, receiver, connection)
   end
 
   def self.generate_welcomed_friends_key(user)
@@ -63,6 +65,25 @@ class Kvstore < ActiveRecord::Base
     Kvstore.create_or_update(params)
   end
 
+  def self.add_message_id_key(type, sender, receiver, message_id, rest = {})
+    connection = Connection.live_between(sender.id, receiver.id).first
+    fail 'no live connections found' if connection.nil?
+    params = {
+      key1: generate_id_key(sender, receiver, connection),
+      key2: message_id,
+      value: { 'type' => type, 'messageId' => message_id }.merge(rest).to_json }
+    Kvstore.create_or_update(params)
+  end
+
+  def self.add_message_status_key(type, sender, receiver, message_id, status)
+    connection = Connection.live_between(sender.id, receiver.id).first
+    fail 'no live connections found' if connection.nil?
+    params = {
+      key1: generate_status_key(sender, receiver, connection),
+      value: { 'type' => type, 'messageId' => message_id, 'status' => status }.to_json }
+    Kvstore.create_or_update(params)
+  end
+
   def self.video_filename(sender, receiver, video_id)
     sender = User.find_by!(mkey: sender) if sender.is_a?(String)
     receiver = User.find_by!(mkey: receiver) if receiver.is_a?(String)
@@ -73,31 +94,14 @@ class Kvstore < ActiveRecord::Base
 
   private
 
-  def trigger_event
+  def trigger_event_callback
     return false if key1.blank? && value.blank?
-    return false unless SUFFIXES_FOR_EVENTS.any? { |suffix| key1.include?(suffix) }
-    sender_id, receiver_id, _hash, _type = key1.split('-')
-    sender = User.find_by_mkey(sender_id)
-    receiver = User.find_by_mkey(receiver_id)
-    parsed_value = JSON.parse(value)
-    status = parsed_value.fetch('status', 'received')
-    video_id = parsed_value['videoId']
-    video_filename = self.class.video_filename(sender_id, receiver_id, video_id)
-    name = ['video', self.class.name.underscore, status]
-    event = {
-      initiator: 'user',
-      initiator_id: sender_id,
-      target: 'video',
-      target_id: video_filename,
-      data: {
-        sender_id: sender_id,
-        sender_platform: sender.try(:device_platform),
-        receiver_id: receiver_id,
-        receiver_platform: receiver.try(:device_platform),
-        video_filename: video_filename,
-        video_id: video_id
-      },
-      raw_params: attributes.slice('key1', 'key2', 'value') }
-    EventDispatcher.emit(name, event)
+    return false unless Kvstore::SUFFIXES_FOR_EVENTS.any? { |sfx| key1.include?(sfx) }
+    sender_mkey, receiver_mkey = key1.split('-')
+    Messages::TriggerEvent.run(
+      sender: User.find_by_mkey(sender_mkey),
+      receiver: User.find_by_mkey(receiver_mkey),
+      message: decorate_with(:default),
+      type: 'kvstore')
   end
 end
