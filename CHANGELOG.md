@@ -1,5 +1,8 @@
 # Changelog
 
+### 3.0.0
+- :bulb: Released major version
+
 ### 2.10.4-wip.26
 - :hammer: Fixed sidekiq redis namespace
 
