@@ -1,5 +1,8 @@
 # Changelog
 
+### 3.0.1
+- :arrow_up: Updated global phone database
+
 ### 3.0.0
 - :bulb: Released major version
 
