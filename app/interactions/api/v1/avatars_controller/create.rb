@@ -4,16 +4,20 @@ class Api::V1::AvatarsController::Create < Api::BaseInteraction
   string :use_as_thumbnail
 
   def execute
-    #delete_avatar(user.avatar_timestamp)
-    timestamp = Time.now.to_i
-    upload_avatar(timestamp)
-    @avatar = nil # remove this from inputs logging
+    previous_timestamp = user.avatar_timestamp
+    current_timestamp = DateTime.now.strftime('%Q')
+    upload_avatar(current_timestamp)
+    update_user(current_timestamp)
+    compose(namespace::Common::DeleteAvatar, user: user, timestamp: previous_timestamp)
+    @avatar = nil # remove avatar from inputs logging
   end
 
   private
 
-  def delete_avatar(timestamp)
-
+  def update_user(timestamp)
+    user.update_attributes(
+      avatar_timestamp: timestamp,
+      avatar_use_as_thumbnail: use_as_thumbnail)
   end
 
   def upload_avatar(timestamp)

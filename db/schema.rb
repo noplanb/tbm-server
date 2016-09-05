@@ -90,7 +90,7 @@ ActiveRecord::Schema.define(version: 20160905161711) do
     t.datetime "updated_at"
     t.string   "app_version",             limit: 255
     t.string   "device_info",             limit: 255
-    t.integer  "avatar_timestamp",        limit: 4
+    t.string   "avatar_timestamp",        limit: 255
     t.string   "avatar_use_as_thumbnail", limit: 255
   end
 
