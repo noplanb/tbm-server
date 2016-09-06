@@ -199,6 +199,10 @@ RSpec.describe RegController, type: :controller do
         'emails' => friend.emails,
         'has_app' => 'false',
         'abilities' => [],
+        'avatar' => {
+          'timestamp' => nil,
+          'use_as_thumbnail' => nil
+        },
         'ckey' => connection.ckey,
         'cid' => connection.id.to_s,
         'connection_created_on' => connection.created_at,
