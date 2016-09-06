@@ -27,7 +27,7 @@ class Api::V1::AvatarsController < ApiController
   end
 
   def destroy
-    handle_interactor(:render,
+    handle_interactor([:render, result: false],
       Destroy.run(interactor_params))
   end
 end

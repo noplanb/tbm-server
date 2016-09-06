@@ -5,7 +5,7 @@ class Api::V1::AvatarsController::Common::DeleteAvatar < Api::BaseInteraction
   def execute
     aws_s3_client.delete_object(
       bucket: Figaro.env.s3_avatars_bucket,
-      key: "#{user.mkey}_#{timestamp}")
+      key: "#{user.mkey}_#{timestamp}") if timestamp
   end
 
   private
