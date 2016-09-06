@@ -1,6 +1,7 @@
 # Changelog
 
 ### 3.0.1-wip.1
+- :bulb: Added avatar API for create and update user avatars
 
 ### 3.0.1
 - :arrow_up: Updated global phone database
