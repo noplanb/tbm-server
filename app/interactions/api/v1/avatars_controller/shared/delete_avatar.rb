@@ -1,6 +1,6 @@
-class Api::V1::AvatarsController::Common::DeleteAvatar < Api::BaseInteraction
+class Api::V1::AvatarsController::Shared::DeleteAvatar < Api::BaseInteraction
   object :user
-  integer :timestamp, default: nil
+  string :timestamp, default: nil
 
   def execute
     aws_s3_client.delete_object(

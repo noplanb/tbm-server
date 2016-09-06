@@ -8,26 +8,25 @@ class Api::V1::AvatarsController::Create < Api::BaseInteraction
     current_timestamp = DateTime.now.strftime('%Q')
     upload_avatar(current_timestamp)
     update_user(current_timestamp)
-    compose(namespace::Common::DeleteAvatar, user: user, timestamp: previous_timestamp)
+    delete_avatar(previous_timestamp)
     @avatar = nil # remove avatar from inputs logging
   end
 
   private
 
+  def upload_avatar(timestamp)
+    compose(namespace::Shared::UploadAvatar,
+      user: user, tempfile: avatar.tempfile, timestamp: timestamp)
+  end
+
+  def delete_avatar(timestamp)
+    compose(namespace::Shared::DeleteAvatar,
+      user: user, timestamp: timestamp)
+  end
+
   def update_user(timestamp)
     user.update_attributes(
       avatar_timestamp: timestamp,
       avatar_use_as_thumbnail: use_as_thumbnail)
-  end
-
-  def upload_avatar(timestamp)
-    object = aws_s3_resource.bucket(Figaro.env.s3_avatars_bucket).object("#{user.mkey}_#{timestamp}")
-    object.upload_file(avatar.tempfile)
-  end
-
-  def aws_s3_resource
-    Aws::S3::Resource.new(
-      access_key_id: Figaro.env.s3_access_key_id,
-      secret_access_key: Figaro.env.s3_secret_access_key)
   end
 end
