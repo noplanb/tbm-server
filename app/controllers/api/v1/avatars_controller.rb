@@ -23,7 +23,8 @@ class Api::V1::AvatarsController < ApiController
   end
 
   def update
-
+    handle_interactor([:render, result: false],
+      Update.run(interactor_params(:use_as_thumbnail)))
   end
 
   def destroy
