@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160803104447) do
+ActiveRecord::Schema.define(version: 20160905161711) do
 
   create_table "connections", force: :cascade do |t|
     t.integer  "creator_id", limit: 4
@@ -75,21 +75,23 @@ ActiveRecord::Schema.define(version: 20160803104447) do
   add_index "push_users", ["mkey"], name: "index_push_users_on_mkey", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "first_name",             limit: 255
-    t.string   "last_name",              limit: 255
-    t.string   "mobile_number",          limit: 255
-    t.text     "emails",                 limit: 65535
-    t.string   "user_name",              limit: 255
-    t.string   "device_platform",        limit: 255
-    t.string   "auth",                   limit: 255
-    t.string   "mkey",                   limit: 255
-    t.string   "verification_code",      limit: 255
+    t.string   "first_name",              limit: 255
+    t.string   "last_name",               limit: 255
+    t.string   "mobile_number",           limit: 255
+    t.text     "emails",                  limit: 65535
+    t.string   "user_name",               limit: 255
+    t.string   "device_platform",         limit: 255
+    t.string   "auth",                    limit: 255
+    t.string   "mkey",                    limit: 255
+    t.string   "verification_code",       limit: 255
     t.datetime "verification_date_time"
-    t.string   "status",                 limit: 255
+    t.string   "status",                  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "app_version",            limit: 255
-    t.string   "device_info",            limit: 255
+    t.string   "app_version",             limit: 255
+    t.string   "device_info",             limit: 255
+    t.string   "avatar_timestamp",        limit: 255
+    t.string   "avatar_use_as_thumbnail", limit: 255
   end
 
   add_index "users", ["mkey"], name: "index_users_on_mkey", using: :btree

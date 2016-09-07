@@ -1,5 +1,8 @@
 # Changelog
 
+### 3.0.1-wip.1
+- :bulb: Added avatars CRUD API
+
 ### 3.0.1
 - :arrow_up: Updated global phone database
 
