@@ -10,11 +10,6 @@ class Api::V1::AvatarsController < ApiController
     end
   end
 
-  def show
-    handle_interactor(:render,
-      Show.run(interactor_params(:id)))
-  end
-
   private
 
   def create

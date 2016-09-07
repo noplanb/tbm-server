@@ -24,7 +24,7 @@ ThreebymeServer::Application.routes.draw do
     namespace :v1 do
       resources :events, only: [:create]
       resources :messages, except: [:new, :edit]
-      resources :avatars, only: [:index, :show] do
+      resources :avatars, only: [:index] do
         collection do
           post :index
           patch :index
