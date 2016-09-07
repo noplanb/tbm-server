@@ -6,6 +6,6 @@ class Api::V1::AvatarsController::Destroy < Api::BaseInteraction
       user: user, timestamp: user.avatar_timestamp)
     user.update_attributes(
       avatar_timestamp: nil,
-      avatar_use_as_thumbnail: nil)
+      avatar_use_as_thumbnail: 'last_frame')
   end
 end
