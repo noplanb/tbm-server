@@ -9,7 +9,7 @@ RSpec.describe UsersController, type: :controller do
     let(:user) { connection.creator }
     let(:sender) { connection.target }
     let!(:s3_credential) do
-      cred = S3Credential.instance
+      cred = S3Credential::Videos.instance
       cred.update_credentials(region: 'us-west-1',
                               bucket: 'bucket',
                               access_key: 'access_key',
