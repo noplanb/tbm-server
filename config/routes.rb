@@ -10,13 +10,14 @@ ThreebymeServer::Application.routes.draw do
   get 's3_credentials/videos'
   get 's3_credentials/avatars'
 
-  resources :s3_credentials
+  resources :admin_s3_credentials
+  resources :version_compatibilities
+
   resources :connections
   resources :users do
     get :send_test_message
     post :send_test_message
   end
-  resources :version_compatibilities
 
   resources :connection, only: [] do
     post :set_visibility, on: :collection
