@@ -1,0 +1,6 @@
+h1 s3 credentials
+
+table.table
+  - %w(videos avatars).each do |type|
+    tr
+      td = link_to type, s3_credential_path(type)

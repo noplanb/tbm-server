@@ -1,5 +1,6 @@
 # This class should be subclassed by classes that store specific credentials in db
 # Singleton instance of a specific cred_type intended to be allowed in the database.
+
 module SpecificCredential
   extend ActiveSupport::Concern
 

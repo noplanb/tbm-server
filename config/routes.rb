@@ -7,6 +7,8 @@ ThreebymeServer::Application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   get 's3_credentials/info'
+  get 's3_credentials/videos'
+  get 's3_credentials/avatars'
 
   resources :s3_credentials
   resources :connections

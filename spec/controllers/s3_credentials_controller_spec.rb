@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe S3CredentialsController, type: :controller do
-  let(:s3_credential) { S3Credential.instance }
+  let(:s3_credential) { S3Credential::Videos.instance }
 
   describe 'GET #info' do
     context 'when HTTP Digest auth credentials are invalid' do
@@ -11,13 +11,13 @@ RSpec.describe S3CredentialsController, type: :controller do
         end
       end
 
-      specify { is_expected.to respond_with(:unauthorized) }
+      it { is_expected.to respond_with(:unauthorized) }
     end
 
     context 'when HTTP Digest auth credentials are missing' do
       before { get :info }
 
-      specify { is_expected.to respond_with(:unauthorized) }
+      it { is_expected.to respond_with(:unauthorized) }
     end
 
     context 'when HTTP Digest auth credentials are valid' do
@@ -32,12 +32,12 @@ RSpec.describe S3CredentialsController, type: :controller do
 
       before do
         authenticate_with_http_digest(user.mkey, user.auth) do
-          get :info
+          get :info, id: :videos
         end
       end
 
-      specify { is_expected.to respond_with(:success) }
-      specify do
+      it { is_expected.to respond_with(:success) }
+      it do
         expect(JSON.parse(response.body)).to eq('status' => 'success',
                                                 'region' => 'us-west-1',
                                                 'bucket' => 'bucket',
@@ -50,43 +50,45 @@ RSpec.describe S3CredentialsController, type: :controller do
   describe 'GET #index' do
     context 'when not authenticated' do
       before { get :index }
-      specify { is_expected.to respond_with(:unauthorized) }
+      it { is_expected.to respond_with(:unauthorized) }
     end
 
     context 'when authenticated' do
       before { authenticate_with_http_basic }
       before { get :index }
-      specify { expect(response).to redirect_to(assigns(:s3_credential)) }
+      it { is_expected.to respond_with(:success) }
     end
   end
 
   describe 'GET #show' do
-    let(:params) { { id: s3_credential.id } }
+    let(:params) { { id: :videos } }
+
     context 'when not authenticated' do
       before { get :show, params }
-      specify { is_expected.to respond_with(:unauthorized) }
+      it { is_expected.to respond_with(:unauthorized) }
     end
 
     context 'when authenticated' do
       before { authenticate_with_http_basic }
       before { get :show, params }
-      specify { is_expected.to respond_with(:success) }
-      specify { expect(assigns(:s3_credential)).to eq(s3_credential) }
+      it { is_expected.to respond_with(:success) }
+      it { expect(assigns(:s3_credential)).to eq(s3_credential) }
     end
   end
 
   describe 'GET #edit' do
-    let(:params) { { id: s3_credential.id } }
+    let(:params) { { id: :videos} }
+
     context 'when not authenticated' do
       before { get :edit, params }
-      specify { is_expected.to respond_with(:unauthorized) }
+      it { is_expected.to respond_with(:unauthorized) }
     end
 
     context 'when authenticated' do
       before { authenticate_with_http_basic }
       before { get :edit, params }
-      specify { is_expected.to respond_with(:success) }
-      specify { expect(assigns(:s3_credential)).to eq(s3_credential) }
+      it { is_expected.to respond_with(:success) }
+      it { expect(assigns(:s3_credential)).to eq(s3_credential) }
     end
   end
 
@@ -99,30 +101,25 @@ RSpec.describe S3CredentialsController, type: :controller do
       s3_credential.save
     end
 
-    let(:params) { { id: s3_credential.id, s3_credential: { region: 'us-east-1' } } }
-    let(:invalid_params) { { id: s3_credential.id, s3_credential: { region: 'ololo!' } } }
+    let(:params) { { id: :videos, s3_credential_videos: { region: 'us-east-1' } } }
+    let(:invalid_params) { { id: :videos, s3_credential_videos: { region: 'ololo!' } } }
 
     context 'when not authenticated' do
       before { patch :update, params }
-      specify { is_expected.to respond_with(:unauthorized) }
+      it { is_expected.to respond_with(:unauthorized) }
     end
 
     context 'when authenticated' do
       before { authenticate_with_http_basic }
 
       context 'with valid params' do
-        specify do
-          patch :update, params
-          expect(response).to redirect_to(assigns(:s3_credential))
-        end
-
-        specify do
+        it do
           expect { patch :update, params }.to change { s3_credential.reload.region }.from('us-west-1').to('us-east-1')
         end
       end
 
       context 'with invalid params' do
-        specify do
+        it do
           patch :update, invalid_params
           is_expected.to render_template(:edit)
         end

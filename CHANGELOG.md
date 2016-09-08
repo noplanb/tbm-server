@@ -1,5 +1,8 @@
 # Changelog
 
+### 3.0.1-wip.2
+- :arrow_up: Updated s3 credentials admin and API
+
 ### 3.0.1-wip.1
 - :bulb: Added avatars CRUD API
 
