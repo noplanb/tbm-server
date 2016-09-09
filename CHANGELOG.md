@@ -1,6 +1,7 @@
 # Changelog
 
 ### 3.0.1-wip.4
+- :arrow_up: Refactored code to use default server aws credentials for s3 access
 
 ### 3.0.1-wip.3
 - :arrow_up: Refactored code
