@@ -3,16 +3,8 @@ class Api::V1::AvatarsController::Shared::DeleteAvatar < Api::BaseInteraction
   string :timestamp, default: nil
 
   def execute
-    aws_s3_client.delete_object(
-      bucket: Figaro.env.s3_avatars_bucket,
+    Aws::S3::Client.new.delete_object(
+      bucket: S3Credential::Avatars.instance.cred['bucket'],
       key: "#{user.mkey}_#{timestamp}") if timestamp
-  end
-
-  private
-
-  def aws_s3_client
-    Aws::S3::Client.new(
-      access_key_id: Figaro.env.s3_access_key_id,
-      secret_access_key: Figaro.env.s3_secret_access_key)
   end
 end

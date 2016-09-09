@@ -3,7 +3,6 @@ AWS_ACCESS_KEY_ID:
 AWS_SECRET_ACCESS_KEY:
 APN_CERTIFICATE_PASSPHRASE:
 
-s3_avatars_bucket:
 s3_access_key_id:
 s3_secret_access_key:
 

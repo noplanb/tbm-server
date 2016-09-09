@@ -4,16 +4,16 @@ class S3CredentialsController < ApiController
   end
 
   def videos
-    render_app_attributes(:videos)
+    render_client_credentials(:videos)
   end
 
   def avatars
-    render_app_attributes(:avatars)
+    render_client_credentials(:avatars)
   end
 
   private
 
-  def render_app_attributes(type)
+  def render_client_credentials(type)
     render json: { status: 'success' }.merge(S3Credential.by_type(type).only_app_attributes)
   end
 end

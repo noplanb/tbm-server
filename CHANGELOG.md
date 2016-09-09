@@ -1,5 +1,7 @@
 # Changelog
 
+### 3.0.1-wip.4
+
 ### 3.0.1-wip.3
 - :arrow_up: Refactored code
 - :hammer: Fixed s3 credentials admin routes
