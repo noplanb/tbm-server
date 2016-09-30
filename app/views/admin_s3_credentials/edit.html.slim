@@ -1,0 +1,5 @@
+h1 Editing #{@s3_credential.class.credential_type} credential
+
+= render 'form'
+br
+= link_to 'Show', admin_s3_credential_path(params[:id]), class: 'btn btn-default'

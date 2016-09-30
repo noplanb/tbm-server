@@ -8,7 +8,7 @@ class Users::SendTestMessage::Video < Users::SendTestMessage
   private
 
   def put_s3_object(video_id)
-    cred = S3Credential.instance
+    cred = S3Credential::Videos.instance
     cred.s3_client.put_object(
       bucket: cred.bucket,
       key: Kvstore.video_filename(sender, receiver, video_id),

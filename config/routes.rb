@@ -7,14 +7,17 @@ ThreebymeServer::Application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   get 's3_credentials/info'
+  get 's3_credentials/videos'
+  get 's3_credentials/avatars'
 
-  resources :s3_credentials
+  resources :admin_s3_credentials
+  resources :version_compatibilities
+
   resources :connections
   resources :users do
     get :send_test_message
     post :send_test_message
   end
-  resources :version_compatibilities
 
   resources :connection, only: [] do
     post :set_visibility, on: :collection
@@ -24,6 +27,13 @@ ThreebymeServer::Application.routes.draw do
     namespace :v1 do
       resources :events, only: [:create]
       resources :messages, except: [:new, :edit]
+      resources :avatars, only: [:index] do
+        collection do
+          post :index
+          patch :index
+          delete :index
+        end
+      end
     end
   end
 

@@ -1,47 +1,19 @@
-class S3CredentialsController < ApplicationController
-  http_basic_authenticate_with name: Figaro.env.http_basic_username, password: Figaro.env.http_basic_password, except: :info
-  before_action :authenticate, only: :info
-
-  # =====================
-  # = Mobile client api =
-  # =====================
+class S3CredentialsController < ApiController
   def info
-    render json: { status: 'success' }.merge(S3Credential.instance.only_app_attributes)
+    videos
   end
 
-  # ================
-  # = Admin screen =
-  # ================
-  before_action :set_s3_credential, only: [:index, :show, :edit, :update]
-
-  def index
-    redirect_to @s3_credential
+  def videos
+    render_client_credentials(:videos)
   end
 
-  # GET /s3_credentials/1
-  def show
-  end
-
-  # GET /s3_credentials/1/edit
-  def edit
-  end
-
-  # PATCH/PUT /s3_credentials/1
-  def update
-    if @s3_credential.update_credentials(s3_credential_params)
-      redirect_to @s3_credential, notice: 'S3 info was successfully updated.'
-    else
-      render action: 'edit'
-    end
+  def avatars
+    render_client_credentials(:avatars)
   end
 
   private
 
-  def set_s3_credential
-    @s3_credential = S3Credential.instance
-  end
-
-  def s3_credential_params
-    params.require(:s3_credential).permit(:region, :bucket, :access_key, :secret_key)
+  def render_client_credentials(type)
+    render json: { status: 'success' }.merge(S3Credential.by_type(type).only_app_attributes)
   end
 end

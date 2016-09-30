@@ -1,5 +1,21 @@
 # Changelog
 
+### 3.1.0
+- :bulb: Released minor version
+
+### 3.0.1-wip.4
+- :arrow_up: Refactored code to use default server aws credentials for s3 access
+
+### 3.0.1-wip.3
+- :arrow_up: Refactored code
+- :hammer: Fixed s3 credentials admin routes
+
+### 3.0.1-wip.2
+- :arrow_up: Updated s3 credentials admin and API
+
+### 3.0.1-wip.1
+- :bulb: Added avatars CRUD API
+
 ### 3.0.1
 - :arrow_up: Updated global phone database
 

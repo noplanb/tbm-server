@@ -1,4 +1,4 @@
-= simple_form_for(@s3_credential) do |f|
+= simple_form_for(@s3_credential, url: admin_s3_credential_path) do |f|
   = f.error_notification
   = f.input :region
   = f.input :bucket

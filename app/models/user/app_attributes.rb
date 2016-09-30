@@ -12,6 +12,9 @@ module User::AppAttributes
     r[:id] = r[:id].to_s
     r[:has_app] = app?.to_s
     r[:abilities] = decorate_with(:client_info).abilities
+    r[:avatar] = {
+      timestamp: avatar_timestamp,
+      use_as_thumbnail: avatar_use_as_thumbnail }
     r
   end
 
