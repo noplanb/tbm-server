@@ -1,5 +1,8 @@
 # Changelog
 
+### 3.1.0
+- :bulb: Released minor version
+
 ### 3.0.1-wip.4
 - :arrow_up: Refactored code to use default server aws credentials for s3 access
 
